@@ -5,6 +5,7 @@ import VolunteerForm from './pages/VolunteerForm';
 import ParticipantForm from './pages/ParticipantForm';
 import EventDetails from './pages/EventDetails';
 import TaskList from './pages/TaskList';
+import Events from './pages/Events';
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/volunteer" element={<VolunteerForm />} />
         <Route path="/volunteer/:eventId" element={<VolunteerForm />} />
         <Route path="/participant/:eventId" element={<ParticipantForm />} />
         <Route path="/event/:eventId" element={<EventDetails />} />
