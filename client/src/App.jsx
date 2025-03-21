@@ -1,12 +1,24 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import VolunteerForm from './pages/VolunteerForm';
+import ParticipantForm from './pages/ParticipantForm';
+import EventDetails from './pages/EventDetails';
+import TaskList from './pages/TaskList';
 
 function App() {
-
   return (
-    <>
-      <div className='text-3xl font-bold underline'> A dummy data for testing tailwind</div>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/volunteer/:eventId" element={<VolunteerForm />} />
+        <Route path="/participant/:eventId" element={<ParticipantForm />} />
+        <Route path="/event/:eventId" element={<EventDetails />} />
+        <Route path="/tasks/:eventId" element={<TaskList />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
