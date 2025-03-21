@@ -1,0 +1,182 @@
+const Volunteer = require('../models/volunteer.models');
+
+
+exports.createVolunteer = async (req, res) => {
+    try {
+        const {user, taskPreferred, taskAllocated, status, volunteerHrs, event} = req.body;
+    
+        if (!user || !taskPreferred || !taskAllocated || !status || !volunteerHrs || !event) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            })
+        }
+    
+        const userInfo = await User.findById(user);
+        const eventInfo = await Event.findById(event);
+    
+        if (!userInfo || !eventInfo) {
+            return res.status(404).json({
+                success: false,
+                message: "User or Event not found"
+            })
+        }
+    
+        const volunteer = await Volunteer.create({
+            user,
+            taskPreferred,
+            taskAllocated,
+            status,
+            volunteerHrs,
+            event
+        });
+
+
+        const updatedEvent = await Event.findByIdAndUpdate
+        (event, { $inc: { totalVolunteerReq: -1 }, $push : {totalVolunteerReq: volunteer._id} }, { new: true });
+
+        if (!updatedEvent) {
+            return res.status(404).json({
+                success: false,
+                message: "Error while updating event"
+            })
+        }
+    
+        return res.status(200).json({
+            success: true,
+            message: "Volunteer created successfully",
+            data: volunteer
+        })
+    } catch (error) {
+        console.log("Error occured while creating volunteer", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
+exports.getVolunteers = async (req, res) => {
+    try {
+        const {event} = req.body;
+
+        const volunteers = await Volunteer.find({event: event});
+
+        return res.status(200).json({
+            success: true,
+            data: volunteers
+        })
+    } catch (error) {
+        console.log("Error occured while fetching volunteers", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
+
+exports.deleteVolunteer = async (req, res) => {
+    try {
+        const { volunteerId } = req.body;
+        const volunteer = await Volunteer.findById(volunteerId);
+
+        if (!volunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Volunteer not found"
+            })
+        }
+
+        const updatedEvent = await Event.findByIdAndUpdate
+        (volunteer.event, { $inc: { totalVolunteerReq: 1 }, $pull : {totalVolunteerReq: volunteer._id} }, { new: true });
+
+        if (!updatedEvent) {
+            return res.status(404).json({
+                success: false,
+                message: "Error while updating event"
+            })
+        }
+
+        await volunteer.remove();
+
+        return res.status(200).json({
+            success: true,
+            message: "Volunteer deleted successfully"
+        })
+    } catch (error) {
+        console.log("Error occured while deleting volunteer", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
+
+exports.updateVolunteer = async (req, res) => {
+    try {
+        const { volunteerId, taskPreferred, taskAllocated, status, volunteerHrs } = req.body;
+        const volunteer = await Volunteer.findById(volunteerId);
+
+        if (!volunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Volunteer not found"
+            })
+        }
+
+        const updatedVolunteer = await Volunteer.findByIdAndUpdate(volunteerId, {
+            taskPreferred,
+            taskAllocated,
+            status,
+            volunteerHrs
+        }, { new: true });
+
+        if (!updatedVolunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Error while updating volunteer"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Volunteer updated successfully",
+            data: updatedVolunteer
+        })
+    } catch (error) {
+        console.log("Error occured while updating volunteer", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
+
+exports.getVolunteer = async (req, res) => {
+    try {
+        const { volunteerId } = req.body;
+        const volunteer = await Volunteer.findById(volunteerId);
+
+        if (!volunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Volunteer not found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: volunteer
+        })
+    } catch (error) {
+        console.log("Error occured while fetching volunteer", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
