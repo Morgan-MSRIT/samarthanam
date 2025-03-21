@@ -8,22 +8,32 @@ const Volunteer = require('../models/volunteer.models');
 
 exports.createEvent =  async (req, res) => {
     try {
-        const { name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req } = req.body;
+        const { user, name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req } = req.body;
         
-        if(!name || !description || !tags || !location || !start_date || !end_date || !is_registration_required || !total_volunteer_req) {
+        if(!user || !name || !description || !tags || !location || !start_date || !end_date || !is_registration_required || !total_volunteer_req) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             })
         }
 
-        const event = await Event.create({ name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req });
+        const event = await Event.create({ 
+            user, 
+            name, 
+            description, 
+            tags, 
+            location, 
+            start_date, 
+            end_date, 
+            is_registration_required, 
+            total_volunteer_req 
+        });
         
 
         // To find users who have tags similar to the event
-        const potentialUser = User.find({
-            tags: { $in: tags }
-          });
+        // const potentialUser = User.find({
+        //     tags: { $in: tags }
+        //   });
 
         
         // foreach(user in potentialUser) {
