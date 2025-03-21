@@ -81,7 +81,7 @@ exports.signup=async(req,res)=>{
             phone,
             address,
             nationality,
-            email_notif_allow,
+            emailNotifAllow,
             role,
             tags,
             otp
@@ -89,7 +89,7 @@ exports.signup=async(req,res)=>{
         
 
 
-        if(!name || !password || !confirmPassword || !email || !age || !phone || !otp || !address || !nationality || !role || !tags || !email_notif_allow){
+        if(!name || !password || !confirmPassword || !email || !age || !phone || !otp || !address || !nationality || !role || !tags || !emailNotifAllow){
             return res.status(403).json({
                 success:false,
                 message:"All fields are required!!"
@@ -144,7 +144,7 @@ exports.signup=async(req,res)=>{
             phone,
             address,
             nationality,
-            email_notif_allow,
+            emailNotifAllow,
             role,
             tags,
             });

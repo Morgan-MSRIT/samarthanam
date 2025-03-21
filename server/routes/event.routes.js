@@ -10,8 +10,8 @@ router.route("/create-event").post(createEvent);
 router.route("/get-event").get(auth,getEvent);
 router.route("/participant-registration").post(auth,participantRegistration);
 router.route("/participant-deregistration").post(auth,participantDeregistration);
-router.route("/update-event").put(auth,isOrganizer,updateEvent);
-router.route("/delete-event").delete(auth,isOrganizer,deleteEvent);
-router.route("/get-all-register-volunteer").get(auth,getAllRegisterVolunteer);
+router.route("/update-event").post(auth,isOrganizer,updateEvent);
+router.route("/delete-event").post(auth,isOrganizer,deleteEvent);
+router.route("/get-all-register-volunteer").post(auth,getAllRegisterVolunteer);
 
 module.exports = router;

@@ -8,9 +8,9 @@ const Volunteer = require('../models/volunteer.models');
 
 exports.createEvent =  async (req, res) => {
     try {
-        const { user, name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req } = req.body;
+        const { user, name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
         
-        if(!user || !name || !description || !tags || !location || !start_date || !end_date || !is_registration_required || !total_volunteer_req) {
+        if(!user || !name || !description || !tags || !location || !startDate || !endDate || !isRegistrationRequired || !totalVolunteerReq) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
@@ -23,10 +23,10 @@ exports.createEvent =  async (req, res) => {
             description, 
             tags, 
             location, 
-            start_date, 
-            end_date, 
-            is_registration_required, 
-            total_volunteer_req 
+            startDate, 
+            endDate, 
+            isRegistrationRequired, 
+            totalVolunteerReq 
         });
         
 
@@ -108,7 +108,7 @@ exports.participantRegistration = async (req, res) => {
             })
         }
 
-        event.updateOne({ $push: { volunteers: email }, $inc: { total_volunteer_req: 1 } });
+        event.updateOne({ $push: { volunteers: email }, $inc: { totalVolunteerReq: 1 } });
     
 
         return res.status(200).json({
@@ -139,7 +139,7 @@ exports.participantDeregistration = async (req, res) => {
             })
         }
 
-        event.updateOne({ $pull: { volunteers: email }, $inc: { total_volunteer_req: -1 } });
+        event.updateOne({ $pull: { volunteers: email }, $inc: { totalVolunteerReq: -1 } });
 
         return res.status(200).json({
             success: true,
@@ -159,7 +159,7 @@ exports.participantDeregistration = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     try {
-        const {_id, name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req } = req.body;
+        const {_id, name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
 
         const event = await Event.findById(_id);
 
@@ -170,7 +170,7 @@ exports.updateEvent = async (req, res) => {
             })
         }
 
-        const updateEvent = event.updateOne({ name, description, tags, location, start_date, end_date, is_registration_required, total_volunteer_req });
+        const updateEvent = event.updateOne({ name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq });
 
         return res.status(200).json({
             success: true,
@@ -225,7 +225,7 @@ exports.getAllRegisterVolunteer = async (req, res) => {
     try {
         const { event_id } = req.body;
 
-        const event = await Event.findById(event_id).populate('volunteers').exec().populate('user_id').exec();
+        const event = await Event.findById(event_id).populate('volunteers').exec().populate('user').exec();
 
 
         if(!event) {
