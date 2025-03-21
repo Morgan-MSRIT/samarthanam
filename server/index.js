@@ -10,6 +10,12 @@ const dotenv=require("dotenv");
 
 dotenv.config();
 
+//Routes
+const authRoutes=require("./routes/auth.routes");
+const userRoutes=require("./routes/user.routes");
+const eventRoutes=require("./routes/event.route");
+
+
 
 //port no
 const PORT=process.env.PORT || 4000;
@@ -37,6 +43,12 @@ app.use(
     })
 );
 
+
+
+//mounting routes
+app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/user',userRoutes);
+app.use('/api/v1/event',eventRoutes);
 
   
 //default route
