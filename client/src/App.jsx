@@ -5,10 +5,13 @@ import VolunteerForm from './pages/VolunteerForm';
 import ParticipantForm from './pages/ParticipantForm';
 import EventDetails from './pages/EventDetails';
 import TaskList from './pages/TaskList';
+import ScreenReader from './components/accessibility/ScreenReader';
 
 function App() {
   return (
     <Router>
+      <ScreenReader />
+      <div id="google_translate_element"></div>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
