@@ -1,4 +1,8 @@
 const Volunteer = require('../models/volunteer.models');
+const User = require('../models/user.models');
+const Event = require('../models/event.models');
+const Task = require('../models/task.models');
+
 
 
 exports.createVolunteer = async (req, res) => {
@@ -31,7 +35,7 @@ exports.createVolunteer = async (req, res) => {
             event
         });
 
-
+        //Updating volunteer info in the event
         const updatedEvent = await Event.findByIdAndUpdate
         (event, { $inc: { totalVolunteerReq: -1 }, $push : {totalVolunteerReq: volunteer._id} }, { new: true });
 
@@ -41,6 +45,18 @@ exports.createVolunteer = async (req, res) => {
                 message: "Error while updating event"
             })
         }
+
+
+        //Updating volunteer info in the task
+        taskAllocated.forEach(task => async () => {
+            const updatedTask = await Task.findByIdAndUpdate(
+                task._id, 
+                { $inc : {currentVolunteerCount: 1} }, 
+                { new: true }
+            );
+        });
+
+
     
         return res.status(200).json({
             success: true,
@@ -87,9 +103,20 @@ exports.deleteVolunteer = async (req, res) => {
                 message: "Volunteer not found"
             })
         }
-
+        
+        //Updating volunteer info in the event
         const updatedEvent = await Event.findByIdAndUpdate
         (volunteer.event, { $inc: { totalVolunteerReq: 1 }, $pull : {totalVolunteerReq: volunteer._id} }, { new: true });
+
+        //Updating volunteer info in the task
+        volunteer.taskAllocated.forEach(task => async () => {
+            const updatedTask = await Task.findByIdAndUpdate(
+                task._id, 
+                { $inc : {currentVolunteerCount: -1} }, 
+                { new: true }
+            );
+        });
+
 
         if (!updatedEvent) {
             return res.status(404).json({
@@ -158,7 +185,7 @@ exports.updateVolunteer = async (req, res) => {
 exports.getVolunteer = async (req, res) => {
     try {
         const { volunteerId } = req.body;
-        const volunteer = await Volunteer.findById(volunteerId);
+        const volunteer = await Volunteer.findById(volunteerId).populate('user').populate('taskAllocated');
 
         if (!volunteer) {
             return res.status(404).json({
