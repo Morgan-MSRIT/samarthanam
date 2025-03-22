@@ -1,20 +1,41 @@
 const User = require('../models/user.models');
 const Event = require('../models/event.models');
-
+const bcrypt=require('bcrypt');
 
 
 exports.updateUser = async (req, res) => {
     try {
-        const {_id, name, age, email, phone, address, nationality, email_notif_allow, password, role, tags } = req.body;
+        const {_id, name, age, email, phone, address, nationality, emailNotifAllow, password, role, tags } = req.body;
 
-        if(!_id || !name || !age || !email || !phone || !address || !national || !email_notif_allow || !password || !role || !tags) {
+        if(!_id || !name || !age || !email || !phone || !address || !nationality || !emailNotifAllow || !password || !role || !tags) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             })
         }
 
-        const user = await User.findByIdAndUpdate(_id, { name, age, email, phone, address, nationality, email_notif_allow, password, role, tags }, { new: true });
+        const user = await User.findById(_id);
+
+        if(!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        const passowrdCheck = await bcrypt.compare(password,user.password);
+        if(!passowrdCheck) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid password"
+            })
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            _id, 
+            { name, age, email, phone, address, nationality, emailNotifAllow, role, tags }, 
+            { new: true }
+        );
 
         return res.status(200).json({
             success: true,
