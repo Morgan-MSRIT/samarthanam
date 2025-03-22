@@ -64,74 +64,188 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-tertiary pt-16">
-      {/* Hero Section */}
-      <div className="bg-primary py-16">
+    <div className="min-h-screen bg-tertiary">
+      {/* Navigation */}
+      <nav className="bg-tertiary shadow fixed w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-extrabold text-accent text-center">
-            About Samarthanam Trust
-          </h1>
-          <p className="mt-4 text-xl text-tertiary text-center max-w-3xl mx-auto">
-            Empowering lives through education, sports, and sustainable development initiatives since 1997.
-          </p>
-        </div>
-      </div>
-
-      {/* Achievements Section */}
-      <div className="py-16 bg-accent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-primary text-center mb-12">Our Achievements</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {achievements.map((achievement, index) => (
-              <div key={index} className="bg-tertiary p-6 rounded-lg shadow-lg">
-                <div className="text-2xl font-bold text-primary mb-2">{achievement.year}</div>
-                <h3 className="text-xl font-semibold text-primary mb-2">{achievement.title}</h3>
-                <p className="text-secondary">{achievement.description}</p>
+          <div className="flex justify-between h-16">
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center">
+                <Link to="/">
+                  <img
+                    className="h-16 w-auto"
+                    src="/samarthanam-logo.png"
+                    alt="Samarthanam Trust"
+                  />
+                </Link>
               </div>
-            ))}
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <Link
+                  to="/"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/events"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Events
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <Link
+                to="/login"
+                className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Sign in
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Initiatives Section */}
-      <div className="py-16 bg-tertiary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-primary text-center mb-12">Our Initiatives</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {initiatives.map((initiative, index) => (
-              <div key={index} className="bg-accent p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-semibold text-primary mb-4">{initiative.title}</h3>
-                <p className="text-secondary mb-4">{initiative.description}</p>
-                <ul className="list-disc list-inside text-secondary">
-                  {initiative.details.map((detail, idx) => (
-                    <li key={idx}>{detail}</li>
-                  ))}
+      {/* Add padding to account for fixed navbar */}
+      <div className="pt-16">
+        {/* Hero Section */}
+        <div className="relative bg-accent">
+          <div className="max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+            <h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+              About Samarthanam Trust
+            </h1>
+            <p className="mt-6 text-xl text-secondary max-w-3xl">
+              Empowering people with disabilities and building an inclusive society together since 1997.
+            </p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Introduction */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-6">Our Story</h2>
+            <p className="text-lg text-secondary leading-relaxed">
+              Samarthanam Trust for the Disabled, founded in 1997, is a non-profit organization providing education, accommodation, food, vocational training and placement based rehabilitation. Based in Bangalore, India, we have expanded our reach across India and abroad, touching countless lives and creating opportunities for people with disabilities.
+            </p>
+          </div>
+
+          {/* Vision & Mission */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="bg-accent p-8 rounded-lg">
+              <h3 className="text-2xl font-bold text-primary mb-4">Our Vision</h3>
+              <p className="text-secondary">
+                Building a society where people with disabilities are potential tax-payers but not dole recipients.
+              </p>
+            </div>
+            <div className="bg-accent p-8 rounded-lg">
+              <h3 className="text-2xl font-bold text-primary mb-4">Our Mission</h3>
+              <p className="text-secondary">
+                To empower people with disabilities through education, skill development, and creating opportunities for sustainable livelihoods.
+              </p>
+            </div>
+          </div>
+
+          {/* Key Areas */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-6">Key Areas of Work</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Education</h3>
+                <p className="text-secondary">Providing quality education and support to students with disabilities.</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Sports</h3>
+                <p className="text-secondary">Promoting sports and physical activities for people with disabilities.</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Arts & Culture</h3>
+                <p className="text-secondary">Nurturing artistic talents and cultural expression.</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Health & Nutrition</h3>
+                <p className="text-secondary">Ensuring proper healthcare and nutrition support.</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Technology</h3>
+                <p className="text-secondary">Leveraging technology for accessibility and empowerment.</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">Community Initiative</h3>
+                <p className="text-secondary">Building inclusive communities through various initiatives.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Achievements */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-6">Our Achievements</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-accent p-6 rounded-lg text-center">
+                <div className="text-4xl font-bold text-primary mb-2">50,000+</div>
+                <div className="text-secondary">Students educated</div>
+              </div>
+              <div className="bg-accent p-6 rounded-lg text-center">
+                <div className="text-4xl font-bold text-primary mb-2">1000+</div>
+                <div className="text-secondary">Youth trained</div>
+              </div>
+              <div className="bg-accent p-6 rounded-lg text-center">
+                <div className="text-4xl font-bold text-primary mb-2">500+</div>
+                <div className="text-secondary">Visually impaired cricketers</div>
+              </div>
+              <div className="bg-accent p-6 rounded-lg text-center">
+                <div className="text-4xl font-bold text-primary mb-2">100+</div>
+                <div className="text-secondary">Corporate partners</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Awards */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-6">Awards & Recognition</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">National Awards</h3>
+                <ul className="list-disc list-inside text-secondary space-y-2">
+                  <li>Three-time National Award recipient</li>
+                  <li>Recognition for outstanding work in disability sector</li>
+                  <li>Excellence in education and rehabilitation</li>
                 </ul>
               </div>
-            ))}
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-primary mb-3">International Recognition</h3>
+                <ul className="list-disc list-inside text-secondary space-y-2">
+                  <li>UN consultative status</li>
+                  <li>CRISIL Rated organization</li>
+                  <li>CAF International Validated Organization</li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Call to Action */}
-      <div className="bg-primary py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-accent mb-4">Join Our Mission</h2>
-          <p className="text-tertiary mb-8 max-w-2xl mx-auto">
-            Be a part of our journey in creating an inclusive society. Volunteer with us or support our initiatives.
-          </p>
-          <div className="space-x-4">
+          {/* Call to Action */}
+          <div className="bg-accent rounded-lg p-8 text-center">
+            <h2 className="text-2xl font-bold text-primary mb-4">Join Us in Making a Difference</h2>
+            <p className="text-secondary mb-6">
+              Be a part of our journey in creating an inclusive society. Volunteer, donate, or partner with us.
+            </p>
             <Link
-              to="/volunteer"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-secondary hover:bg-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
+              to="/contact"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              Volunteer
-            </Link>
-            <Link
-              to="/donate"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-accent hover:bg-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
-            >
-              Donate
+              Get Involved
             </Link>
           </div>
         </div>
