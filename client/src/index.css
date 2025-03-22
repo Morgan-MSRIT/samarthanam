@@ -12,7 +12,7 @@
   --color-primary-100: oklch(0.9 0.1891 25.02);
   --color-primary-200: oklch(0.8 0.1891 25.02);
   --color-primary-300: oklch(0.7 0.1891 25.02);
-  --color-primary-400: oklch(0.65 0.1891 25.02);
+  --color-primaryを手: oklch(0.65 0.1891 25.02);
   --color-primary-500: oklch(0.5939 0.1891 25.02);  /* Base: #D84040 */
   --color-primary-600: oklch(0.5 0.1891 25.02);
   --color-primary-700: oklch(0.4 0.1891 25.02);
@@ -125,96 +125,33 @@ body {
 
 /* Google Translate Styles */
 #google_translate_element {
-  width: auto;
-  background: none;
-  padding: 0;
-  /* Remove fixed positioning */
-  position: static;
-  /* Remove shadow since it’s now part of the navbar */
-  box-shadow: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Style the container of the dropdown */
-.goog-te-gadget-simple {
-  /* Remove default background */
-  background: none;
-  background: oklch(0.5939 0.1891 25.02);
-  /* Remove default borders */
-  border: none;
-  /* Remove default font size */
-  font-size: 0;
-  /* Keep inline-block for layout */
-  display: inline-block;
-  /* Remove default padding */
-  padding: 6px;
-  /* Keep cursor for usability */
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-/* Rest of the styles remain the same */
 .goog-te-combo {
-  padding: 8px 16px;
-  background: oklch(0.5939 0.1891 25.02);
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
   font-size: 14px;
-  font-weight: 500;
-  min-width: 120px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 16px;
+  min-width: 150px;
 }
 
-.goog-te-combo:hover {
-  background: #b91c1c;
-}
-
-.goog-te-combo:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #dc2626;
-}
-
-.goog-logo-link {
-  display: none !important;
-}
-.goog-te-gadget {
-  color: transparent !important;
-  font-size: 0 !important;
-}
-
+/* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .goog-te-combo {
-    background: #b91c1c;
-    color: #ffffff;
+  #google_translate_element {
+    background: #333;
   }
   
-  .goog-te-combo:hover {
-    background: #991b1b;
-  }
-  
-  .goog-te-combo:focus {
-    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #b91c1c;
-  }
-}
-
-@media (forced-colors: active) {
   .goog-te-combo {
-    border: 2px solid currentColor;
-  }
-}
-
-@media (max-width: 768px) {
-  .goog-te-combo {
-    min-width: 100px;
-    padding: 6px 12px;
-    font-size: 12px;
+    background: #444;
+    color: white;
+    border-color: #666;
   }
 }
