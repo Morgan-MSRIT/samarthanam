@@ -43,7 +43,7 @@ exports.auth=async(req,res,next)=>{
 
 exports.isOrganizer=async(req,res,next)=>{
     try{
-        if(req.user.accountType!=="Student"){
+        if(req.user.accountType!=="organizer" || req.user.accountType!=="Admin"){
             return res.status(401).json({
                 success:false,
                 message:"This is a protected route for organizer only"

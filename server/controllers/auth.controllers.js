@@ -182,6 +182,18 @@ exports.login=async(req,res)=>{
           message:"All fields are required,please try again"
         })
       }
+
+      //newly made ccount of the organizer
+      const defaultPassword=await bcrypt.hash("abcdefghijk",10);
+
+      if(password===defaultPassword){
+        return res.status(415).json({
+            success:false,
+            message:"This is newly made account for the organizer, Please change your password"
+        })
+    }
+
+
   
       //check if user exists or not
       const user=await User.findOne({email}).populate("notifications");
@@ -237,6 +249,62 @@ exports.login=async(req,res)=>{
     }
   }
   
+exports.organizerChangePassword=async(req,res)=>{
+    try{
+        const {oldPassword,newPassword,userId, otp}=req.body;
+        const uid=userId || req.user.id;
+
+        const userDetails=await User.findById(uid);
+
+        const isPasswordMatch=await bcrypt.compare(oldPassword,userDetails.password);
+        if(!isPasswordMatch){
+            return res.status(415).json({
+                success:false,
+                message:"The password is incorrect"
+            })
+        }
+
+
+        const recentOtp=await OTP.find({email}).sort({createdAt:-1}).limit(1);
+
+        if(recentOtp.length==0){
+            return res.status(400).json({
+                success:false,
+                message:"OTP NOT FOUND"
+            })
+        }
+
+        else if(otp!==recentOtp[0].otp){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid otp"
+            })
+        }
+
+        const encryptedPassword=await bcrypt.hash(newPassword,10);
+        const updatedUserDetails=await User.findByIdAndUpdate(
+            uid,
+            {password:encryptedPassword},
+            {new:true}
+        );
+
+        return res.status(200).json({
+            success:true,
+            message:"Password updated successfully"
+        })
+    }
+    catch(error){
+        console.log("Error occurred while updating password:",error);
+        return res.status(500).json({
+            success:false,
+            message:"Error occurred while updating password",
+            error:error.message
+        })
+    }
+}
+
+
+
 
 exports.changePassword=async(req,res)=>{
 
@@ -301,5 +369,78 @@ exports.changePassword=async(req,res)=>{
             message: "Error occurred while updating password",
             error: error.message,
         });
+    }
+}
+
+
+
+exports.organizerSignup=async(req,res)=>{
+    try{
+        const {
+            name,
+            age,
+            email,
+            password,
+            phone,
+            address,
+            nationality,
+            emailNotifAllow,
+            role,
+            tags
+        }=req.body;
+        
+
+
+        if(!name || !password || !email || !age || !phone || !address || !nationality || !role || !tags || !emailNotifAllow){
+            return res.status(403).json({
+                success:false,
+                message:"All fields are required!!"
+            })
+        }
+
+
+        const existingUser=await User.findOne({email});
+        if(existingUser){
+            return res.status(400).json({
+                success:false,
+                message:"User is already registered with this email"
+            })
+        }
+
+        const hashedPassword=await bcrypt.hash(password,10);
+
+
+
+        const user=await User.create({
+            name,
+            age,
+            email,
+            password,
+            confirmPassword,
+            phone,
+            address,
+            nationality,
+            emailNotifAllow,
+            role,
+            tags,
+            });
+            
+
+            // sendAccountMadeEmail(email,user.name);
+
+
+            
+        return res.status(200).json({
+            success:true,
+            message:"Sign up Successfull",
+            user
+        })
+    }
+    catch(error){
+        console.log("Error in signing up:",error);
+        return res.status(500).json({
+            success:false,
+            message:"User cannot be registered,please try again"
+        })
     }
 }
