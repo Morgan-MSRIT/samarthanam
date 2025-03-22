@@ -1,8 +1,28 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Landing() {
   const [activeTab, setActiveTab] = useState('recommended');
+  const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+
+  // Carousel images with their titles and descriptions
+  const carouselData = [
+    {
+      image: '/images/carousel_1.jpeg',
+      title: 'Empowering Lives',
+      description: 'Supporting visually impaired and disabled individuals through education and sports'
+    },
+    {
+      image: '/images/carousel_2.jpeg',
+      title: 'Sports Excellence',
+      description: 'Promoting blind cricket and other sports activities'
+    },
+    {
+      image: '/images/carousel_3.jpeg',
+      title: 'Education Support',
+      description: 'Providing quality education and vocational training'
+    }
+  ];
 
   // Mock data for demonstration
   const mockEvents = [
@@ -15,7 +35,7 @@ export default function Landing() {
       type: 'Education',
       requiredSkills: ['Teaching', 'Computer Knowledge'],
       volunteersNeeded: 5,
-      image: '/workshop.jpg',
+      image: '/images/educational_workshop.jpg',
     },
     {
       id: 2,
@@ -26,13 +46,59 @@ export default function Landing() {
       type: 'Sports',
       requiredSkills: ['Sports Training', 'Event Management'],
       volunteersNeeded: 10,
-      image: '/sports.jpg',
+      image: '/images/sports.jpg',
+    },
+    {
+      id: 3,
+      title: 'Art Workshop',
+      date: '2024-04-25',
+      location: 'Bangalore',
+      description: 'Creative arts workshop for children with disabilities',
+      type: 'Arts',
+      requiredSkills: ['Art Teaching', 'Patience'],
+      volunteersNeeded: 8,
+      image: '/images/art_workshop.jpg',
+    },
+    {
+      id: 4,
+      title: 'Music Therapy',
+      date: '2024-05-01',
+      location: 'Bangalore',
+      description: 'Music therapy session for special needs children',
+      type: 'Music',
+      requiredSkills: ['Music Knowledge', 'Therapy Experience'],
+      volunteersNeeded: 6,
+      image: '/images/music_therapy.jpg',
     },
   ];
 
+  // Auto-advance carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentCarouselIndex((prevIndex) => 
+        prevIndex === carouselData.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Navigation functions
+  const goToPrevious = () => {
+    setCurrentCarouselIndex((prevIndex) => 
+      prevIndex === 0 ? carouselData.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentCarouselIndex((prevIndex) => 
+      prevIndex === carouselData.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
   const EventCard = ({ event }) => (
     <div className="bg-accent rounded-lg shadow-md overflow-hidden">
-      <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
+      <img src={event.image} alt={event.title} className="w-full h-64 object-cover" />
       <div className="p-6">
         <h3 className="text-xl font-semibold text-primary">{event.title}</h3>
         <p className="mt-2 text-secondary">{event.description}</p>
@@ -51,6 +117,28 @@ export default function Landing() {
             />
           </svg>
           <span>{new Date(event.date).toLocaleDateString()}</span>
+        </div>
+        <div className="mt-2 flex items-center text-sm text-secondary">
+          <svg
+            className="flex-shrink-0 mr-1.5 h-5 w-5 text-secondary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          <span>{event.location}</span>
         </div>
         <div className="mt-4">
           <h4 className="text-sm font-medium text-primary">Required Skills:</h4>
@@ -89,7 +177,7 @@ export default function Landing() {
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
                 <img
-                  className="h-12 w-auto"
+                  className="h-16 w-auto"
                   src="/samarthanam-logo.png"
                   alt="Samarthanam Trust"
                 />
@@ -101,9 +189,33 @@ export default function Landing() {
                 >
                   Home
                 </Link>
+                <Link
+                  to="/events"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Events
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Contact Us
+                </Link>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/volunteer"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Register as Volunteer
+              </Link>
               <Link
                 to="/login"
                 className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
@@ -117,22 +229,69 @@ export default function Landing() {
 
       {/* Add padding to account for fixed navbar */}
       <div className="pt-16">
-        {/* Hero Section */}
-        <div className="relative bg-accent overflow-hidden">
-          <div className="max-w-7xl mx-auto">
-            <div className="relative z-10 pb-8 bg-accent sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-              <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                <div className="sm:text-center lg:text-left">
-                  <h1 className="text-4xl tracking-tight font-extrabold text-primary sm:text-5xl md:text-6xl">
-                    <span className="block">Empowering Lives</span>
-                    <span className="block text-secondary">Through Inclusion</span>
-                  </h1>
-                  <p className="mt-3 text-base text-secondary sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                    Samarthanam Trust for the Disabled is a National Award-winning NGO working for the empowerment of persons with disabilities and the underserved through diverse initiatives.
-                  </p>
+        {/* Carousel Section */}
+        <div className="relative h-[600px] overflow-hidden">
+          {carouselData.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentCarouselIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <div className="relative w-full h-full">
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error(`Error loading image: ${slide.image}`);
+                    e.target.src = '/samarthanam-logo.png'; // Fallback image
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40 flex items-center justify-center">
+                  <div className="text-center text-white px-4 max-w-4xl">
+                    <h2 className="text-5xl font-bold mb-6 drop-shadow-lg">{slide.title}</h2>
+                    <p className="text-2xl drop-shadow-lg">{slide.description}</p>
+                  </div>
                 </div>
-              </main>
+              </div>
             </div>
+          ))}
+          
+          {/* Navigation Arrows */}
+          <button
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/75 transition-all duration-300"
+            aria-label="Previous slide"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/75 transition-all duration-300"
+            aria-label="Next slide"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Carousel Indicators */}
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+            {carouselData.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentCarouselIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentCarouselIndex
+                    ? 'bg-white scale-125'
+                    : 'bg-white/50 hover:bg-white/75'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
 
@@ -198,49 +357,21 @@ export default function Landing() {
               </p>
             </div>
 
-            {/* Tabs */}
-            <div className="mt-4 mb-8">
-              <div className="sm:hidden">
-                <select
-                  className="block w-full rounded-md border-primary-300 focus:border-primary-500 focus:ring-primary-500 text-primary bg-accent"
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                >
-                  <option value="recommended">Recommended Events</option>
-                  <option value="all">All Events</option>
-                </select>
-              </div>
-              <div className="hidden sm:block">
-                <nav className="flex justify-center space-x-4" aria-label="Tabs">
-                  <button
-                    className={`${
-                      activeTab === 'recommended'
-                        ? 'bg-primary text-accent'
-                        : 'text-primary hover:text-secondary'
-                    } px-3 py-2 font-medium text-sm rounded-md`}
-                    onClick={() => setActiveTab('recommended')}
-                  >
-                    Recommended Events
-                  </button>
-                  <button
-                    className={`${
-                      activeTab === 'all'
-                        ? 'bg-primary text-accent'
-                        : 'text-primary hover:text-secondary'
-                    } px-3 py-2 font-medium text-sm rounded-md`}
-                    onClick={() => setActiveTab('all')}
-                  >
-                    All Events
-                  </button>
-                </nav>
-              </div>
-            </div>
-
-            {/* Events grid */}
+            {/* Events grid - Show only first 2 events */}
             <div className="grid gap-6 lg:grid-cols-2">
-              {mockEvents.map((event) => (
+              {mockEvents.slice(0, 2).map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
+            </div>
+
+            {/* View All Button */}
+            <div className="mt-8 text-center">
+              <Link
+                to="/events"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                View All Events
+              </Link>
             </div>
           </div>
         </div>
@@ -250,6 +381,11 @@ export default function Landing() {
           <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
+                <img
+                  src="/samarthanam-logo.png"
+                  alt="Samarthanam Trust"
+                  className="h-24 w-auto mb-4"
+                />
                 <h3 className="text-accent text-lg font-semibold">Contact Us</h3>
                 <p className="mt-4 text-tertiary">
                   CA Site No. 1, 16th B Cross
