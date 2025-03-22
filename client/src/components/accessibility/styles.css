@@ -76,63 +76,105 @@
 }
 
 /* Existing styles for ScreenReader (unchanged) */
-.screen-reader-controls {
-  display: flex;
-  gap: 10px;
-}
-
+/* Accessibility Buttons */
 .accessibility-btn {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
+  padding: 8px 16px; /* Comfortable padding */
+  position: fixed;
+  bottom: 20px; /* Spaced from the bottom */
+  right: 20px; /* Spaced from the right */
+  background: #9b1414; /* Bold, interactive color */
+  z-index: 1000; /* Ensure it's above other content */
+  color: #ffffff; /* High contrast text */
   border: none;
-  border-radius: 4px;
+  border-radius: 6px; /* Rounded corners */
+  font-size: 14px; /* Legible text */
+  font-weight: 500; /* Medium weight for emphasis */
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.accessibility-btn:hover {
-  background: #0056b3;
-}
-
-.accessibility-btn:focus {
-  outline: 2px solid #0056b3;
-  outline-offset: 2px;
-}
-
-.accessibility-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.accessibility-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  min-width: 120px;
-}
-
-.voice-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  min-width: 200px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .accessibility-select,
-  .voice-select {
-    background: #444;
-    color: white;
-    border-color: #666;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  
+  /* Hover effect */
+  &:hover {
+    background: #b91c1c; /* Darker shade for feedback */
+    transform: translateY(-1px); /* Subtle lift */
+  }
+  
+  /* Focus effect for keyboard navigation */
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #dc2626; /* Clear focus ring */
+  }
+  
+  /* Active state */
+  &:active {
+    transform: scale(0.95); /* Slight press effect */
   }
 }
 
+/* Screen Reader Controls Container */
+.screen-reader-controls {
+  display: flex;
+  gap: 10px; /* Space between elements */
+  align-items: center;
+}
+
+/* Select Elements (e.g., for voice or settings) */
+.accessibility-select,
+.voice-select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 120px; /* Adequate width */
+  background: #ffffff;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+  
+  /* Hover effect */
+  &:hover {
+    border-color: #dc2626; /* Match button color */
+  }
+  
+  /* Focus effect */
+  &:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #dc2626;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .accessibility-btn {
+    background: #b91c1c; /* Darker red */
+    color: #ffffff;
+    &:hover {
+      background: #991b1b; /* Even darker */
+    }
+    &:focus {
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #b91c1c;
+    }
+  }
+  
+  .accessibility-select,
+  .voice-select {
+    background: #444; /* Dark background */
+    color: #ffffff;
+    border-color: #666;
+    &:hover {
+      border-color: #b91c1c;
+    }
+    &:focus {
+      border-color: #b91c1c;
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #b91c1c;
+    }
+  }
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .screen-reader-controls {
-    flex-direction: column;
+    flex-direction: column; /* Stack vertically */
+    gap: 8px;
   }
 }

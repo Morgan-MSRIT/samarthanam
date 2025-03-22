@@ -23,53 +23,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-tertiary">
-      {/* Navigation */}
-      <nav className="bg-tertiary shadow fixed w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <Link to="/">
-                  <img
-                    className="h-16 w-auto"
-                    src="/samarthanam-logo.png"
-                    alt="Samarthanam Trust"
-                  />
-                </Link>
-              </div>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  to="/"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/events"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
-                >
-                  Events
-                </Link>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
-                >
-                  Contact Us
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Add padding to account for fixed navbar */}
-      <div className="pt-16">
+      <div className="container">
         <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
             <div>
