@@ -1,41 +1,123 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: oklch(0.5939 0.1891 25.02);    /* #D84040 - Bright red */
+  --color-secondary: oklch(0.4644 0.1694 26.95);  /* #A31D1D - Darker red */
+  --color-tertiary: oklch(0.8999 0.0423 82.47);   /* #ECDCBF - Light beige */
+  --color-accent: oklch(0.9605 0.0271 93.1);      /* #F8F2DE - Very light cream */
+
+  /* Primary: Bright red (#D84040) */
+  --color-primary-50: oklch(0.95 0.1891 25.02);
+  --color-primary-100: oklch(0.9 0.1891 25.02);
+  --color-primary-200: oklch(0.8 0.1891 25.02);
+  --color-primary-300: oklch(0.7 0.1891 25.02);
+  --color-primaryを手: oklch(0.65 0.1891 25.02);
+  --color-primary-500: oklch(0.5939 0.1891 25.02);  /* Base: #D84040 */
+  --color-primary-600: oklch(0.5 0.1891 25.02);
+  --color-primary-700: oklch(0.4 0.1891 25.02);
+  --color-primary-800: oklch(0.3 0.1891 25.02);
+  --color-primary-900: oklch(0.2 0.1891 25.02);
+  --color-primary-950: oklch(0.1 0.1891 25.02);
+
+  /* Secondary: Darker red (#A31D1D) */
+  --color-secondary-50: oklch(0.9 0.1694 26.95);
+  --color-secondary-100: oklch(0.85 0.1694 26.95);
+  --color-secondary-200: oklch(0.75 0.1694 26.95);
+  --color-secondary-300: oklch(0.65 0.1694 26.95);
+  --color-secondary-400: oklch(0.55 0.1694 26.95);
+  --color-secondary-500: oklch(0.4644 0.1694 26.95);  /* Base: #A31D1D */
+  --color-secondary-600: oklch(0.4 0.1694 26.95);
+  --color-secondary-700: oklch(0.35 0.1694 26.95);
+  --color-secondary-800: oklch(0.25 0.1694 26.95);
+  --color-secondary-900: oklch(0.15 0.1694 26.95);
+  --color-secondary-950: oklch(0.1 0.1694 26.95);
+
+  /* Tertiary: Light beige (#ECDCBF) */
+  --color-tertiary-50: oklch(0.98 0.0423 82.47);
+  --color-tertiary-100: oklch(0.95 0.0423 82.47);
+  --color-tertiary-200: oklch(0.92 0.0423 82.47);
+  --color-tertiary-300: oklch(0.8999 0.0423 82.47);  /* Base: #ECDCBF */
+  --color-tertiary-400: oklch(0.85 0.0423 82.47);
+  --color-tertiary-500: oklch(0.75 0.0423 82.47);
+  --color-tertiary-600: oklch(0.65 0.0423 82.47);
+  --color-tertiary-700: oklch(0.55 0.0423 82.47);
+  --color-tertiary-800: oklch(0.45 0.0423 82.47);
+  --color-tertiary-900: oklch(0.35 0.0423 82.47);
+  --color-tertiary-950: oklch(0.25 0.0423 82.47);
+
+  /* Accent: Very light cream (#F8F2DE) */
+  --color-accent-50: oklch(0.98 0.0271 93.1);
+  --color-accent-100: oklch(0.9605 0.0271 93.1);  /* Base: #F8F2DE */
+  --color-accent-200: oklch(0.92 0.0271 93.1);
+  --color-accent-300: oklch(0.88 0.0271 93.1);
+  --color-accent-400: oklch(0.8 0.0271 93.1);
+  --color-accent-500: oklch(0.7 0.0271 93.1);
+  --color-accent-600: oklch(0.6 0.0271 93.1);
+  --color-accent-700: oklch(0.5 0.0271 93.1);
+  --color-accent-800: oklch(0.4 0.0271 93.1);
+  --color-accent-900: oklch(0.3 0.0271 93.1);
+  --color-accent-950: oklch(0.2 0.0271 93.1);
+
+  /* Neutral: Grays for backgrounds, text, borders */
+  --color-gray-50: oklch(0.98 0.005 260);  /* Very light gray */
+  --color-gray-100: oklch(0.95 0.005 260);
+  --color-gray-200: oklch(0.9 0.005 260);
+  --color-gray-300: oklch(0.85 0.005 260);
+  --color-gray-400: oklch(0.75 0.005 260);
+  --color-gray-500: oklch(0.65 0.005 260);  /* Mid gray */
+  --color-gray-600: oklch(0.55 0.005 260);
+  --color-gray-700: oklch(0.45 0.005 260);
+  --color-gray-800: oklch(0.35 0.005 260);
+  --color-gray-900: oklch(0.25 0.005 260);
+  --color-gray-950: oklch(0.15 0.005 260);  /* Near black */
+
+  /* Semantic Colors */
+  --color-success-500: oklch(0.6 0.15 145);  /* Green for success states */
+  --color-error-500: oklch(0.6 0.2 10);      /* Red for errors */
+  --color-warning-500: oklch(0.7 0.15 90);   /* Yellow-orange for warnings */
+  --color-info-500: oklch(0.6 0.1 220);      /* Blue for info states */
+}
+
 #root {
-    min-height: 100vh;
+  min-height: 100vh;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em var(--primary)); /* Updated to use primary color */
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em var(--secondary)); /* Updated to use secondary color */
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
   }
-  
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  to {
+    transform: rotate(360deg);
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
   }
-  .logo.react:hover {
-    filter: drop-shadow(0 0 2em #61dafbaa);
-  }
-  
-  @keyframes logo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-      animation: logo-spin infinite 20s linear;
-    }
-  }
-  
-  .card {
-    padding: 2em;
-  }
-  
-  .read-the-docs {
-    color: #888;
-  }
-  
+}
+
+.card {
+  padding: 2em;
+  background-color: var(--accent); /* Example usage of accent color */
+  border: 1px solid var(--tertiary); /* Example usage of tertiary color */
+}
+
+.read-the-docs {
+  color: var(--secondary); /* Updated to use secondary color */
+}
