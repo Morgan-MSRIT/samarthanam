@@ -4,56 +4,103 @@ import { useState } from 'react';
 export default function Events() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   // Mock data for demonstration
-  const mockEvents = [
+  const events = [
     {
       id: 1,
-      title: 'Educational Workshop',
+      title: 'Sports Day for Differently Abled Children',
       date: '2024-04-15',
+      time: '9:00 AM - 4:00 PM',
       location: 'Bangalore',
-      description: 'Workshop on digital literacy for visually impaired students',
-      type: 'Education',
-      requiredSkills: ['Teaching', 'Computer Knowledge'],
-      volunteersNeeded: 5,
-      image: '/images/educational_workshop.jpg',
+      description: 'A day of sports and fun activities for differently abled children.',
+      image: '/images/events/sports-day.jpg',
+      requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
+      maxParticipants: 50,
+      currentParticipants: 30,
+      maxVolunteers: 20,
+      currentVolunteers: 12,
+      isRecommended: true
     },
     {
       id: 2,
-      title: 'Sports Day',
+      title: 'Art Workshop for Visually Impaired',
       date: '2024-04-20',
+      time: '10:00 AM - 2:00 PM',
       location: 'Bangalore',
-      description: 'Annual sports day event for blind cricket',
-      type: 'Sports',
-      requiredSkills: ['Sports Training', 'Event Management'],
-      volunteersNeeded: 10,
-      image: '/images/sport.jpg',
+      description: 'A creative workshop exploring different art forms accessible to visually impaired participants.',
+      image: '/images/events/art-workshop.jpg',
+      requiredSkills: ['Art Teaching', 'Accessibility', 'Patience'],
+      maxParticipants: 30,
+      currentParticipants: 15,
+      maxVolunteers: 15,
+      currentVolunteers: 8,
+      isRecommended: true
     },
     {
       id: 3,
-      title: 'Art Workshop',
+      title: 'Music Therapy Session',
       date: '2024-04-25',
+      time: '11:00 AM - 1:00 PM',
       location: 'Bangalore',
-      description: 'Creative arts workshop for children with disabilities',
-      type: 'Arts',
-      requiredSkills: ['Art Teaching', 'Patience'],
-      volunteersNeeded: 8,
-      image: '/images/art.jpg',
+      description: 'A therapeutic music session for children with special needs.',
+      image: '/images/events/music-therapy.jpg',
+      requiredSkills: ['Music', 'Therapy', 'Child Care'],
+      maxParticipants: 20,
+      currentParticipants: 12,
+      maxVolunteers: 10,
+      currentVolunteers: 5,
+      isRecommended: false
     },
     {
       id: 4,
-      title: 'Music Therapy',
+      title: 'Computer Training for Visually Impaired',
       date: '2024-05-01',
+      time: '2:00 PM - 5:00 PM',
       location: 'Bangalore',
-      description: 'Music therapy session for special needs children',
-      type: 'Music',
-      requiredSkills: ['Music Knowledge', 'Therapy Experience'],
-      volunteersNeeded: 6,
-      image: '/images/music_therapy.jpg',
+      description: 'Basic computer skills training using screen readers and accessibility tools.',
+      image: '/images/events/computer-training.jpg',
+      requiredSkills: ['Computer Teaching', 'Accessibility', 'Patience'],
+      maxParticipants: 15,
+      currentParticipants: 8,
+      maxVolunteers: 8,
+      currentVolunteers: 4,
+      isRecommended: false
     },
+    {
+      id: 5,
+      title: 'Dance Workshop for Differently Abled',
+      date: '2024-05-05',
+      time: '3:00 PM - 5:00 PM',
+      location: 'Bangalore',
+      description: 'An inclusive dance workshop celebrating movement and expression.',
+      image: '/images/events/dance-workshop.jpg',
+      requiredSkills: ['Dance', 'Inclusivity', 'Movement'],
+      maxParticipants: 25,
+      currentParticipants: 15,
+      maxVolunteers: 12,
+      currentVolunteers: 6,
+      isRecommended: true
+    },
+    {
+      id: 6,
+      title: 'Cooking Class for Visually Impaired',
+      date: '2024-05-10',
+      time: '10:00 AM - 1:00 PM',
+      location: 'Bangalore',
+      description: 'Learn cooking techniques adapted for visually impaired individuals.',
+      image: '/images/events/cooking-class.jpg',
+      requiredSkills: ['Cooking', 'Safety', 'Teaching'],
+      maxParticipants: 12,
+      currentParticipants: 6,
+      maxVolunteers: 6,
+      currentVolunteers: 3,
+      isRecommended: false
+    }
   ];
 
-  const filteredEvents = mockEvents.filter(event => {
+  const filteredEvents = events.filter(event => {
     const matchesTab = activeTab === 'all' || (activeTab === 'recommended' && event.isRecommended);
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -143,7 +190,7 @@ export default function Events() {
               <div className="flex-shrink-0 flex items-center">
                 <Link to="/">
                   <img
-                    className="h-12 w-auto"
+                    className="h-16 w-auto"
                     src="/samarthanam-logo.png"
                     alt="Samarthanam Trust"
                   />
@@ -227,7 +274,7 @@ export default function Events() {
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
-                  onClick={() => setActiveTab('recommended')}
+                  onClick={() => setShowSignInModal(true)}
                 >
                   Recommended Events
                 </button>
@@ -249,6 +296,32 @@ export default function Events() {
           )}
         </div>
       </div>
+
+      {/* Sign In Modal */}
+      {showSignInModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-accent rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 className="text-2xl font-bold text-primary mb-4">Sign In Required</h3>
+            <p className="text-secondary mb-6">
+              Please sign in to view recommended events.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowSignInModal(false)}
+                className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary"
+              >
+                Cancel
+              </button>
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm font-medium text-accent bg-primary rounded-md hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Sign In
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
