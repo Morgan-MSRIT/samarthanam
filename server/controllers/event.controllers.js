@@ -8,9 +8,9 @@ const Volunteer = require('../models/volunteer.models');
 
 exports.createEvent =  async (req, res) => {
     try {
-        const { user, name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
+        const { user, name, description, tags, location, startDate, endDate, tasks, isRegistrationRequired, totalVolunteerReq } = req.body;
         
-        if(!user || !name || !description || !tags || !location || !startDate || !endDate || !isRegistrationRequired || !totalVolunteerReq) {
+        if(!user || !name || !description || !tags || !location || !startDate || !endDate || !tasks || !isRegistrationRequired || !totalVolunteerReq) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
@@ -26,8 +26,11 @@ exports.createEvent =  async (req, res) => {
             startDate, 
             endDate, 
             isRegistrationRequired, 
-            totalVolunteerReq 
+            totalVolunteerReq,
+            tasks
         });
+
+        const fullEvent = await Event.findById(event._id).populate('tasks').populate("tags").exec();
         
 
         // To find users who have tags similar to the event
@@ -45,7 +48,7 @@ exports.createEvent =  async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Event created successfully",
-            data: event
+            data: fullEvent
         })
     }
     catch (error) {
@@ -60,7 +63,7 @@ exports.createEvent =  async (req, res) => {
 
 exports.getEvent = async (req, res) => {
     try {
-        const events = await Event.find();
+        const events = await Event.find().populate('tasks').populate("tags").exec();
 
         return res.status(200).json({
             success: true,
@@ -80,26 +83,28 @@ exports.getEvent = async (req, res) => {
 
 exports.participantRegistration = async (req, res) => {
     try {
-        const { event_id, email, otp } = req.body;
+        const { eventId, email, otp } = req.body;
         
         const recentOtp=await OTP.find({email}).sort({createdAt:-1}).limit(1);
-
+        console.log("--------------------");
         if(recentOtp.length==0){
             return res.status(400).json({
                 success:false,
                 message:"OTP NOT FOUND"
             })
         }
-
+        
         else if(otp!==recentOtp[0].otp){
             return res.status(400).json({
                 success:false,
                 message:"Invalid otp"
             })
         }
-
-
-        const event = await Event.findById(event_id);
+        
+        console.log("--------------------");
+        
+        const event = await Event.findById(eventId);
+        console.log("--------------------");
 
         if(!event) {
             return res.status(400).json({
@@ -108,7 +113,7 @@ exports.participantRegistration = async (req, res) => {
             })
         }
 
-        event.updateOne({ $push: { volunteers: email }, $inc: { totalVolunteerReq: 1 } });
+        await event.updateOne({ $push: { registeredParticipants: email }});
     
 
         return res.status(200).json({
@@ -128,9 +133,9 @@ exports.participantRegistration = async (req, res) => {
 
 exports.participantDeregistration = async (req, res) => {
     try {
-        const { event_id, email } = req.body;
+        const { eventId, email } = req.body;
 
-        const event = await Event.findById(event_id);
+        const event = await Event.findById(eventId);
 
         if(!event) {
             return res.status(400).json({
@@ -139,7 +144,7 @@ exports.participantDeregistration = async (req, res) => {
             })
         }
 
-        event.updateOne({ $pull: { volunteers: email }, $inc: { totalVolunteerReq: -1 } });
+        await event.updateOne({ $pull: { registeredParticipants: email } });
 
         return res.status(200).json({
             success: true,
@@ -159,34 +164,39 @@ exports.participantDeregistration = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     try {
-        const {_id, name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
+        const { _id, name, description, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
 
         const event = await Event.findById(_id);
 
-        if(!event) {
+        if (!event) {
             return res.status(400).json({
                 success: false,
                 message: "Event not found"
-            })
+            });
         }
 
-        const updateEvent = event.updateOne({ name, description, tags, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq });
+      
+        const updatedEvent = await Event.findByIdAndUpdate(
+            _id, 
+            { name, description, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq }, 
+            { new: true }
+        );
 
         return res.status(200).json({
             success: true,
             message: "Event updated successfully",
-            data: updateEvent
-        })
+            data: updatedEvent
+        });
 
-    }
-    catch (error) {
-        console.log("Error occured while updating event", error);
+    } catch (error) {
+        console.log("Error occurred while updating event:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error"
-        })
+        });
     }
-}
+};
+
 
 
 exports.deleteEvent = async (req, res) => {

@@ -24,8 +24,7 @@ const taskSchema = new Schema({
   },
   event: {
     type: Schema.Types.ObjectId,
-    ref: 'Event',
-    required: true
+    ref: 'Event'
   }
 }, { timestamps: true });
 
