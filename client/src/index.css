@@ -122,3 +122,36 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* Google Translate Styles */
+#google_translate_element {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.goog-te-combo {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  #google_translate_element {
+    background: #333;
+  }
+  
+  .goog-te-combo {
+    background: #444;
+    color: white;
+    border-color: #666;
+  }
+}
