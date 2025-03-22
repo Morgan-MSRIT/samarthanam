@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
+import NavBar from './components/common/NavBar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import VolunteerForm from './pages/VolunteerForm';
@@ -8,13 +8,15 @@ import EventDetails from './pages/EventDetails';
 import TaskList from './pages/TaskList';
 import Events from './pages/Events';
 import About from './pages/About';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/common/ScrollToTop';
+import ScreenReader from './components/accessibility/ScreenReader';
 
 function App() {
   return (
     <Router>
-      <ScrollToTop />
+      <ScreenReader/>
       <NavBar />
+      <ScrollToTop />
       <div className="pt-16">      
         <Routes>
           <Route path="/" element={<Landing />} />
