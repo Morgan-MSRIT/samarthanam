@@ -1,163 +1,241 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 export default function TaskList() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
-    // TODO: Fetch tasks from API
-    // Mock data for now
-    setTasks([
-      {
-        id: 1,
-        title: 'Registration Desk Support',
-        description: 'Assist in participant registration and check-in process',
-        timeSlot: '8:00 AM - 12:00 PM',
-        requiredVolunteers: 5,
-        currentVolunteers: 2,
-        skills: ['Communication', 'Organization'],
-        location: 'Main Entrance'
-      },
-      {
-        id: 2,
-        title: 'Event Photography',
-        description: 'Capture photos of the event activities and participants',
-        timeSlot: '9:00 AM - 4:00 PM',
-        requiredVolunteers: 3,
-        currentVolunteers: 1,
-        skills: ['Photography', 'Creativity'],
-        location: 'Throughout Venue'
-      },
-      {
-        id: 3,
-        title: 'Sports Equipment Management',
-        description: 'Manage and distribute sports equipment to participants',
-        timeSlot: '8:30 AM - 5:00 PM',
-        requiredVolunteers: 4,
-        currentVolunteers: 2,
-        skills: ['Organization', 'Physical Activity'],
-        location: 'Equipment Room'
-      },
-      {
-        id: 4,
-        title: 'Participant Guide',
-        description: 'Guide participants to their respective event locations',
-        timeSlot: '9:00 AM - 3:00 PM',
-        requiredVolunteers: 6,
-        currentVolunteers: 3,
-        skills: ['Communication', 'Leadership'],
-        location: 'Various Locations'
-      }
-    ]);
-    setIsLoading(false);
-  }, []);
+    // Simulate API call to fetch tasks and schedule
+    const fetchData = async () => {
+      // Mock data - replace with actual API call
+      const mockTasks = [
+        {
+          id: 1,
+          title: 'Event Setup',
+          description: 'Help set up the venue, arrange chairs, and prepare materials',
+          time: '9:00 AM - 10:00 AM',
+          volunteersNeeded: 5,
+          currentVolunteers: 2,
+          skills: ['Physical', 'Organizational']
+        },
+        {
+          id: 2,
+          title: 'Registration Desk',
+          description: 'Welcome participants, check registrations, and distribute materials',
+          time: '10:00 AM - 12:00 PM',
+          volunteersNeeded: 3,
+          currentVolunteers: 1,
+          skills: ['Communication', 'Customer Service']
+        },
+        {
+          id: 3,
+          title: 'Activity Support',
+          description: 'Assist participants during activities and ensure smooth flow',
+          time: '12:00 PM - 2:00 PM',
+          volunteersNeeded: 4,
+          currentVolunteers: 0,
+          skills: ['Patience', 'Support']
+        },
+        {
+          id: 4,
+          title: 'Cleanup',
+          description: 'Help clean up the venue and organize materials after the event',
+          time: '2:00 PM - 3:00 PM',
+          volunteersNeeded: 3,
+          currentVolunteers: 0,
+          skills: ['Physical', 'Organizational']
+        }
+      ];
 
-  const handleTaskSelection = (taskId) => {
+      const mockSchedule = [
+        { time: '9:00 AM', activity: 'Volunteer Check-in' },
+        { time: '9:30 AM', activity: 'Volunteer Briefing' },
+        { time: '10:00 AM', activity: 'Event Setup' },
+        { time: '11:00 AM', activity: 'Participant Registration' },
+        { time: '12:00 PM', activity: 'Main Event Activities' },
+        { time: '2:00 PM', activity: 'Cleanup' },
+        { time: '3:00 PM', activity: 'Volunteer Debriefing' }
+      ];
+
+      setTasks(mockTasks);
+      setSchedule(mockSchedule);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [eventId]);
+
+  const toggleTaskSelection = (taskId) => {
     setSelectedTasks(prev => {
       if (prev.includes(taskId)) {
         return prev.filter(id => id !== taskId);
+      } else {
+        return [...prev, taskId];
       }
-      return [...prev, taskId];
     });
   };
 
-  const handleSubmit = async () => {
-    if (selectedTasks.length === 0) {
-      alert('Please select at least one task');
-      return;
-    }
-    // TODO: Submit selected tasks to API
+  const handleConfirmSelection = () => {
+    // TODO: Implement task confirmation logic
     console.log('Selected tasks:', selectedTasks);
-    navigate(`/event/${eventId}`);
+    navigate('/events');
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      <div className="min-h-screen bg-tertiary flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-gray-900">
-            Available Tasks
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Select the tasks you would like to volunteer for
-          </p>
-        </div>
-
-        <div className="space-y-6">
-          {tasks.map(task => (
-            <div
-              key={task.id}
-              className={`bg-white shadow rounded-lg p-6 transition-colors ${
-                selectedTasks.includes(task.id)
-                  ? 'ring-2 ring-primary-500'
-                  : 'hover:bg-gray-50'
-              }`}
-            >
-              <div className="flex items-start">
-                <div className="flex-1">
-                  <h3 className="text-lg font-medium text-gray-900">{task.title}</h3>
-                  <p className="mt-2 text-sm text-gray-500">{task.description}</p>
-                  
-                  <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <span className="text-sm font-medium text-gray-500">Time Slot:</span>
-                      <p className="mt-1 text-sm text-gray-900">{task.timeSlot}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-gray-500">Location:</span>
-                      <p className="mt-1 text-sm text-gray-900">{task.location}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-gray-500">Required Skills:</span>
-                      <p className="mt-1 text-sm text-gray-900">{task.skills.join(', ')}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-gray-500">Volunteers:</span>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {task.currentVolunteers} / {task.requiredVolunteers}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="ml-4">
-                  <button
-                    type="button"
-                    onClick={() => handleTaskSelection(task.id)}
-                    className={`${
-                      selectedTasks.includes(task.id)
-                        ? 'bg-primary-600 text-white hover:bg-primary-700'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
-                    } px-4 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
-                  >
-                    {selectedTasks.includes(task.id) ? 'Selected' : 'Select'}
-                  </button>
-                </div>
+    <div className="min-h-screen bg-tertiary">
+      {/* Navigation */}
+      <nav className="bg-tertiary shadow fixed w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center">
+                <Link to="/">
+                  <img
+                    className="h-16 w-auto"
+                    src="/samarthanam-logo.png"
+                    alt="Samarthanam Trust"
+                  />
+                </Link>
+              </div>
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <Link
+                  to="/"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/events"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Events
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Contact Us
+                </Link>
               </div>
             </div>
-          ))}
+            <div className="flex items-center">
+              <Link
+                to="/login"
+                className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Sign in
+              </Link>
+            </div>
+          </div>
         </div>
+      </nav>
 
-        <div className="mt-8 flex justify-end">
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            Confirm Selection
-          </button>
+      {/* Add padding to account for fixed navbar */}
+      <div className="pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-extrabold text-primary">
+              Available Tasks
+            </h2>
+            <p className="mt-2 text-sm text-secondary">
+              Select the tasks you would like to volunteer for
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Tasks Section */}
+            <div className="lg:col-span-2">
+              <div className="space-y-4">
+                {tasks.map(task => (
+                  <div
+                    key={task.id}
+                    className={`bg-accent p-6 rounded-lg shadow cursor-pointer transition-all duration-200 ${
+                      selectedTasks.includes(task.id)
+                        ? 'ring-2 ring-primary'
+                        : 'hover:shadow-md'
+                    }`}
+                    onClick={() => toggleTaskSelection(task.id)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-lg font-medium text-primary">{task.title}</h3>
+                        <p className="mt-1 text-sm text-secondary">{task.description}</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {task.skills.map(skill => (
+                            <span
+                              key={skill}
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-secondary">Time: {task.time}</p>
+                        <p className="text-sm text-secondary">
+                          Volunteers: {task.currentVolunteers}/{task.volunteersNeeded}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Schedule Section */}
+            <div className="lg:col-span-1">
+              <div className="bg-accent p-6 rounded-lg shadow">
+                <h3 className="text-lg font-medium text-primary mb-4">Event Schedule</h3>
+                <div className="space-y-4">
+                  {schedule.map((item, index) => (
+                    <div key={index} className="flex items-start">
+                      <div className="flex-shrink-0 w-24 text-sm font-medium text-primary">
+                        {item.time}
+                      </div>
+                      <div className="ml-4 text-sm text-secondary">
+                        {item.activity}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Confirmation Button */}
+              <div className="mt-6">
+                <button
+                  onClick={handleConfirmSelection}
+                  disabled={selectedTasks.length === 0}
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-accent ${
+                    selectedTasks.length === 0
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                  }`}
+                >
+                  Confirm Selection
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

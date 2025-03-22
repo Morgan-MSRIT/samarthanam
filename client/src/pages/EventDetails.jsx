@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function EventDetails() {
   const { eventId } = useParams();
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -11,143 +13,189 @@ export default function EventDetails() {
     // Mock data for now
     setEvent({
       id: eventId,
-      title: 'Annual Sports Meet 2024',
-      date: '2024-03-15',
-      time: '9:00 AM',
+      title: 'Sports Day for Differently Abled Children',
+      date: '2024-04-15',
+      time: '9:00 AM - 4:00 PM',
       location: 'Samarthanam Sports Complex, Bangalore',
-      description: 'Join us for our annual sports meet featuring various athletic events and competitions. This event brings together athletes of all abilities to compete and celebrate the spirit of inclusivity in sports.',
-      requirements: {
-        volunteers: [
-          'Age 18 or above',
-          'Commitment for full day',
-          'Experience in sports events (preferred)',
-          'Good communication skills'
-        ],
-        participants: [
-          'Open to all age groups',
-          'Must register at least 1 week before event',
-          'Medical clearance required for certain events'
-        ]
-      },
-      image: '/event-sports.jpg',
-      registrationDeadline: '2024-03-10',
-      volunteerCount: 50,
-      participantCount: 200
+      description: 'A day of sports and fun activities for differently abled children. The event includes various sports activities, games, and entertainment programs.',
+      image: '/images/events/sports-day.jpg',
+      requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
+      maxParticipants: 50,
+      currentParticipants: 30,
+      maxVolunteers: 20,
+      currentVolunteers: 12,
+      schedule: [
+        { time: '9:00 AM', activity: 'Registration and Welcome' },
+        { time: '10:00 AM', activity: 'Opening Ceremony' },
+        { time: '11:00 AM', activity: 'Sports Activities Begin' },
+        { time: '1:00 PM', activity: 'Lunch Break' },
+        { time: '2:00 PM', activity: 'More Sports Activities' },
+        { time: '4:00 PM', activity: 'Closing Ceremony and Prize Distribution' }
+      ]
     });
     setIsLoading(false);
   }, [eventId]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-      </div>
-    );
-  }
-
-  if (!event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Event not found</h2>
-          <p className="mt-2 text-gray-600">The event you're looking for doesn't exist.</p>
-          <Link to="/" className="mt-4 inline-block text-primary-600 hover:text-primary-500">
-            Return to home
-          </Link>
-        </div>
+      <div className="min-h-screen bg-tertiary flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow overflow-hidden rounded-lg">
-          {event.image && (
-            <div className="h-64 w-full overflow-hidden">
+    <div className="min-h-screen bg-tertiary">
+      {/* Navigation */}
+      <nav className="bg-tertiary shadow fixed w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center">
+                <Link to="/">
+                  <img
+                    className="h-16 w-auto"
+                    src="/samarthanam-logo.png"
+                    alt="Samarthanam Trust"
+                  />
+                </Link>
+              </div>
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <Link
+                  to="/"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/events"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Events
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <Link
+                to="/login"
+                className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Sign in
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Add padding to account for fixed navbar */}
+      <div className="pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-accent rounded-lg shadow-lg overflow-hidden">
+            <div className="relative h-96">
               <img
                 src={event.image}
                 alt={event.title}
                 className="w-full h-full object-cover"
               />
             </div>
-          )}
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-primary mb-4">{event.title}</h1>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <div className="space-y-4">
+                    <div className="flex items-center text-secondary">
+                      <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {event.date}
+                    </div>
+                    <div className="flex items-center text-secondary">
+                      <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {event.time}
+                    </div>
+                    <div className="flex items-center text-secondary">
+                      <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {event.location}
+                    </div>
+                  </div>
 
-          <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-3xl font-bold text-gray-900">{event.title}</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Event ID: {event.id}
-            </p>
-          </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold text-primary mb-2">Required Skills</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {event.requiredSkills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-primary text-accent rounded-full text-sm"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Date</dt>
-                <dd className="mt-1 text-sm text-gray-900">{event.date}</dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Time</dt>
-                <dd className="mt-1 text-sm text-gray-900">{event.time}</dd>
-              </div>
-              <div className="sm:col-span-2">
-                <dt className="text-sm font-medium text-gray-500">Location</dt>
-                <dd className="mt-1 text-sm text-gray-900">{event.location}</dd>
-              </div>
-              <div className="sm:col-span-2">
-                <dt className="text-sm font-medium text-gray-500">Description</dt>
-                <dd className="mt-1 text-sm text-gray-900">{event.description}</dd>
-              </div>
-            </dl>
-          </div>
+                  <div className="mt-6 grid grid-cols-2 gap-4">
+                    <div className="bg-tertiary p-4 rounded-lg">
+                      <p className="text-sm text-secondary">Participants</p>
+                      <p className="text-2xl font-bold text-primary">
+                        {event.currentParticipants}/{event.maxParticipants}
+                      </p>
+                    </div>
+                    <div className="bg-tertiary p-4 rounded-lg">
+                      <p className="text-sm text-secondary">Volunteers</p>
+                      <p className="text-2xl font-bold text-primary">
+                        {event.currentVolunteers}/{event.maxVolunteers}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {/* Volunteer Section */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">Volunteer Requirements</h3>
-                <ul className="mt-3 list-disc list-inside text-sm text-gray-600 space-y-2">
-                  {event.requirements.volunteers.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
+                <div>
+                  <h3 className="text-lg font-semibold text-primary mb-4">Description</h3>
+                  <p className="text-secondary">{event.description}</p>
+
+                  <h3 className="text-lg font-semibold text-primary mt-6 mb-4">Schedule</h3>
+                  <div className="space-y-2">
+                    {event.schedule.map((item, index) => (
+                      <div key={index} className="flex items-center text-secondary">
+                        <span className="font-medium text-primary w-24">{item.time}</span>
+                        <span>{item.activity}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
                 <Link
-                  to={`/volunteer/${event.id}`}
-                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-dark hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  to={`/volunteer/${eventId}`}
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   Register as Volunteer
                 </Link>
-              </div>
-
-              {/* Participant Section */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">Participant Requirements</h3>
-                <ul className="mt-3 list-disc list-inside text-sm text-gray-600 space-y-2">
-                  {event.requirements.participants.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
                 <Link
-                  to={`/participant/${event.id}`}
-                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  to={`/participant/${eventId}`}
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   Register as Participant
                 </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <span className="text-sm font-medium text-gray-500">Registration Deadline:</span>
-                <p className="mt-1 text-sm text-gray-900">{event.registrationDeadline}</p>
-              </div>
-              <div>
-                <span className="text-sm font-medium text-gray-500">Spots Available:</span>
-                <p className="mt-1 text-sm text-gray-900">
-                  Volunteers: {event.volunteerCount} | Participants: {event.participantCount}
-                </p>
               </div>
             </div>
           </div>
