@@ -1,0 +1,151 @@
+#google_translate_element {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Make the dropdown more visible */
+.goog-te-combo {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+/* Hide Google Translate attribution */
+.goog-logo-link {
+  display: none !important;
+}
+.goog-te-gadget {
+  color: transparent !important;
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+  #google_translate_element {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  #google_translate_element {
+    background: #333;
+  }
+  .goog-te-combo {
+    background: #444;
+    color: white;
+    border-color: #666;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  #google_translate_element {
+    top: 10px;
+    right: 10px;
+    padding: 8px;
+  }
+}
+
+.screen-reader-controls {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.accessibility-btn {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.accessibility-btn:hover {
+  background: #0056b3;
+}
+
+.accessibility-btn:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
+
+.accessibility-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.accessibility-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+  .screen-reader-controls {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .screen-reader-controls {
+    background: #333;
+  }
+  
+  .accessibility-select {
+    background: #444;
+    color: white;
+    border-color: #666;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .screen-reader-controls {
+    flex-direction: column;
+    top: 10px;
+    left: 10px;
+    padding: 8px;
+  }
+}
+
+.voice-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .screen-reader-controls {
+    background: #333;
+  }
+  
+  .voice-select {
+    background: #444;
+    color: white;
+    border-color: #666;
+  }
+} 
