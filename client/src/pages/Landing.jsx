@@ -8,17 +8,17 @@ export default function Landing() {
   // Carousel images with their titles and descriptions
   const carouselData = [
     {
-      image: '/images/carousel/carousel_1.jpg',
+      image: '/images/carousel_1.jpeg',
       title: 'Empowering Lives',
       description: 'Supporting visually impaired and disabled individuals through education and sports'
     },
     {
-      image: '/images/carousel/carousel_2.jpg',
+      image: '/images/carousel_2.jpeg',
       title: 'Sports Excellence',
       description: 'Promoting blind cricket and other sports activities'
     },
     {
-      image: '/images/carousel/carousel_3.jpg',
+      image: '/images/carousel_3.jpeg',
       title: 'Education Support',
       description: 'Providing quality education and vocational training'
     }
