@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 export default function EventDetails() {
   const { eventId } = useParams();
-  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -142,6 +141,15 @@ export default function EventDetails() {
                 >
                   Register as Participant
                 </Link>
+{/* ORGANISERS VIEW */}
+                <Link
+    to="/organizer/manage-events"
+    className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
+>
+    Back to Manage Events
+</Link>
+
+
               </div>
             </div>
           </div>
