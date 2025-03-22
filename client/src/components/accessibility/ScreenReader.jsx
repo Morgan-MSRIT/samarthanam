@@ -3,72 +3,64 @@ import './styles.css';
 
 const ScreenReader = () => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const [voice, setVoice] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState(null);
 
-  // Initialize voice when component mounts
+  // Initialize voices when component mounts
   useEffect(() => {
-    const initVoice = () => {
+    const initVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-      console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-
-      // Prioritize Google voices or similar
-      const selectedVoice =
-        voices.find(v => v.name.includes('Google')) || // Google Text Reader voice
-        voices.find(v => v.lang.startsWith('en')) || // Any English voice
-        voices[0]; // Fallback to first available voice
-
-      if (selectedVoice) {
-        console.log('Selected voice:', selectedVoice.name);
-        setVoice(selectedVoice);
+      
+      // Try to find an Indian or neutral English voice
+      const voice = voices.find(voice => voice.name.toLowerCase().includes('india')) ||
+                   voices.find(voice => voice.lang === 'en-IN') ||
+                   voices.find(voice => voice.name === 'Google UK English Male') ||
+                   voices.find(voice => voice.name === 'Google US English') ||
+                   voices[0];
+      
+      if (voice) {
+        setSelectedVoice(voice);
+        console.log('Selected voice:', voice.name);
       }
     };
 
-    // Try to get voices immediately
-    initVoice();
-
-    // Also listen for voices to be loaded
-    window.speechSynthesis.onvoiceschanged = initVoice;
-
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
+    // Load voices when they become available
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = initVoices;
+    }
+    initVoices();
   }, []);
 
-  const speak = (text) => {
-    if (!text || !voice) return;
-
-    // Always cancel previous speech
+  const readAloud = (text) => {
+    // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
+    if (!text || !selectedVoice) return;
+
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = voice;
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
+    
+    // Set voice properties
+    utterance.voice = selectedVoice;
+    utterance.lang = 'en-IN';  // Use Indian English language
+    utterance.rate = 0.9;      // Slightly slower for better clarity
+    utterance.pitch = 1.0;     // Natural pitch
+    utterance.volume = 1.0;    // Full volume
 
     window.speechSynthesis.speak(utterance);
   };
 
   useEffect(() => {
-    if (!isEnabled) {
-      window.speechSynthesis.cancel();
-      return;
-    }
-
-    let lastText = '';
-    let timeout;
+    if (!isEnabled) return;
 
     const handleMouseOver = (event) => {
+      // Skip if element is part of controls
       if (event.target.closest('.screen-reader-controls')) return;
 
       const text = event.target.getAttribute('aria-label') ||
                   (event.target.tagName === 'IMG' && event.target.getAttribute('alt')) ||
                   event.target.textContent?.trim();
 
-      if (text && text !== lastText) {
-        clearTimeout(timeout);
-        lastText = text;
-        timeout = setTimeout(() => speak(text), 200);
+      if (text) {
+        readAloud(text);
       }
     };
 
@@ -76,21 +68,23 @@ const ScreenReader = () => {
 
     return () => {
       document.removeEventListener('mouseover', handleMouseOver);
-      clearTimeout(timeout);
       window.speechSynthesis.cancel();
     };
-  }, [isEnabled, voice]);
+  }, [isEnabled, selectedVoice]);
 
   return (
     <div className="screen-reader-controls">
-      <button
+      <button 
         onClick={() => {
-          window.speechSynthesis.cancel();
+          if (isEnabled) {
+            window.speechSynthesis.cancel();
+          }
           setIsEnabled(!isEnabled);
         }}
         className="accessibility-btn"
+        aria-label={isEnabled ? "Disable screen reader" : "Enable screen reader"}
       >
-        {isEnabled ? "🔇 Disable Voice Reader" : "🔊 Enable Voice Reader"}
+        {isEnabled ? "🔇 Disable Screen Reader" : "🔊 Enable Screen Reader"}
       </button>
     </div>
   );

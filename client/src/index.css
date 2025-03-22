@@ -142,3 +142,16 @@ body {
   font-size: 14px;
   min-width: 150px;
 }
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  #google_translate_element {
+    background: #333;
+  }
+  
+  .goog-te-combo {
+    background: #444;
+    color: white;
+    border-color: #666;
+  }
+}
