@@ -49,6 +49,9 @@ const eventSchema = new Schema({
   totalVolunteerReq: {
     type: Number,
     default: 0
+  },
+  image: {
+    type: String
   }
 }, { timestamps: true });
 
@@ -68,3 +71,4 @@ module.exports = mongoose.model('Event', eventSchema);
 // Tasks : foreign key task array
 // Volunteers : foreign key volunteer array 
 // Total_volunteer_req: num
+// image: image url string
