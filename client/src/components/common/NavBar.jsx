@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ScreenReader from '../accessibility/ScreenReader';
 import { AuthContext } from '../../context/AuthContext';
 
 export default function NavBar() {
@@ -37,19 +36,41 @@ export default function NavBar() {
               />
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
-              <Link to="/" className="nav-link ${highContrastMode ? 'text-yellow-300 font-bold' : ''}">Home</Link>
-              <Link to="/events" className="nav-link ${highContrastMode ? 'text-yellow-300 font-bold' : ''}">Events</Link>
-              <Link to="/about" className="nav-link ${highContrastMode ? 'text-yellow-300 font-bold' : ''}">About Us</Link>
-              <Link to="/contact" className="nav-link ${highContrastMode ? 'text-yellow-300 font-bold' : ''}">Contact Us</Link>
+                  <Link
+                    to="/"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/events"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Events
+                  </Link>
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Contact Us
+                  </Link>
             </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            <div className="inline-flex items-center px-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
             <button onClick={toggleHighContrastMode} className="contrast-button ${highContrastMode ? 'bg-yellow-300 text-black' : ''}">
               {highContrastMode ? 'Disable High Contrast' : 'Enable High Contrast'}
             </button>
-            <div className="translate-button">
-              <div id="google_translate_element"></div>
+            </div>
+            <div className="inline-flex items-center px-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
+              <div id="google_translate_element" className="inline-flex items-center"></div>
               <span>Translate</span>
             </div>
             {isAuthenticated ? (
