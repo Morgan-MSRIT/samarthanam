@@ -1,9 +1,10 @@
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import ScreenReader from '../accessibility/ScreenReader';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -22,7 +23,6 @@ export default function NavBar() {
                 alt="Samarthanam Trust"
               />
             </div>
-            {/* Desktop Navigation Links */}
             <div className="hidden md:ml-6 md:flex md:space-x-8">
               <Link
                 to="/"
@@ -53,23 +53,52 @@ export default function NavBar() {
 
           {/* Right Section: Accessibility Features and Buttons (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* <ScreenReader /> */}
             <div className="inline-flex items-center px-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
               <div id="google_translate_element" className="inline-flex items-center"></div>
               <span>Translate</span>
             </div>
-            <Link
-              to="/volunteer"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            >
-              Register as Volunteer
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            >
-              Sign in
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <span className="text-primary-700">Welcome, {user.name}</span>
+                {user.role === 'organizer' && (
+                  <>
+                    <Link
+                      to="/organizer/create-events"
+                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md"
+                    >
+                      Create Events
+                    </Link>
+                    <Link
+                      to="/organizer/manage-events"
+                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md"
+                    >
+                      Manage Events
+                    </Link>
+                  </>
+                )}
+                <button
+                  onClick={logout}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/volunteer"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                >
+                  Register as Volunteer
+                </Link>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                >
+                  Sign in
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Hamburger Menu Button (Mobile) */}
@@ -149,44 +178,57 @@ export default function NavBar() {
           >
             Contact Us
           </Link>
-          {/* <div className="px-3 py-2">
-            <ScreenReader />
-          </div> */}
-          <div id="google_translate_element" className="block w-full"></div>
-          <Link
-            to="/volunteer"
-            className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            onClick={() => setIsOpen(false)}
-          >
-            Register as Volunteer
-          </Link>
-          <Link
-            to="/login"
-            className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            onClick={() => setIsOpen(false)}
-          >
-            Sign in
-          </Link>
-
-          <Link to="/organizer/create-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Create Events
-</Link>
-<Link to="/organizer/manage-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Manage Events
-</Link>
-<Link to="/organizer/analytics" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Analytics
-</Link>
-
-
-<Link
-    to="/organizer/create-tasks"
-    className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
->
-    Create Tasks
-</Link>
-
-
+          {isAuthenticated ? (
+            <>
+              <span className="block px-3 py-2 text-base text-primary-700">
+                Welcome, {user.name}
+              </span>
+              {user.role === 'organizer' && (
+                <>
+                  <Link
+                    to="/organizer/create-events"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Create Events
+                  </Link>
+                  <Link
+                    to="/organizer/manage-events"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Manage Events
+                  </Link>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  logout();
+                  setIsOpen(false);
+                }}
+                className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/volunteer"
+                className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                onClick={() => setIsOpen(false)}
+              >
+                Register as Volunteer
+              </Link>
+              <Link
+                to="/login"
+                className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign in
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
