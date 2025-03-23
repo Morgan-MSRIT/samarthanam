@@ -17,6 +17,14 @@ import ManageEvents from './pages/ManageEvents';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CreateTasks from './pages/CreateTasks';
 
+import AdminDashboard from './pages/admin/AdminDashboard';
+import CreateOrganizer from './pages/admin/CreateOrganizer';
+import RemoveOrganizer from './pages/admin/RemoveOrganizer';
+import Analytics from './pages/admin/Analytics';
+import ChangePassword from './pages/ChangePassword';
+
+
+
 function App() {
   return (
     <AuthProvider>
@@ -68,6 +76,17 @@ function App() {
               }
             />
           </Routes>
+
+
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+<Route path="/admin/create-organizer" element={<CreateOrganizer />} />
+<Route path="/admin/remove-organizer" element={<RemoveOrganizer />} />
+<Route path="/admin/analytics" element={<Analytics />} />
+
+
+<Route path="/change-password" element={<ChangePassword />} />
+
+
         </div>
       </Router>
     </AuthProvider>
