@@ -2,6 +2,132 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
+// Mock events data (same as in Events.jsx)
+const events = [
+  {
+    id: 1,
+    title: 'Sports Day for Differently Abled Children',
+    date: '2024-04-15',
+    time: '9:00 AM - 4:00 PM',
+    location: 'Bangalore',
+    description: 'A day of sports and fun activities for differently abled children.',
+    image: '/images/sports.jpg',
+    requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
+    maxParticipants: 50,
+    currentParticipants: 30,
+    maxVolunteers: 20,
+    currentVolunteers: 12,
+    schedule: [
+      { time: '9:00 AM', activity: 'Registration and Welcome' },
+      { time: '10:00 AM', activity: 'Opening Ceremony' },
+      { time: '11:00 AM', activity: 'Sports Activities Begin' },
+      { time: '1:00 PM', activity: 'Lunch Break' },
+      { time: '2:00 PM', activity: 'More Sports Activities' },
+      { time: '4:00 PM', activity: 'Closing Ceremony and Prize Distribution' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Art Workshop for Visually Impaired',
+    date: '2024-04-20',
+    time: '10:00 AM - 2:00 PM',
+    location: 'Bangalore',
+    description: 'A creative workshop exploring different art forms accessible to visually impaired participants.',
+    image: '/images/art.jpg',
+    requiredSkills: ['Art Teaching', 'Accessibility', 'Patience'],
+    maxParticipants: 30,
+    currentParticipants: 15,
+    maxVolunteers: 15,
+    currentVolunteers: 8,
+    schedule: [
+      { time: '10:00 AM', activity: 'Introduction to Art Forms' },
+      { time: '11:00 AM', activity: 'Hands-on Art Activities' },
+      { time: '12:30 PM', activity: 'Lunch Break' },
+      { time: '1:00 PM', activity: 'Art Showcase' },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Music Therapy Session',
+    date: '2024-04-25',
+    time: '11:00 AM - 1:00 PM',
+    location: 'Bangalore',
+    description: 'A therapeutic music session for children with special needs.',
+    image: '/images/music_therapy.jpg',
+    requiredSkills: ['Music', 'Therapy', 'Child Care'],
+    maxParticipants: 20,
+    currentParticipants: 12,
+    maxVolunteers: 10,
+    currentVolunteers: 5,
+    schedule: [
+      { time: '11:00 AM', activity: 'Welcome and Introduction' },
+      { time: '11:30 AM', activity: 'Music Therapy Activities' },
+      { time: '12:30 PM', activity: 'Group Discussion' },
+      { time: '1:00 PM', activity: 'Closing' },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Computer Training for Visually Impaired',
+    date: '2024-05-01',
+    time: '2:00 PM - 5:00 PM',
+    location: 'Bangalore',
+    description: 'Basic computer skills training using screen readers and accessibility tools.',
+    image: '/images/educational_workshop.jpg',
+    requiredSkills: ['Computer Teaching', 'Accessibility', 'Patience'],
+    maxParticipants: 15,
+    currentParticipants: 8,
+    maxVolunteers: 8,
+    currentVolunteers: 4,
+    schedule: [
+      { time: '2:00 PM', activity: 'Introduction to Computer Basics' },
+      { time: '3:00 PM', activity: 'Screen Reader Training' },
+      { time: '4:00 PM', activity: 'Hands-on Practice' },
+      { time: '5:00 PM', activity: 'Q&A and Closing' },
+    ],
+  },
+  {
+    id: 5,
+    title: 'Dance Workshop for Differently Abled',
+    date: '2024-05-05',
+    time: '3:00 PM - 5:00 PM',
+    location: 'Bangalore',
+    description: 'An inclusive dance workshop celebrating movement and expression.',
+    image: '/images/dance-workshop.avif',
+    requiredSkills: ['Dance', 'Inclusivity', 'Movement'],
+    maxParticipants: 25,
+    currentParticipants: 15,
+    maxVolunteers: 12,
+    currentVolunteers: 6,
+    schedule: [
+      { time: '3:00 PM', activity: 'Warm-up and Introduction' },
+      { time: '3:30 PM', activity: 'Dance Techniques' },
+      { time: '4:30 PM', activity: 'Group Performance' },
+      { time: '5:00 PM', activity: 'Cool Down and Feedback' },
+    ],
+  },
+  {
+    id: 6,
+    title: 'Cooking Class for Visually Impaired',
+    date: '2024-05-10',
+    time: '10:00 AM - 1:00 PM',
+    location: 'Bangalore',
+    description: 'Learn cooking techniques adapted for visually impaired individuals.',
+    image: '/images/cooking-class.jpg',
+    requiredSkills: ['Cooking', 'Safety', 'Teaching'],
+    maxParticipants: 12,
+    currentParticipants: 6,
+    maxVolunteers: 6,
+    currentVolunteers: 3,
+    schedule: [
+      { time: '10:00 AM', activity: 'Safety Briefing' },
+      { time: '10:30 AM', activity: 'Cooking Techniques' },
+      { time: '12:00 PM', activity: 'Cooking Practice' },
+      { time: '1:00 PM', activity: 'Tasting and Feedback' },
+    ],
+  },
+];
+
 export default function EventDetails() {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
@@ -9,32 +135,14 @@ export default function EventDetails() {
   const { user, isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
-    // Mock data for now (replace with API call)
-    setEvent({
-      id: eventId,
-      title: 'Sports Day for Differently Abled Children',
-      date: '2024-04-15',
-      time: '9:00 AM - 4:00 PM',
-      location: 'Samarthanam Sports Complex, Bangalore',
-      description: 'A day of sports and fun activities for differently abled children.',
-      image: '/images/events/sports-day.jpg',
-      requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
-      maxParticipants: 50,
-      currentParticipants: 30,
-      maxVolunteers: 20,
-      currentVolunteers: 12,
-      schedule: [
-        { time: '9:00 AM', activity: 'Registration and Welcome' },
-        { time: '10:00 AM', activity: 'Opening Ceremony' },
-        { time: '11:00 AM', activity: 'Sports Activities Begin' },
-        { time: '1:00 PM', activity: 'Lunch Break' },
-        { time: '2:00 PM', activity: 'More Sports Activities' },
-        { time: '4:00 PM', activity: 'Closing Ceremony and Prize Distribution' },
-      ],
-    });
+    // Simulate fetching event data based on eventId
+    const id = parseInt(eventId); // Convert string eventId from URL to number
+    const foundEvent = events.find((e) => e.id === id);
+    setEvent(foundEvent); // Set the event or null if not found
     setIsLoading(false);
   }, [eventId]);
 
+  // Display loading spinner while "fetching" data
   if (isLoading) {
     return (
       <div className="min-h-screen bg-tertiary flex items-center justify-center">
@@ -43,6 +151,16 @@ export default function EventDetails() {
     );
   }
 
+  // Handle case where event is not found
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-tertiary flex items-center justify-center">
+        <p className="text-xl text-secondary">Event not found.</p>
+      </div>
+    );
+  }
+
+  // Render event details
   return (
     <div className="min-h-screen bg-tertiary">
       <div className="container">
