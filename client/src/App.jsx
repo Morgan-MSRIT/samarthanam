@@ -32,15 +32,10 @@ function App() {
           <Route path="/participant/:eventId" element={<ParticipantForm />} />
           <Route path="/event/:eventId" element={<EventDetails />} />
           <Route path="/tasks/:eventId" element={<TaskList />} />
-
           <Route path="/organizer/create-events" element={<CreateEvents />} />
-
-<Route path="/organizer/manage-events" element={<ManageEvents />} />
-<Route path="/organizer/analytics" element={<AnalyticsPage />} />
-
-<Route path="/organizer/create-tasks" element={<CreateTasks />} />
-
-
+          <Route path="/organizer/manage-events" element={<ManageEvents />} />
+          <Route path="/organizer/analytics" element={<AnalyticsPage />} />
+          <Route path="/organizer/create-tasks" element={<CreateTasks />} />
         </Routes>
       </div>
     </Router>
