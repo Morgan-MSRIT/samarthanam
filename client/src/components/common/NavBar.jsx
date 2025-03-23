@@ -213,6 +213,29 @@ export default function NavBar() {
               >
                 Sign in
               </Link>
+
+              <Link to="/organizer/create-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
+  Create Events
+</Link>
+<Link to="/organizer/manage-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
+  Manage Events
+</Link>
+<Link to="/organizer/analytics" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
+  Analytics
+</Link>
+
+
+<Link
+    to="/organizer/create-tasks"
+    className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+>
+    Create Tasks
+</Link> 
+
+<Link to="/admin/dashboard">Admin Dashboard</Link>
+
+
+
             </>
           )}
         </div>
