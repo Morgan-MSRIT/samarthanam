@@ -1,160 +1,144 @@
-// import { Bar } from 'react-chartjs-2';
-
-// export default function AnalyticsPage() {
-//     const data = {
-//         labels: ['Event A', 'Event B', 'Event C'],
-//         datasets: [
-//             {
-//                 label: 'Participants',
-//                 data: [200, 150, 180],
-//                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
-//             },
-//             {
-//                 label: 'Volunteers',
-//                 data: [50, 35, 40],
-//                 backgroundColor: 'rgba(255, 99, 132, 0.6)',
-//             },
-//         ],
-//     };
-
-//     return (
-//         <div className="min-h-screen bg-tertiary">
-//             <h1 className="text-3xl font-bold text-primary mb-6">Analytics</h1>
-
-//             <div className="bg-accent p-6 rounded-lg shadow-md">
-//                 <Bar data={data} />
-//             </div>
-//         </div>
-//     );
-// }
-
-
-
-
-// import { useState } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
-
-// export default function CreateEvents() {
-//     const navigate = useNavigate();
-
-//     const [eventData, setEventData] = useState({
-//         name: '',
-//         description: '',
-//         tags: '',
-//         location: '',
-//         startDate: '',
-//         endDate: '',
-//         volunteerRequirement: 0
-//     });
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setEventData((prev) => ({
-//             ...prev,
-//             [name]: value
-//         }));
-//     };
-
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         console.log('Event Created:', eventData);
-//         navigate('/organizer/manage-events'); // Redirect to Manage Events Page after creation
-//     };
-
-//     return (
-//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
-//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
-//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Create New Event</h1>
-
-//                 <form onSubmit={handleSubmit}>
-//                     {['name', 'description', 'tags', 'location'].map((field) => (
-//                         <div key={field} className="mb-4">
-//                             <label className="block text-sm font-medium text-primary">{field}</label>
-//                             <input
-//                                 type="text"
-//                                 name={field}
-//                                 value={eventData[field]}
-//                                 onChange={handleChange}
-//                                 className="w-full p-2 border border-primary rounded-md"
-//                                 required
-//                             />
-//                         </div>
-//                     ))}
-
-//                     <div className="mb-4">
-//                         <label className="block text-sm font-medium text-primary">Start Date</label>
-//                         <input
-//                             type="datetime-local"
-//                             name="startDate"
-//                             value={eventData.startDate}
-//                             onChange={handleChange}
-//                             className="w-full p-2 border border-primary rounded-md"
-//                             required
-//                         />
-//                     </div>
-
-//                     <div className="mb-4">
-//                         <label className="block text-sm font-medium text-primary">End Date</label>
-//                         <input
-//                             type="datetime-local"
-//                             name="endDate"
-//                             value={eventData.endDate}
-//                             onChange={handleChange}
-//                             className="w-full p-2 border border-primary rounded-md"
-//                             required
-//                         />
-//                     </div>
-
-//                     <div className="mb-4">
-//                         <label className="block text-sm font-medium text-primary">Volunteer Requirement</label>
-//                         <input
-//                             type="number"
-//                             name="volunteerRequirement"
-//                             value={eventData.volunteerRequirement}
-//                             onChange={handleChange}
-//                             className="w-full p-2 border border-primary rounded-md"
-//                             required
-//                         />
-//                     </div>
-
-//                     <button type="submit" className="bg-primary text-white p-2 rounded-md w-full hover:bg-secondary">
-//                         Create Event
-//                     </button>
-//                 </form>
-//             </div>
-//         </div>
-//     );
-// }
-
-
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { getUserEvents } from '../services/apiService';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function AnalyticsPage() {
-    const data = {
-        labels: ['Event A', 'Event B', 'Event C'],
-        datasets: [
-            {
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [stats, setStats] = useState({
+    totalEvents: 0,
+    totalParticipants: 0,
+    totalVolunteers: 0,
+    totalVolunteerHours: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      try {
+        const response = await getUserEvents();
+        if (response.success) {
+          const events = response.data;
+
+          // Calculate stats
+          const totalEvents = events.length;
+          const totalParticipants = events.reduce(
+            (sum, event) => sum + event.registeredParticipants.length,
+            0
+          );
+          const totalVolunteers = events.reduce(
+            (sum, event) => sum + event.volunteers.length,
+            0
+          );
+          const totalVolunteerHours = events.reduce((sum, event) => {
+            const eventHours = event.tasks.reduce((taskSum, task) => {
+              const start = new Date(task.startTime);
+              const end = new Date(task.endTime);
+              const hours = (end - start) / (1000 * 60 * 60);
+              return taskSum + (hours > 0 ? hours * task.currentVolunteerCount : 0);
+            }, 0);
+            return sum + eventHours;
+          }, 0);
+
+          setStats({
+            totalEvents,
+            totalParticipants,
+            totalVolunteers,
+            totalVolunteerHours: Math.round(totalVolunteerHours),
+          });
+
+          // Prepare chart data
+          const labels = events.map((event) => event.name);
+          const participantsData = events.map(
+            (event) => event.registeredParticipants.length
+          );
+          const volunteersData = events.map((event) => event.volunteers.length);
+
+          setChartData({
+            labels,
+            datasets: [
+              {
                 label: 'Participants',
-                data: [200, 150, 180],
+                data: participantsData,
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            },
-            {
+                yAxisID: 'y',
+              },
+              {
                 label: 'Volunteers',
-                data: [50, 35, 40],
+                data: volunteersData,
                 backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            },
-        ],
+                yAxisID: 'y',
+              },
+            ],
+          });
+        } else {
+          setError(response.message || 'Failed to fetch events');
+        }
+      } catch (err) {
+        setError(err.message || 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchAnalyticsData();
+  }, []);
 
-    return (
-        <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
-            <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
-                <h1 className="text-3xl font-bold text-primary mb-6 text-center">Analytics</h1>
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Event Participants and Volunteers' },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Count' },
+      },
+    },
+  };
 
-                <div className="bg-secondary p-4 rounded-md">
-                    <Bar data={data} />
-                </div>
-            </div>
+  if (loading) return <div className="text-center p-8">Loading...</div>;
+  if (error) return <div className="text-center p-8 text-red-500">Error: {error}</div>;
+
+  return (
+    <div className="min-h-screen bg-tertiary p-8">
+      <h1 className="text-3xl font-bold text-primary mb-6">Event Analytics</h1>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-accent p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold text-primary">Total Events</h2>
+          <p className="text-2xl text-secondary">{stats.totalEvents}</p>
         </div>
-    );
+        <div className="bg-accent p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold text-primary">Total Participants</h2>
+          <p className="text-2xl text-secondary">{stats.totalParticipants}</p>
+        </div>
+        <div className="bg-accent p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold text-primary">Total Volunteers</h2>
+          <p className="text-2xl text-secondary">{stats.totalVolunteers}</p>
+        </div>
+        <div className="bg-accent p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold text-primary">Total Volunteer Hours</h2>
+          <p className="text-2xl text-secondary">{stats.totalVolunteerHours}</p>
+        </div>
+      </div>
+      {chartData.labels.length > 0 ? (
+        <div className="bg-accent p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+          <Bar data={chartData} options={options} />
+        </div>
+      ) : (
+        <p className="text-secondary text-center">No data available for chart.</p>
+      )}
+    </div>
+  );
 }

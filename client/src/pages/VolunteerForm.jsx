@@ -104,7 +104,7 @@ export default function VolunteerForm() {
 
   return (
     <div className="min-h-screen bg-tertiary">
-      <div className="container">
+      <div className="container-fluid">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-extrabold text-primary">

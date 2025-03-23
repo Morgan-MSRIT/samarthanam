@@ -1,148 +1,56 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-
-// Mock events data (same as in Events.jsx)
-const events = [
-  {
-    id: 1,
-    title: 'Sports Day for Differently Abled Children',
-    date: '2024-04-15',
-    time: '9:00 AM - 4:00 PM',
-    location: 'Bangalore',
-    description: 'A day of sports and fun activities for differently abled children.',
-    image: '/images/sports.jpg',
-    requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
-    maxParticipants: 50,
-    currentParticipants: 30,
-    maxVolunteers: 20,
-    currentVolunteers: 12,
-    schedule: [
-      { time: '9:00 AM', activity: 'Registration and Welcome' },
-      { time: '10:00 AM', activity: 'Opening Ceremony' },
-      { time: '11:00 AM', activity: 'Sports Activities Begin' },
-      { time: '1:00 PM', activity: 'Lunch Break' },
-      { time: '2:00 PM', activity: 'More Sports Activities' },
-      { time: '4:00 PM', activity: 'Closing Ceremony and Prize Distribution' },
-    ],
-  },
-  {
-    id: 2,
-    title: 'Art Workshop for Visually Impaired',
-    date: '2024-04-20',
-    time: '10:00 AM - 2:00 PM',
-    location: 'Bangalore',
-    description: 'A creative workshop exploring different art forms accessible to visually impaired participants.',
-    image: '/images/art.jpg',
-    requiredSkills: ['Art Teaching', 'Accessibility', 'Patience'],
-    maxParticipants: 30,
-    currentParticipants: 15,
-    maxVolunteers: 15,
-    currentVolunteers: 8,
-    schedule: [
-      { time: '10:00 AM', activity: 'Introduction to Art Forms' },
-      { time: '11:00 AM', activity: 'Hands-on Art Activities' },
-      { time: '12:30 PM', activity: 'Lunch Break' },
-      { time: '1:00 PM', activity: 'Art Showcase' },
-    ],
-  },
-  {
-    id: 3,
-    title: 'Music Therapy Session',
-    date: '2024-04-25',
-    time: '11:00 AM - 1:00 PM',
-    location: 'Bangalore',
-    description: 'A therapeutic music session for children with special needs.',
-    image: '/images/music_therapy.jpg',
-    requiredSkills: ['Music', 'Therapy', 'Child Care'],
-    maxParticipants: 20,
-    currentParticipants: 12,
-    maxVolunteers: 10,
-    currentVolunteers: 5,
-    schedule: [
-      { time: '11:00 AM', activity: 'Welcome and Introduction' },
-      { time: '11:30 AM', activity: 'Music Therapy Activities' },
-      { time: '12:30 PM', activity: 'Group Discussion' },
-      { time: '1:00 PM', activity: 'Closing' },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Computer Training for Visually Impaired',
-    date: '2024-05-01',
-    time: '2:00 PM - 5:00 PM',
-    location: 'Bangalore',
-    description: 'Basic computer skills training using screen readers and accessibility tools.',
-    image: '/images/educational_workshop.jpg',
-    requiredSkills: ['Computer Teaching', 'Accessibility', 'Patience'],
-    maxParticipants: 15,
-    currentParticipants: 8,
-    maxVolunteers: 8,
-    currentVolunteers: 4,
-    schedule: [
-      { time: '2:00 PM', activity: 'Introduction to Computer Basics' },
-      { time: '3:00 PM', activity: 'Screen Reader Training' },
-      { time: '4:00 PM', activity: 'Hands-on Practice' },
-      { time: '5:00 PM', activity: 'Q&A and Closing' },
-    ],
-  },
-  {
-    id: 5,
-    title: 'Dance Workshop for Differently Abled',
-    date: '2024-05-05',
-    time: '3:00 PM - 5:00 PM',
-    location: 'Bangalore',
-    description: 'An inclusive dance workshop celebrating movement and expression.',
-    image: '/images/dance-workshop.avif',
-    requiredSkills: ['Dance', 'Inclusivity', 'Movement'],
-    maxParticipants: 25,
-    currentParticipants: 15,
-    maxVolunteers: 12,
-    currentVolunteers: 6,
-    schedule: [
-      { time: '3:00 PM', activity: 'Warm-up and Introduction' },
-      { time: '3:30 PM', activity: 'Dance Techniques' },
-      { time: '4:30 PM', activity: 'Group Performance' },
-      { time: '5:00 PM', activity: 'Cool Down and Feedback' },
-    ],
-  },
-  {
-    id: 6,
-    title: 'Cooking Class for Visually Impaired',
-    date: '2024-05-10',
-    time: '10:00 AM - 1:00 PM',
-    location: 'Bangalore',
-    description: 'Learn cooking techniques adapted for visually impaired individuals.',
-    image: '/images/cooking-class.jpg',
-    requiredSkills: ['Cooking', 'Safety', 'Teaching'],
-    maxParticipants: 12,
-    currentParticipants: 6,
-    maxVolunteers: 6,
-    currentVolunteers: 3,
-    schedule: [
-      { time: '10:00 AM', activity: 'Safety Briefing' },
-      { time: '10:30 AM', activity: 'Cooking Techniques' },
-      { time: '12:00 PM', activity: 'Cooking Practice' },
-      { time: '1:00 PM', activity: 'Tasting and Feedback' },
-    ],
-  },
-];
+import { getEventById } from '../services/apiService';
 
 export default function EventDetails() {
   const { eventId } = useParams();
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { user, isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
-    // Simulate fetching event data based on eventId
-    const id = parseInt(eventId); // Convert string eventId from URL to number
-    const foundEvent = events.find((e) => e.id === id);
-    setEvent(foundEvent); // Set the event or null if not found
-    setIsLoading(false);
+    const fetchEventDetails = async () => {
+      try {
+        const response = await getEventById(eventId);
+        if (response.success) {
+          const eventData = response.data;
+          console.log('Event data:', eventData); // Debug log
+          setEvent({
+            id: eventData._id,
+            title: eventData.name,
+            date: new Date(eventData.startDate).toLocaleDateString(),
+            time: `${new Date(eventData.startDate).toLocaleTimeString()} - ${new Date(eventData.endDate).toLocaleTimeString()}`,
+            location: eventData.location,
+            description: eventData.description,
+            image: '/images/event-placeholder.jpg',
+            requiredSkills: eventData.tags?.map(tag => tag.name) || [],
+            maxParticipants: eventData.maxParticipants || 50,
+            currentParticipants: eventData.registeredParticipants?.length || 0,
+            maxVolunteers: eventData.totalVolunteerReq,
+            currentVolunteers: eventData.volunteers?.length || 0,
+            schedule: eventData.tasks?.map(task => ({
+              time: new Date(task.startTime).toLocaleTimeString(),
+              activity: task.name
+            })) || []
+          });
+        } else {
+          setError(response.message);
+        }
+      } catch (err) {
+        console.error('Error fetching event details:', err); // Debug log
+        setError(err.message || "Failed to fetch event details");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEventDetails();
   }, [eventId]);
 
-  // Display loading spinner while "fetching" data
+  // Display loading spinner while fetching data
   if (isLoading) {
     return (
       <div className="min-h-screen bg-tertiary flex items-center justify-center">
@@ -151,7 +59,22 @@ export default function EventDetails() {
     );
   }
 
-  // Handle case where event is not found
+  // Display error message if there's an error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-tertiary flex flex-col items-center justify-center">
+        <p className="text-xl text-red-500 mb-4">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-primary text-accent rounded-md hover:bg-secondary"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Display message if event is not found
   if (!event) {
     return (
       <div className="min-h-screen bg-tertiary flex items-center justify-center">
@@ -160,10 +83,9 @@ export default function EventDetails() {
     );
   }
 
-  // Render event details
   return (
     <div className="min-h-screen bg-tertiary">
-      <div className="container">
+      <div className="container-fluid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-accent rounded-lg shadow-lg overflow-hidden">
             <div className="relative h-96">
@@ -257,27 +179,38 @@ export default function EventDetails() {
                 </div>
               </div>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
-                {isAuthenticated && user.role === 'volunteer' && (
+                {!isAuthenticated ? (
                   <Link
-                    to={`/volunteer/${eventId}`}
+                    to="/login"
                     className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   >
-                    Register as Volunteer
+                    Sign in to Register
                   </Link>
-                )}
-                <Link
-                  to={`/participant/${eventId}`}
-                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                >
-                  Register as Participant
-                </Link>
-                {isAuthenticated && user.role === 'organiser' && (
-                  <Link
-                    to="/organizer/manage-events"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  >
-                    Back to Manage Events
-                  </Link>
+                ) : (
+                  <>
+                    {user.role === 'volunteer' && (
+                      <Link
+                        to={`/volunteer/${eventId}`}
+                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        Register as Volunteer
+                      </Link>
+                    )}
+                    <Link
+                      to={`/participant/${eventId}`}
+                      className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    >
+                      Register as Participant
+                    </Link>
+                    {user.role === 'organiser' && (
+                      <Link
+                        to="/organizer/manage-events"
+                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        Back to Manage Events
+                      </Link>
+                    )}
+                  </>
                 )}
               </div>
             </div>
