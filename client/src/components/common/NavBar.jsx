@@ -60,7 +60,7 @@ export default function NavBar() {
             {isAuthenticated ? (
               <>
                 <span className="text-primary-700">Welcome, {user.name}</span>
-                {user.role === 'organizer' && (
+                {user.role === 'organiser' && (
                   <>
                     <Link
                       to="/organizer/create-events"
@@ -183,7 +183,7 @@ export default function NavBar() {
               <span className="block px-3 py-2 text-base text-primary-700">
                 Welcome, {user.name}
               </span>
-              {user.role === 'organizer' && (
+              {user.role === 'organiser' && (
                 <>
                   <Link
                     to="/organizer/create-events"
