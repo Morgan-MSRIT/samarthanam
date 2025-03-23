@@ -44,7 +44,7 @@ exports.auth=async(req,res,next)=>{
 exports.isOrganizer=async(req,res,next)=>{
     try{
         const user = await User.findById(req.user.id);
-        if(user.role!=="organizer" && user.role!=="admin"){
+        if(user.role!=="organiser" && user.role!=="admin"){
             return res.status(401).json({
                 success:false,
                 message:"This is a protected route for organizer only"
