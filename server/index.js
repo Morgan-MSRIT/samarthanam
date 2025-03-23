@@ -5,9 +5,9 @@ const app=express();
 const database=require("./configs/database");
 const cookieParser=require("cookie-parser");
 const cors=require("cors");
-// const { cloudinaryConnect }=require("./configs/cloudinary");
+const { cloudinaryConnect }=require("./configs/cloudinary");
 const dotenv=require("dotenv");
-
+const fileUpload=require("express-fileupload");
 dotenv.config();
 
 //Routes
@@ -28,8 +28,17 @@ database.connect();
 
 
 //cloudinary connect
-// cloudinaryConnect();
+cloudinaryConnect();
+//for file uploads
+app.use(
+    fileUpload({
+      useTempFiles:true,
+      tempFileDir:"/tmp",
+    })
+  );
 
+
+  
 
 //to parse json
 app.use(express.json());

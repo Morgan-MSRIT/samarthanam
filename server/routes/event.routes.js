@@ -16,8 +16,6 @@ router.route("/participant-deregistration").post(participantDeregistration);
 router.route("/update-event").post(auth, isOrganizer, updateEvent);
 router.route("/delete-event").post(auth, isOrganizer, deleteEvent);
 router.route("/get-all-register-volunteer").post(auth,isOrganizer, getAllRegisterVolunteer);
-<<<<<<< HEAD
 router.route("/get-events-by-id").post(auth,isOrganizer,getEventById);
-=======
->>>>>>> 87e9c047caf54e0f569bd504a0cb21a9ab4b3764
+
 module.exports = router;
