@@ -258,3 +258,33 @@ exports.getAllRegisterVolunteer = async (req, res) => {
         })
     }
 }
+
+
+exports.getAllRegisterVolunteer = async (req, res) => {
+    try {
+        const { event_id } = req.body;
+
+        const event = await Event.findById(event_id).populate('volunteers').exec().populate('user').exec();
+
+
+        if(!event) {
+            return res.status(400).json({
+                success: false,
+                message: "Event not found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: event.volunteers
+        })
+    }
+    catch (error) {
+        console.log("Error occured while fetching volunteers", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
