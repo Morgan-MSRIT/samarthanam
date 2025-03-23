@@ -63,19 +63,46 @@ exports.createEvent =  async (req, res) => {
 
 exports.getEvent = async (req, res) => {
     try {
-        const events = await Event.find().populate('tasks').populate("tags").exec();
+        // If eventId is provided in params, get single event
+        if (req.params.eventId) {
+            console.log('Fetching event with ID:', req.params.eventId); // Debug log
+            const event = await Event.findById(req.params.eventId)
+                .populate('tasks')
+                .populate('tags')
+                .exec();
+
+            if (!event) {
+                console.log('Event not found'); // Debug log
+                return res.status(404).json({
+                    success: false,
+                    message: "Event not found"
+                });
+            }
+
+            console.log('Found event:', event); // Debug log
+            return res.status(200).json({
+                success: true,
+                data: event
+            });
+        }
+
+        // Otherwise, get all events
+        const events = await Event.find()
+            .populate('tasks')
+            .populate('tags')
+            .exec();
 
         return res.status(200).json({
             success: true,
             data: events
-        })
+        });
     }
     catch (error) {
-        console.log("Error occured while fetching events", error);
+        console.log("Error occurred while fetching events:", error); // Debug log
         return res.status(500).json({
             success: false,
             message: "Internal server error"
-        })
+        });
     }
 }
 
