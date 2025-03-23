@@ -40,9 +40,10 @@ app.use(cookieParser());
 //establishing connection between frontend and backend through cors
 app.use(
     cors({
-        origin:"*",
-        // origin:"http://localhost:3000",
-        credentials:true
+        origin: ["http://localhost:5173", "http://localhost:3000"],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
     })
 );
 
@@ -68,9 +69,8 @@ app.get("/",(req,res)=>{
 
 
 //Activate server
-
-app.listen(PORT,()=>{
+app.listen(PORT, '0.0.0.0', ()=>{
     console.log(`App is running at ${PORT}`)
-})
+});
 
 
