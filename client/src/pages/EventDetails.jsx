@@ -17,6 +17,7 @@ export default function EventDetails() {
         const response = await getEventById(eventId);
         if (response.success) {
           const eventData = response.data;
+          console.log('Event data:', eventData); // Debug log
           setEvent({
             id: eventData._id,
             title: eventData.name,
@@ -24,21 +25,22 @@ export default function EventDetails() {
             time: `${new Date(eventData.startDate).toLocaleTimeString()} - ${new Date(eventData.endDate).toLocaleTimeString()}`,
             location: eventData.location,
             description: eventData.description,
-            image: '/images/event-placeholder.jpg', // You might want to add image handling in your backend
-            requiredSkills: eventData.tags.map(tag => tag.name),
+            image: '/images/event-placeholder.jpg',
+            requiredSkills: eventData.tags?.map(tag => tag.name) || [],
             maxParticipants: eventData.maxParticipants || 50,
             currentParticipants: eventData.registeredParticipants?.length || 0,
             maxVolunteers: eventData.totalVolunteerReq,
             currentVolunteers: eventData.volunteers?.length || 0,
-            schedule: eventData.tasks.map(task => ({
+            schedule: eventData.tasks?.map(task => ({
               time: new Date(task.startTime).toLocaleTimeString(),
               activity: task.name
-            }))
+            })) || []
           });
         } else {
           setError(response.message);
         }
       } catch (err) {
+        console.error('Error fetching event details:', err); // Debug log
         setError(err.message || "Failed to fetch event details");
       } finally {
         setIsLoading(false);
@@ -57,7 +59,7 @@ export default function EventDetails() {
     );
   }
 
-  // Handle error state
+  // Display error message if there's an error
   if (error) {
     return (
       <div className="min-h-screen bg-tertiary flex flex-col items-center justify-center">
@@ -72,7 +74,7 @@ export default function EventDetails() {
     );
   }
 
-  // Handle case where event is not found
+  // Display message if event is not found
   if (!event) {
     return (
       <div className="min-h-screen bg-tertiary flex items-center justify-center">
@@ -81,7 +83,6 @@ export default function EventDetails() {
     );
   }
 
-  // Render event details
   return (
     <div className="min-h-screen bg-tertiary">
       <div className="container">

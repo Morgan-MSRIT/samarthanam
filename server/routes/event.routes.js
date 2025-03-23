@@ -4,11 +4,12 @@ const {createEvent,getEvent, participantRegistration, participantDeregistration,
 
 const router = Router();
 
-// router.route("/create-event").post(auth,isOrganizer,createEvent);
-//testing/
-router.route("/create-event").post(auth, isOrganizer, createEvent);
+// Public routes
 router.route("/get-events").get(getEvent);
 router.route("/:eventId").get(getEvent);
+
+// Protected routes
+router.route("/create-event").post(auth, isOrganizer, createEvent);
 router.route("/participant-registration").post(participantRegistration);
 router.route("/participant-deregistration").post(participantDeregistration);
 router.route("/update-event").post(auth, isOrganizer, updateEvent);
