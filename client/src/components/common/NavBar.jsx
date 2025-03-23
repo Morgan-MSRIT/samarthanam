@@ -59,12 +59,6 @@ export default function NavBar() {
               <span>Translate</span>
             </div>
             <Link
-              to="/volunteer"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            >
-              Register as Volunteer
-            </Link>
-            <Link
               to="/login"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
             >
@@ -153,13 +147,6 @@ export default function NavBar() {
             <ScreenReader />
           </div> */}
           <div id="google_translate_element" className="block w-full"></div>
-          <Link
-            to="/volunteer"
-            className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
-            onClick={() => setIsOpen(false)}
-          >
-            Register as Volunteer
-          </Link>
           <Link
             to="/login"
             className="block px-3 py-2 rounded-md text-base font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"

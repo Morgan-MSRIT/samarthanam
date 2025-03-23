@@ -18,7 +18,7 @@ export default function EventDetails() {
       time: '9:00 AM - 4:00 PM',
       location: 'Samarthanam Sports Complex, Bangalore',
       description: 'A day of sports and fun activities for differently abled children. The event includes various sports activities, games, and entertainment programs.',
-      image: '/images/events/sports-day.jpg',
+      image: '/images/sports.jpg',
       requiredSkills: ['Sports Training', 'Child Care', 'First Aid'],
       maxParticipants: 50,
       currentParticipants: 30,
