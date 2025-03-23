@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { sendOtp, signup, getTags } from '../services/apiService';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { sendOtp, signup, getTags } from "../services/apiService";
 
 export default function VolunteerForm() {
   // State variables
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    address: '',
-    nationality: '',
+    name: "",
+    age: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    address: "",
+    nationality: "",
     emailNotifAllow: false,
     tags: [],
-    otp: '',
+    otp: "",
   });
   const [tags, setTags] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export default function VolunteerForm() {
         if (response.success) {
           setTags(response.data);
         } else {
-          setError(response.message || 'Failed to fetch tags');
+          setError(response.message || "Failed to fetch tags");
         }
       } catch (err) {
         setError(err.message);
@@ -44,7 +44,7 @@ export default function VolunteerForm() {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const response = await sendOtp(email);
       if (response.success) {
@@ -64,7 +64,7 @@ export default function VolunteerForm() {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -82,16 +82,16 @@ export default function VolunteerForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const dataToSend = {
         ...formData,
         email,
-        role: 'volunteer', // Hardcoded as per requirement
+        role: "volunteer", // Hardcoded as per requirement
       };
       const response = await signup(dataToSend);
       if (response.success) {
-        navigate('/login');
+        navigate("/login");
       } else {
         setError(response.message);
       }
@@ -118,9 +118,15 @@ export default function VolunteerForm() {
 
           {/* Step 1: Email Input and Send OTP */}
           {!isOtpSent ? (
-            <form onSubmit={handleSendOtp} className="space-y-6 bg-accent p-8 rounded-lg shadow">
+            <form
+              onSubmit={handleSendOtp}
+              className="space-y-6 bg-accent p-8 rounded-lg shadow"
+            >
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-primary"
+                >
                   Email Address *
                 </label>
                 <input
@@ -138,15 +144,21 @@ export default function VolunteerForm() {
                   disabled={loading}
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  {loading ? 'Sending OTP...' : 'Send OTP'}
+                  {loading ? "Sending OTP..." : "Send OTP"}
                 </button>
               </div>
             </form>
           ) : (
             /* Step 2: Full Registration Form */
-            <form onSubmit={handleSubmit} className="space-y-6 bg-accent p-8 rounded-lg shadow">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 bg-accent p-8 rounded-lg shadow"
+            >
               <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="otp"
+                  className="block text-sm font-medium text-primary"
+                >
                   OTP *
                 </label>
                 <input
@@ -160,7 +172,10 @@ export default function VolunteerForm() {
                 />
               </div>
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-primary"
+                >
                   Full Name *
                 </label>
                 <input
@@ -175,7 +190,10 @@ export default function VolunteerForm() {
               </div>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="age" className="block text-sm font-medium text-primary">
+                  <label
+                    htmlFor="age"
+                    className="block text-sm font-medium text-primary"
+                  >
                     Age *
                   </label>
                   <input
@@ -190,7 +208,10 @@ export default function VolunteerForm() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="nationality" className="block text-sm font-medium text-primary">
+                  <label
+                    htmlFor="nationality"
+                    className="block text-sm font-medium text-primary"
+                  >
                     Nationality *
                   </label>
                   <input
@@ -205,7 +226,10 @@ export default function VolunteerForm() {
                 </div>
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-primary"
+                >
                   Password *
                 </label>
                 <input
@@ -219,7 +243,10 @@ export default function VolunteerForm() {
                 />
               </div>
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-primary"
+                >
                   Confirm Password *
                 </label>
                 <input
@@ -233,7 +260,10 @@ export default function VolunteerForm() {
                 />
               </div>
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-primary"
+                >
                   Phone Number *
                 </label>
                 <input
@@ -247,7 +277,10 @@ export default function VolunteerForm() {
                 />
               </div>
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-primary">
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-primary"
+                >
                   Address *
                 </label>
                 <textarea
@@ -269,28 +302,38 @@ export default function VolunteerForm() {
                   onChange={handleChange}
                   className="h-4 w-4 text-primary focus:ring-primary border-primary-300 rounded"
                 />
-                <label htmlFor="emailNotifAllow" className="ml-2 block text-sm text-primary">
+                <label
+                  htmlFor="emailNotifAllow"
+                  className="ml-2 block text-sm text-primary"
+                >
                   Allow Email Notifications
                 </label>
               </div>
               <div>
-                <p className="block text-sm font-medium text-primary">Tags</p>
+                <p className="block text-sm font-medium text-primary mb-2">
+                  Tags
+                </p>
                 {tags.length > 0 ? (
-                  tags.map((tag) => (
-                    <div key={tag._id} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`tag-${tag._id}`}
-                        value={tag._id}
-                        checked={formData.tags.includes(tag._id)}
-                        onChange={() => handleTagChange(tag._id)}
-                        className="h-4 w-4 text-primary focus:ring-primary border-primary-300 rounded"
-                      />
-                      <label htmlFor={`tag-${tag._id}`} className="ml-2 text-sm text-primary">
-                        {tag.name}
-                      </label>
-                    </div>
-                  ))
+                  <div className="flex flex-wrap gap-4">
+                    {tags.map((tag) => (
+                      <div key={tag._id} className="mt-2">
+                        <input
+                          type="checkbox"
+                          id={`tag-${tag._id}`}
+                          value={tag._id}
+                          checked={formData.tags.includes(tag._id)}
+                          onChange={() => handleTagChange(tag._id)}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor={`tag-${tag._id}`}
+                          className="px-3 py-1 border border-primary-300 rounded-full cursor-pointer bg-accent text-primary hover:bg-primary-200 hover:text-accent peer-checked:bg-primary peer-checked:text-accent peer-checked:border-primary transition-colors duration-200"
+                        >
+                          {tag.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <p className="text-sm text-secondary">No tags available</p>
                 )}
@@ -301,7 +344,7 @@ export default function VolunteerForm() {
                   disabled={loading}
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  {loading ? 'Signing Up...' : 'Sign Up'}
+                  {loading ? "Signing Up..." : "Sign Up"}
                 </button>
               </div>
             </form>
