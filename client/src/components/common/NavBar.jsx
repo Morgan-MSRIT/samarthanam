@@ -184,7 +184,10 @@ export default function NavBar() {
     className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
 >
     Create Tasks
-</Link>
+</Link> 
+
+<Link to="/admin/dashboard">Admin Dashboard</Link>
+
 
 
         </div>

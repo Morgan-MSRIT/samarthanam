@@ -206,31 +206,340 @@
 
 
 
-import { useState } from 'react';
+// import { useState } from 'react';
+// import { Link } from 'react-router-dom';
+
+// export default function ManageEvents() {
+//     const [events, setEvents] = useState([
+//         {
+//             id: 1,
+//             name: 'Fitness Event',
+//             tasks: [
+//                 { name: 'Setup', status: 'ongoing' },
+//                 { name: 'Registration', status: 'not started' }
+//             ],
+//             volunteers: ['John Doe', 'Jane Smith']
+//         },
+//         {
+//             id: 2,
+//             name: 'Healthcare Event',
+//             tasks: [
+//                 { name: 'Medical Checkup', status: 'completed' },
+//                 { name: 'Consultations', status: 'not started' }
+//             ],
+//             volunteers: ['Alice Johnson', 'Bob Williams']
+//         }
+//     ]);
+
+//     const updateTaskStatus = (eventId, taskIndex, newStatus) => {
+//         const updatedEvents = events.map(event =>
+//             event.id === eventId
+//                 ? {
+//                     ...event,
+//                     tasks: event.tasks.map((task, idx) =>
+//                         idx === taskIndex ? { ...task, status: newStatus } : task
+//                     )
+//                 }
+//                 : event
+//         );
+//         setEvents(updatedEvents);
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
+//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Manage Events</h1>
+
+//                 {events.map(event => (
+//                     <div key={event.id} className="mb-6 p-4 bg-secondary rounded-md">
+//                         <h2 className="text-lg font-bold">{event.name}</h2>
+
+//                         <h3 className="mt-4 font-semibold">Tasks:</h3>
+//                         <ul>
+//                             {event.tasks.map((task, index) => (
+//                                 <li key={index} className="flex justify-between items-center p-2 bg-tertiary rounded-md my-2">
+//                                     <span>{task.name}</span>
+//                                     <select
+//                                         value={task.status}
+//                                         onChange={(e) => updateTaskStatus(event.id, index, e.target.value)}
+//                                         className="bg-primary text-white px-3 py-1 rounded-md"
+//                                     >
+//                                         <option value="not started">Not Started</option>
+//                                         <option value="ongoing">Ongoing</option>
+//                                         <option value="completed">Completed</option>
+//                                     </select>
+//                                 </li>
+//                             ))}
+//                         </ul>
+
+//                         <h3 className="mt-4 font-semibold">Volunteers:</h3>
+//                         <ul>
+//                             {event.volunteers.map((volunteer, index) => (
+//                                 <li key={index} className="text-sm p-1 bg-tertiary rounded-md my-1">
+//                                     {volunteer}
+//                                 </li>
+//                             ))}
+//                         </ul>
+
+//                         <Link
+//                             to={`/event/${event.id}`}
+//                             className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
+//                         >
+//                             View Details
+//                         </Link>
+//                     </div>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+// import { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+
+// export default function ManageEvents() {
+//     const [events, setEvents] = useState([]);
+
+//     // Load events dynamically from localStorage
+//     useEffect(() => {
+//         const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
+//         setEvents(storedEvents);
+//     }, []);
+
+//     // Task Status Update Logic
+//     const updateTaskStatus = (eventId, taskIndex, newStatus) => {
+//         const updatedEvents = events.map(event =>
+//             event.id === eventId
+//                 ? {
+//                     ...event,
+//                     tasks: event.tasks.map((task, idx) =>
+//                         idx === taskIndex ? { ...task, status: newStatus } : task
+//                     )
+//                 }
+//                 : event
+//         );
+//         setEvents(updatedEvents);
+//         localStorage.setItem('events', JSON.stringify(updatedEvents));
+//     };
+
+//     // Delete Task Logic
+//     const deleteTask = (eventId, taskIndex) => {
+//         const updatedEvents = events.map(event =>
+//             event.id === eventId
+//                 ? {
+//                     ...event,
+//                     tasks: event.tasks.filter((_, idx) => idx !== taskIndex)
+//                 }
+//                 : event
+//         );
+//         setEvents(updatedEvents);
+//         localStorage.setItem('events', JSON.stringify(updatedEvents));
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
+//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Manage Events</h1>
+
+//                 {events.length === 0 ? (
+//                     <p className="text-center text-secondary">No events found. Create events to manage them here.</p>
+//                 ) : (
+//                     events.map(event => (
+//                         <div key={event.id} className="mb-6 p-4 bg-accent border border-primary rounded-md shadow">
+//                             <h2 className="text-lg font-bold text-primary">{event.name}</h2>
+
+//                             <h3 className="mt-4 font-semibold text-secondary">Tasks:</h3>
+//                             <ul>
+//                                 {event.tasks && event.tasks.length > 0 ? (
+//                                     event.tasks.map((task, index) => (
+//                                         <li key={index} className="flex justify-between items-center p-2 border border-primary rounded-md my-2">
+//                                             <span>{task.name} - {task.status}</span>
+//                                             <div>
+//                                                 <select
+//                                                     value={task.status}
+//                                                     onChange={(e) => updateTaskStatus(event.id, index, e.target.value)}
+//                                                     className="bg-primary text-white px-3 py-1 rounded-md mr-2"
+//                                                 >
+//                                                     <option value="not started">Not Started</option>
+//                                                     <option value="ongoing">Ongoing</option>
+//                                                     <option value="completed">Completed</option>
+//                                                 </select>
+
+//                                                 <button
+//                                                     onClick={() => deleteTask(event.id, index)}
+//                                                     className="bg-red-500 text-white px-3 py-1 rounded-md"
+//                                                 >
+//                                                     Delete
+//                                                 </button>
+//                                             </div>
+//                                         </li>
+//                                     ))
+//                                 ) : (
+//                                     <p className="text-sm text-gray-500">No tasks available for this event.</p>
+//                                 )}
+//                             </ul>
+
+//                             <h3 className="mt-4 font-semibold text-secondary">Volunteers:</h3>
+//                             <ul>
+//                                 {event.volunteers && event.volunteers.length > 0 ? (
+//                                     event.volunteers.map((volunteer, index) => (
+//                                         <li key={index} className="text-sm p-1 border border-primary rounded-md my-1">
+//                                             {volunteer}
+//                                         </li>
+//                                     ))
+//                                 ) : (
+//                                     <p className="text-sm text-gray-500">No volunteers assigned yet.</p>
+//                                 )}
+//                             </ul>
+
+//                             <Link
+//                                 to={`/event/${event.id}`}
+//                                 className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
+//                             >
+//                                 View Details
+//                             </Link>
+//                         </div>
+//                     ))
+//                 )}
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+
+// import { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+
+// export default function ManageEvents() {
+//     const [events, setEvents] = useState([]);
+
+//     // Load events dynamically from localStorage
+//     useEffect(() => {
+//         const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
+//         setEvents(storedEvents);
+//     }, []);
+
+//     // Task Status Update Logic
+//     const updateTaskStatus = (eventId, taskIndex, newStatus) => {
+//         const updatedEvents = events.map(event =>
+//             event.id === eventId
+//                 ? {
+//                     ...event,
+//                     tasks: event.tasks.map((task, idx) =>
+//                         idx === taskIndex ? { ...task, status: newStatus } : task
+//                     )
+//                 }
+//                 : event
+//         );
+//         setEvents(updatedEvents);
+//         localStorage.setItem('events', JSON.stringify(updatedEvents));
+//     };
+
+//     // Delete Task Logic
+//     const deleteTask = (eventId, taskIndex) => {
+//         const updatedEvents = events.map(event =>
+//             event.id === eventId
+//                 ? {
+//                     ...event,
+//                     tasks: event.tasks.filter((_, idx) => idx !== taskIndex)
+//                 }
+//                 : event
+//         );
+//         setEvents(updatedEvents);
+//         localStorage.setItem('events', JSON.stringify(updatedEvents));
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
+//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Manage Events</h1>
+
+//                 {events.length === 0 ? (
+//                     <p className="text-center text-secondary">No events found. Create events to manage them here.</p>
+//                 ) : (
+//                     events.map(event => (
+//                         <div key={event.id} className="mb-6 p-4 bg-accent border border-primary rounded-md shadow">
+//                             <h2 className="text-lg font-bold text-primary">{event.name}</h2>
+
+//                             <h3 className="mt-4 font-semibold text-secondary">Tasks:</h3>
+//                             <ul>
+//                                 {event.tasks && event.tasks.length > 0 ? (
+//                                     event.tasks.map((task, index) => (
+//                                         <li key={index} className="flex justify-between items-center p-2 border border-primary rounded-md my-2">
+//                                             <div>
+//                                                 <span>{task.name} - {task.status}</span>
+//                                                 <p className="text-sm text-secondary mt-1">
+//                                                     Volunteers Assigned: {task.maxVolunteerNeeded}
+//                                                 </p>
+//                                             </div>
+
+//                                             <div>
+//                                                 <select
+//                                                     value={task.status}
+//                                                     onChange={(e) => updateTaskStatus(event.id, index, e.target.value)}
+//                                                     className="bg-primary text-white px-3 py-1 rounded-md mr-2"
+//                                                 >
+//                                                     <option value="not started">Not Started</option>
+//                                                     <option value="ongoing">Ongoing</option>
+//                                                     <option value="completed">Completed</option>
+//                                                 </select>
+
+//                                                 <button
+//                                                     onClick={() => deleteTask(event.id, index)}
+//                                                     className="bg-red-500 text-white px-3 py-1 rounded-md"
+//                                                 >
+//                                                     Delete
+//                                                 </button>
+//                                             </div>
+//                                         </li>
+//                                     ))
+//                                 ) : (
+//                                     <p className="text-sm text-gray-500">No tasks available for this event.</p>
+//                                 )}
+//                             </ul>
+
+//                             <Link
+//                                 to={`/event/${event.id}`}
+//                                 className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
+//                             >
+//                                 View Details
+//                             </Link>
+//                         </div>
+//                     ))
+//                 )}
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function ManageEvents() {
-    const [events, setEvents] = useState([
-        {
-            id: 1,
-            name: 'Fitness Event',
-            tasks: [
-                { name: 'Setup', status: 'ongoing' },
-                { name: 'Registration', status: 'not started' }
-            ],
-            volunteers: ['John Doe', 'Jane Smith']
-        },
-        {
-            id: 2,
-            name: 'Healthcare Event',
-            tasks: [
-                { name: 'Medical Checkup', status: 'completed' },
-                { name: 'Consultations', status: 'not started' }
-            ],
-            volunteers: ['Alice Johnson', 'Bob Williams']
-        }
-    ]);
+    const [events, setEvents] = useState([]);
 
+    // Load events dynamically from localStorage
+    useEffect(() => {
+        const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
+        setEvents(storedEvents);
+    }, []);
+
+    // Task Status Update Logic
     const updateTaskStatus = (eventId, taskIndex, newStatus) => {
         const updatedEvents = events.map(event =>
             event.id === eventId
@@ -243,52 +552,83 @@ export default function ManageEvents() {
                 : event
         );
         setEvents(updatedEvents);
+        localStorage.setItem('events', JSON.stringify(updatedEvents));
+    };
+
+    // Delete Task Logic
+    const deleteTask = (eventId, taskIndex) => {
+        const updatedEvents = events.map(event =>
+            event.id === eventId
+                ? {
+                    ...event,
+                    tasks: event.tasks.filter((_, idx) => idx !== taskIndex)
+                }
+                : event
+        );
+        setEvents(updatedEvents);
+        localStorage.setItem('events', JSON.stringify(updatedEvents));
     };
 
     return (
         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
-            <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+            <div className="bg-accent p-8 rounded-lg shadow-md w-full">
                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Manage Events</h1>
 
-                {events.map(event => (
-                    <div key={event.id} className="mb-6 p-4 bg-secondary rounded-md">
-                        <h2 className="text-lg font-bold">{event.name}</h2>
+                {events.length === 0 ? (
+                    <p className="text-center text-secondary">No events found. Create events to manage them here.</p>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"> {/* Added Grid for 2-in-a-row structure */}
+                        {events.map(event => (
+                            <div key={event.id} className="mb-6 p-4 bg-accent border border-primary rounded-md shadow">
+                                <h2 className="text-lg font-bold text-primary">{event.name}</h2>
 
-                        <h3 className="mt-4 font-semibold">Tasks:</h3>
-                        <ul>
-                            {event.tasks.map((task, index) => (
-                                <li key={index} className="flex justify-between items-center p-2 bg-tertiary rounded-md my-2">
-                                    <span>{task.name}</span>
-                                    <select
-                                        value={task.status}
-                                        onChange={(e) => updateTaskStatus(event.id, index, e.target.value)}
-                                        className="bg-primary text-white px-3 py-1 rounded-md"
-                                    >
-                                        <option value="not started">Not Started</option>
-                                        <option value="ongoing">Ongoing</option>
-                                        <option value="completed">Completed</option>
-                                    </select>
-                                </li>
-                            ))}
-                        </ul>
+                                <h3 className="mt-4 font-semibold text-secondary">Tasks:</h3>
+                                <ul>
+                                    {event.tasks && event.tasks.length > 0 ? (
+                                        event.tasks.map((task, index) => (
+                                            <li key={index} className="flex justify-between items-center p-2 border border-primary rounded-md my-2">
+                                                <div>
+                                                    <span>{task.name} - {task.status}</span>
+                                                    <p className="text-sm text-secondary mt-1">
+                                                        Volunteers Assigned: {task.maxVolunteerNeeded}
+                                                    </p>
+                                                </div>
 
-                        <h3 className="mt-4 font-semibold">Volunteers:</h3>
-                        <ul>
-                            {event.volunteers.map((volunteer, index) => (
-                                <li key={index} className="text-sm p-1 bg-tertiary rounded-md my-1">
-                                    {volunteer}
-                                </li>
-                            ))}
-                        </ul>
+                                                <div>
+                                                    <select
+                                                        value={task.status}
+                                                        onChange={(e) => updateTaskStatus(event.id, index, e.target.value)}
+                                                        className="bg-primary text-white px-3 py-1 rounded-md mr-2"
+                                                    >
+                                                        <option value="not started">Not Started</option>
+                                                        <option value="ongoing">Ongoing</option>
+                                                        <option value="completed">Completed</option>
+                                                    </select>
 
-                        <Link
-                            to={`/event/${event.id}`}
-                            className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
-                        >
-                            View Details
-                        </Link>
+                                                    <button
+                                                        onClick={() => deleteTask(event.id, index)}
+                                                        className="bg-red-500 text-white px-3 py-1 rounded-md"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-gray-500">No tasks available for this event.</p>
+                                    )}
+                                </ul>
+
+                                <Link
+                                    to={`/event/${event.id}`}
+                                    className="inline-block mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary"
+                                >
+                                    View Details
+                                </Link>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         </div>
     );

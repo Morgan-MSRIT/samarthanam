@@ -312,6 +312,283 @@
 
 
 
+// import { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+
+// export default function CreateEvents() {
+//     const navigate = useNavigate();
+
+//     const [eventData, setEventData] = useState({
+//         name: '',
+//         description: '',
+//         tags: '',
+//         location: '',
+//         startDate: '',
+//         endDate: '',
+//         isRegistrationRequired: false,
+//         totalVolunteerRequirement: 0
+//     });
+
+//     const tagsOptions = ['Fitness', 'Healthcare', 'Education', 'Environment'];
+
+//     const handleChange = (e) => {
+//         const { name, value, type, checked } = e.target;
+//         const fieldValue = type === 'checkbox' ? checked : value;
+//         setEventData((prev) => ({
+//             ...prev,
+//             [name]: fieldValue
+//         }));
+//     };
+
+//     const handleSubmit = (e) => {
+//         e.preventDefault();
+//         console.log('Event Created:', eventData);
+//         navigate('/organizer/manage-events'); // Redirect to Manage Events Page after creation
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
+//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Create New Event</h1>
+
+//                 <form onSubmit={handleSubmit}>
+//                     {['name', 'description', 'location'].map((field) => (
+//                         <div key={field} className="mb-4">
+//                             <label className="block text-sm font-medium text-primary">{field}</label>
+//                             <input
+//                                 type="text"
+//                                 name={field}
+//                                 value={eventData[field]}
+//                                 onChange={handleChange}
+//                                 className="w-full p-2 border border-primary rounded-md"
+//                                 required
+//                             />
+//                         </div>
+//                     ))}
+
+//                     {/* Tags Dropdown */}
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Tags</label>
+//                         <select
+//                             name="tags"
+//                             value={eventData.tags}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         >
+//                             <option value="">Select Tag</option>
+//                             {tagsOptions.map(tag => (
+//                                 <option key={tag} value={tag}>{tag}</option>
+//                             ))}
+//                         </select>
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Start Date</label>
+//                         <input
+//                             type="datetime-local"
+//                             name="startDate"
+//                             value={eventData.startDate}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">End Date</label>
+//                         <input
+//                             type="datetime-local"
+//                             name="endDate"
+//                             value={eventData.endDate}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Total Volunteer Requirement</label>
+//                         <input
+//                             type="number"
+//                             name="totalVolunteerRequirement"
+//                             value={eventData.totalVolunteerRequirement}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Registration Required</label>
+//                         <input
+//                             type="checkbox"
+//                             name="isRegistrationRequired"
+//                             checked={eventData.isRegistrationRequired}
+//                             onChange={handleChange}
+//                             className="ml-2"
+//                         />
+//                     </div>
+
+//                     {/* Tasks Button */}
+//                     <Link
+//                         to="/organizer/create-tasks"
+//                         className="bg-blue-500 text-white px-4 py-2 rounded-md inline-block hover:bg-blue-700 mb-4"
+//                     >
+//                         Tasks
+//                     </Link>
+
+//                     <button type="submit" className="bg-primary text-white p-2 rounded-md w-full hover:bg-secondary">
+//                         Create Event
+//                     </button>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+// import { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+
+// export default function CreateEvents() {
+//     const navigate = useNavigate();
+
+//     const [eventData, setEventData] = useState({
+//         name: '',
+//         description: '',
+//         tags: '',
+//         location: '',
+//         startDate: '',
+//         endDate: '',
+//         isRegistrationRequired: false,
+//         totalVolunteerRequirement: 0
+//     });
+
+//     const tagsOptions = ['Fitness', 'Healthcare', 'Education', 'Environment'];
+
+//     const handleChange = (e) => {
+//         const { name, value, type, checked } = e.target;
+//         const fieldValue = type === 'checkbox' ? checked : value;
+//         setEventData((prev) => ({
+//             ...prev,
+//             [name]: fieldValue
+//         }));
+//     };
+
+//     const handleSubmit = (e) => {
+//         e.preventDefault();
+
+//         // Store events in localStorage
+//         const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
+//         storedEvents.push(eventData);
+//         localStorage.setItem('events', JSON.stringify(storedEvents));
+
+//         alert('Event Created Successfully!');
+//         navigate('/organizer/create-tasks'); // Redirect to Create Tasks Page
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-tertiary flex items-center justify-center p-8">
+//             <div className="bg-accent p-8 rounded-lg shadow-md w-full max-w-md">
+//                 <h1 className="text-3xl font-bold text-primary mb-6 text-center">Create New Event</h1>
+
+//                 <form onSubmit={handleSubmit}>
+//                     {['name', 'description', 'location'].map((field) => (
+//                         <div key={field} className="mb-4">
+//                             <label className="block text-sm font-medium text-primary">{field}</label>
+//                             <input
+//                                 type="text"
+//                                 name={field}
+//                                 value={eventData[field]}
+//                                 onChange={handleChange}
+//                                 className="w-full p-2 border border-primary rounded-md"
+//                                 required
+//                             />
+//                         </div>
+//                     ))}
+
+//                     {/* Tags Dropdown */}
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Tags</label>
+//                         <select
+//                             name="tags"
+//                             value={eventData.tags}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         >
+//                             <option value="">Select Tag</option>
+//                             {tagsOptions.map(tag => (
+//                                 <option key={tag} value={tag}>{tag}</option>
+//                             ))}
+//                         </select>
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Start Date</label>
+//                         <input
+//                             type="datetime-local"
+//                             name="startDate"
+//                             value={eventData.startDate}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">End Date</label>
+//                         <input
+//                             type="datetime-local"
+//                             name="endDate"
+//                             value={eventData.endDate}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Total Volunteer Requirement</label>
+//                         <input
+//                             type="number"
+//                             name="totalVolunteerRequirement"
+//                             value={eventData.totalVolunteerRequirement}
+//                             onChange={handleChange}
+//                             className="w-full p-2 border border-primary rounded-md"
+//                             required
+//                         />
+//                     </div>
+
+//                     <div className="mb-4">
+//                         <label className="block text-sm font-medium text-primary">Registration Required</label>
+//                         <input
+//                             type="checkbox"
+//                             name="isRegistrationRequired"
+//                             checked={eventData.isRegistrationRequired}
+//                             onChange={handleChange}
+//                             className="ml-2"
+//                         />
+//                     </div>
+
+//                     <button type="submit" className="bg-primary text-white p-2 rounded-md w-full hover:bg-secondary">
+//                         Create Event
+//                     </button>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -342,8 +619,14 @@ export default function CreateEvents() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Event Created:', eventData);
-        navigate('/organizer/manage-events'); // Redirect to Manage Events Page after creation
+
+        // Store events in localStorage
+        const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
+        storedEvents.push(eventData);
+        localStorage.setItem('events', JSON.stringify(storedEvents));
+
+        alert('Event Created Successfully!');
+        navigate('/organizer/create-tasks'); // Redirect to Create Tasks Page
     };
 
     return (
@@ -429,14 +712,6 @@ export default function CreateEvents() {
                             className="ml-2"
                         />
                     </div>
-
-                    {/* Tasks Button */}
-                    <Link
-                        to="/organizer/create-tasks"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md inline-block hover:bg-blue-700 mb-4"
-                    >
-                        Tasks
-                    </Link>
 
                     <button type="submit" className="bg-primary text-white p-2 rounded-md w-full hover:bg-secondary">
                         Create Event
