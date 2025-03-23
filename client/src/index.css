@@ -218,3 +218,40 @@ body {
     font-size: 12px;
   }
 }
+/* High Contrast Mode */
+.high-contrast {
+  background-color: black !important;
+  color: yellow !important;
+}
+
+.high-contrast * {
+  background-color: black !important;
+  color: yellow !important;
+  border-color: yellow !important;
+}
+
+.high-contrast input,
+.high-contrast textarea {
+  background-color: black !important;
+  color: yellow !important;
+  border: 1px solid yellow !important;
+}
+
+.high-contrast a {
+  color: yellow !important;
+}
+
+.high-contrast .btn-primary {
+  background-color: yellow !important;
+  color: black !important;
+  border: 2px solid yellow !important;
+}
+
+.high-contrast .btn-primary:hover {
+  background-color: black !important;
+  color: yellow !important;
+}
+
+.high-contrast img {
+  filter: invert(1);
+}
