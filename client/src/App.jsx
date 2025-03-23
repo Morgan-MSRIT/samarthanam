@@ -38,7 +38,7 @@ function App() {
             <Route
               path="/organizer/create-events"
               element={
-                <ProtectedRoute allowedRoles={['organizer']}>
+                <ProtectedRoute allowedRoles={['organiser']}>
                   <CreateEvents />
                 </ProtectedRoute>
               }
@@ -46,7 +46,7 @@ function App() {
             <Route
               path="/organizer/manage-events"
               element={
-                <ProtectedRoute allowedRoles={['organizer']}>
+                <ProtectedRoute allowedRoles={['organiser']}>
                   <ManageEvents />
                 </ProtectedRoute>
               }
@@ -54,7 +54,7 @@ function App() {
             <Route
               path="/organizer/analytics"
               element={
-                <ProtectedRoute allowedRoles={['organizer']}>
+                <ProtectedRoute allowedRoles={['organiser']}>
                   <AnalyticsPage />
                 </ProtectedRoute>
               }
@@ -62,7 +62,7 @@ function App() {
             <Route
               path="/organizer/create-tasks"
               element={
-                <ProtectedRoute allowedRoles={['organizer']}>
+                <ProtectedRoute allowedRoles={['organiser']}>
                   <CreateTasks />
                 </ProtectedRoute>
               }
