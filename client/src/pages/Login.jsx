@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../services/apiService';
+import { login as loginService } from '../services/apiService';
+import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -10,20 +11,20 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const response = await login({
+      const response = await loginService({
         email: formData.email,
         password: formData.password,
       });
       if (response.success) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        navigate('/dashboard'); // Redirect to dashboard after login
+        login(response.user, response.token);
+        navigate('/events'); // Redirect to events page after login
       } else {
         setError(response.message);
       }

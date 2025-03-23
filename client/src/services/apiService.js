@@ -1,11 +1,22 @@
-// client/src/services/apiService.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api/v1';
 
+const api = axios.create({
+  baseURL: API_URL,
+});
+
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
 export const signup = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/signup`, userData);
+    const response = await api.post('/auth/signup', userData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred during signup' };
@@ -14,7 +25,7 @@ export const signup = async (userData) => {
 
 export const sendOtp = async (email) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/sendotp`, { email });
+    const response = await api.post('/auth/sendotp', { email });
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while sending OTP' };
@@ -23,7 +34,7 @@ export const sendOtp = async (email) => {
 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`, credentials);
+    const response = await api.post('/auth/login', credentials);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred during login' };
@@ -32,7 +43,7 @@ export const login = async (credentials) => {
 
 export const getTags = async () => {
   try {
-    const response = await axios.get(`${API_URL}/tag/get-tags`, {});
+    const response = await api.get('/tag/get-tags');
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while fetching tags' };
