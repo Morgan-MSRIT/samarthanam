@@ -10,6 +10,10 @@ import Events from './pages/Events';
 import About from './pages/About';
 import ScrollToTop from './components/common/ScrollToTop';
 import ScreenReader from './components/accessibility/ScreenReader';
+import CreateEvents from './pages/CreateEvents';
+import ManageEvents from './pages/ManageEvents';
+import AnalyticsPage from './pages/AnalyticsPage';
+import CreateTasks from './pages/CreateTasks';
 
 function App() {
   return (
@@ -28,6 +32,15 @@ function App() {
           <Route path="/participant/:eventId" element={<ParticipantForm />} />
           <Route path="/event/:eventId" element={<EventDetails />} />
           <Route path="/tasks/:eventId" element={<TaskList />} />
+
+          <Route path="/organizer/create-events" element={<CreateEvents />} />
+
+<Route path="/organizer/manage-events" element={<ManageEvents />} />
+<Route path="/organizer/analytics" element={<AnalyticsPage />} />
+
+<Route path="/organizer/create-tasks" element={<CreateTasks />} />
+
+
         </Routes>
       </div>
     </Router>
