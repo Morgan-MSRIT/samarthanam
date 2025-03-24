@@ -6,7 +6,7 @@ const { auth, isOrganizer, isAdmin } = require("../middlewares/auth.middlewares"
 const router = Router();
 
 router.route('/create-volunteer').post(auth,createVolunteer);
-router.route('/update-volunteer').post(auth,isOrganizer,updateVolunteer);
+router.route('/update-volunteer').post(auth,updateVolunteer);
 router.route('/delete-volunteer').post(auth,deleteVolunteer);
 router.route('/get-volunteers').post(auth,isOrganizer,getVolunteers);
 //To get a single volunteer
