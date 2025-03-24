@@ -196,7 +196,7 @@ exports.participantDeregistration = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     try {
-        const { _id, name, description, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
+        const { _id, name, description, location, tasks, startDate, endDate, isRegistrationRequired, totalVolunteerReq } = req.body;
 
         const event = await Event.findById(_id);
 
@@ -210,7 +210,7 @@ exports.updateEvent = async (req, res) => {
       
         const updatedEvent = await Event.findByIdAndUpdate(
             _id, 
-            { name, description, location, startDate, endDate, isRegistrationRequired, totalVolunteerReq }, 
+            { name, description, location, tasks, startDate, endDate, isRegistrationRequired, totalVolunteerReq }, 
             { new: true }
         );
 
@@ -276,7 +276,7 @@ exports.getAllRegisterVolunteer = async (req, res) => {
                 message: "Event not found"
             })
         }
-
+        
         return res.status(200).json({
             success: true,
             data: event.volunteers
@@ -324,16 +324,22 @@ exports.getAllRegisterVolunteer = async (req, res) => {
 exports.getAllRegisterVolunteer = async (req, res) => {
     try {
         const { event_id } = req.body;
-
-        const event = await Event.findById(event_id).populate('volunteers').exec().populate('user').exec();
-
-
+        // console.log("EVENT ID",event_id);
+        const event = await Event.findById(event_id)
+        .populate({
+          path: 'volunteers',
+          populate: { path: 'user' }
+        })
+        .populate('user')
+        .exec();
+        
         if(!event) {
             return res.status(400).json({
                 success: false,
                 message: "Event not found"
             })
         }
+        console.log("EVENT: Get all registered volunteers: ",event);
 
         return res.status(200).json({
             success: true,

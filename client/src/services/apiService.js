@@ -1,11 +1,16 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api/v1';
+const RECOMMENDATION_API_URL = 'http://localhost:4002';
 
 // Create two instances of axios - one for authenticated requests and one for public requests
 const api = axios.create({
   baseURL: API_URL,
 });
+
+const recommendationApi = axios.create({
+    baseURL: RECOMMENDATION_API_URL,
+})
 
 
 // Add token to every request via an interceptor
@@ -96,6 +101,15 @@ export const getEventById = async (eventId) => {
     throw error.response?.data || { message: 'An error occurred while fetching event details' };
   }
 };
+
+// export const organizerGetEventById = async (eventId) => {
+//   try {
+//     const response = await api.get(`/event/get-events-by-id`, { eventId });
+//     return response.data;
+//   } catch (error) {
+//     throw error.response?.data || { message: 'An error occurred while fetching event details' };
+//   }
+// };
 
 export const getUserEvents = async (userId) => {
   try {
@@ -188,6 +202,15 @@ export const participantDeregistration = async (eventId, email) => {
   }
 };
 
+export const updateVolunteer = async (volunteerData) => {
+  try {
+    const response = await api.post('/volunteer/update-volunteer', volunteerData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while updating volunteer' };
+  }
+}
+
 export const volunteerRegistration = async (eventId, data) => {
   try {
     console.log('Data received in volunteerRegistration:', data); // Debug log
@@ -242,11 +265,25 @@ export const createVolunteer = async (data) => {
   }
 
 };
+
 export const createFeedback = async (eventId, feedbackData) => {
   try {
     const response = await api.post('/feedback/create-feedback', { event: eventId, ...feedbackData });
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while submitting feedback' };
+  }
+}
+};
+
+export const getRecommendedEvents = async (userId) => {
+  try {
+    const response = await recommendationApi.post('/recommendation/get-recommendation', {
+        userId: userId, 
+    })
+    response.data.data = response.data.data.filter(data => data.matchedTags >= 1).map(data => data.event);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while fetching recommended events' };
   }
 }

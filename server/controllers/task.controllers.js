@@ -3,8 +3,9 @@ const Event = require('../models/event.models');
 
 exports.createTask = async (req, res) => {
     try {
-        const { name, startTime, endTime, currentVolunteerCount, maxVolunteerNeeded } = req.body;
-        if (!name || !startTime || !endTime || !currentVolunteerCount || !maxVolunteerNeeded) {
+        const { name, startTime, endTime, currentVolunteerCount=0, maxVolunteerNeeded } = req.body;
+        
+        if (!name || !startTime || !endTime || !maxVolunteerNeeded) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
