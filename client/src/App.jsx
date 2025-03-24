@@ -16,6 +16,7 @@ import CreateEvents from './pages/CreateEvents';
 import ManageEvents from './pages/ManageEvents';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CreateTasks from './pages/CreateTasks';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/participant/:eventId" element={<ParticipantForm />} />
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/tasks/:eventId" element={<TaskList />} />
+            <Route path="/notification" element={<Notifications/>} />
             <Route
               path="/organizer/create-events"
               element={
