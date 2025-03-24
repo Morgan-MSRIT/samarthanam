@@ -25,6 +25,8 @@ import Analytics from "./pages/admin/Analytics";
 import ChangePassword from "./pages/ChangePassword";
 import EventManagement from "./pages/EventManagement";
 import Notifications from './pages/Notifications';
+import FeedbackForm from "./pages/CreateFeedback";
+import FeedbackPage from "./pages/FeedbackPage";
 
 
 
@@ -49,6 +51,15 @@ function App() {
                   <EventVolunteerForm />
                 </ProtectedRoute>
               } 
+            />
+            <Route path="/make-feedback/:eventId" element={<FeedbackForm />} />
+            <Route
+              path="/feedback/:eventId"
+              element={
+                // <ProtectedRoute allowedRoles={['organiser']}>
+                <FeedbackPage/>
+                // </ProtectedRoute>
+              }
             />
             <Route path="/participant/:eventId" element={<ParticipantForm />} />
             <Route path="/event/:eventId" element={<EventDetails />} />

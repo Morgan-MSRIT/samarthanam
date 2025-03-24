@@ -24,9 +24,12 @@ const feedbackSchema = new Schema({
   },
   type: {
     type: String,
+    default: ''
   },
-  "sentiment_score": {
-    type: Number
+  sentimentScore: {
+    type: Number,
+    default: 0
+
   },
 }, { timestamps: true });
 

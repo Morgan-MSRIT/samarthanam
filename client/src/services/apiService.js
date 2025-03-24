@@ -263,6 +263,17 @@ export const createVolunteer = async (data) => {
     console.error('Error in createVolunteer:', error.response?.data || error); // Debug log
     throw error.response?.data || error;
   }
+
+};
+
+export const createFeedback = async (eventId, feedbackData) => {
+  try {
+    const response = await api.post('/feedback/create-feedback', { event: eventId, ...feedbackData });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while submitting feedback' };
+  }
+}
 };
 
 export const getRecommendedEvents = async (userId) => {
@@ -271,7 +282,6 @@ export const getRecommendedEvents = async (userId) => {
         userId: userId, 
     })
     response.data.data = response.data.data.filter(data => data.matchedTags >= 1).map(data => data.event);
-    console.log(response.data.data);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while fetching recommended events' };
