@@ -273,7 +273,6 @@ export const createFeedback = async (eventId, feedbackData) => {
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while submitting feedback' };
   }
-}
 };
 
 export const getRecommendedEvents = async (userId) => {
@@ -286,4 +285,4 @@ export const getRecommendedEvents = async (userId) => {
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while fetching recommended events' };
   }
-}
+};
