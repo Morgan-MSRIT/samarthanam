@@ -119,3 +119,21 @@ export const participantDeregistration = async (eventId, email) => {
     throw error.response?.data || { message: 'An error occurred during deregistration' };
   }
 };
+
+export const updateVolunteerPreferences = async (data) => {
+  try {
+    const response = await api.post('/volunteer/update-preferences', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while updating volunteer preferences' };
+  }
+};
+
+export const createTask = async (taskData) => {
+  try {
+    const response = await api.post('/task/create-task', taskData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while creating the task' };
+  }
+};

@@ -81,3 +81,21 @@ exports.isAdmin=async(req,res,next)=>{
   }
   
 
+exports.isVolunteer = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (user.role !== "volunteer") {
+            return res.status(401).json({
+                success: false,
+                message: "This is a protected route for volunteers only"
+            });
+        }
+        next();
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "User role cannot be verified"
+        });
+    }
+};
+

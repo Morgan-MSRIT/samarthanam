@@ -1,70 +1,93 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { updateVolunteerPreferences } from '../services/apiService';
 
 export default function TaskList() {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [tasks, setTasks] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [volunteerHrs, setVolunteerHrs] = useState(0);
 
   useEffect(() => {
-    // Simulate API call to fetch tasks and schedule
+    // Calculate total volunteer hours whenever selected tasks change
+    let totalHours = 0;
+    selectedTasks.forEach(taskId => {
+      const task = tasks.find(t => t.id === taskId);
+      if (task) {
+        const [startTime, endTime] = task.time.split(' - ');
+        const start = new Date(`2024-01-01 ${startTime}`);
+        const end = new Date(`2024-01-01 ${endTime}`);
+        totalHours += (end - start) / (1000 * 60 * 60);
+      }
+    });
+    setVolunteerHrs(totalHours);
+  }, [selectedTasks, tasks]);
+
+  useEffect(() => {
+    // TODO: Replace with actual API call
     const fetchData = async () => {
-      // Mock data - replace with actual API call
-      const mockTasks = [
-        {
-          id: 1,
-          title: 'Event Setup',
-          description: 'Help set up the venue, arrange chairs, and prepare materials',
-          time: '9:00 AM - 10:00 AM',
-          volunteersNeeded: 5,
-          currentVolunteers: 2,
-          skills: ['Physical', 'Organizational']
-        },
-        {
-          id: 2,
-          title: 'Registration Desk',
-          description: 'Welcome participants, check registrations, and distribute materials',
-          time: '10:00 AM - 12:00 PM',
-          volunteersNeeded: 3,
-          currentVolunteers: 1,
-          skills: ['Communication', 'Customer Service']
-        },
-        {
-          id: 3,
-          title: 'Activity Support',
-          description: 'Assist participants during activities and ensure smooth flow',
-          time: '12:00 PM - 2:00 PM',
-          volunteersNeeded: 4,
-          currentVolunteers: 0,
-          skills: ['Patience', 'Support']
-        },
-        {
-          id: 4,
-          title: 'Cleanup',
-          description: 'Help clean up the venue and organize materials after the event',
-          time: '2:00 PM - 3:00 PM',
-          volunteersNeeded: 3,
-          currentVolunteers: 0,
-          skills: ['Physical', 'Organizational']
-        }
-      ];
+      try {
+        // Mock data - replace with actual API call
+        const mockTasks = [
+          {
+            id: 1,
+            title: 'Event Setup',
+            description: 'Help set up the venue, arrange chairs, and prepare materials',
+            time: '9:00 AM - 10:00 AM',
+            volunteersNeeded: 5,
+            currentVolunteers: 2,
+            skills: ['Physical', 'Organizational']
+          },
+          {
+            id: 2,
+            title: 'Registration Desk',
+            description: 'Welcome participants, check registrations, and distribute materials',
+            time: '10:00 AM - 12:00 PM',
+            volunteersNeeded: 3,
+            currentVolunteers: 1,
+            skills: ['Communication', 'Customer Service']
+          },
+          {
+            id: 3,
+            title: 'Activity Support',
+            description: 'Assist participants during activities and ensure smooth flow',
+            time: '12:00 PM - 2:00 PM',
+            volunteersNeeded: 4,
+            currentVolunteers: 0,
+            skills: ['Patience', 'Support']
+          },
+          {
+            id: 4,
+            title: 'Cleanup',
+            description: 'Help clean up the venue and organize materials after the event',
+            time: '2:00 PM - 3:00 PM',
+            volunteersNeeded: 3,
+            currentVolunteers: 0,
+            skills: ['Physical', 'Organizational']
+          }
+        ];
 
-      const mockSchedule = [
-        { time: '9:00 AM', activity: 'Volunteer Check-in' },
-        { time: '9:30 AM', activity: 'Volunteer Briefing' },
-        { time: '10:00 AM', activity: 'Event Setup' },
-        { time: '11:00 AM', activity: 'Participant Registration' },
-        { time: '12:00 PM', activity: 'Main Event Activities' },
-        { time: '2:00 PM', activity: 'Cleanup' },
-        { time: '3:00 PM', activity: 'Volunteer Debriefing' }
-      ];
+        const mockSchedule = [
+          { time: '9:00 AM', activity: 'Volunteer Check-in' },
+          { time: '9:30 AM', activity: 'Volunteer Briefing' },
+          { time: '10:00 AM', activity: 'Event Setup' },
+          { time: '11:00 AM', activity: 'Participant Registration' },
+          { time: '12:00 PM', activity: 'Main Event Activities' },
+          { time: '2:00 PM', activity: 'Cleanup' },
+          { time: '3:00 PM', activity: 'Volunteer Debriefing' }
+        ];
 
-      setTasks(mockTasks);
-      setSchedule(mockSchedule);
-      setLoading(false);
+        setTasks(mockTasks);
+        setSchedule(mockSchedule);
+      } catch (err) {
+        setError('Failed to fetch tasks. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -80,10 +103,33 @@ export default function TaskList() {
     });
   };
 
-  const handleConfirmSelection = () => {
-    // TODO: Implement task confirmation logic
-    console.log('Selected tasks:', selectedTasks);
-    navigate('/events');
+  const handleConfirmSelection = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const volunteerId = localStorage.getItem('volunteerId'); // Make sure this is set when volunteer logs in
+      if (!volunteerId) {
+        setError('Volunteer ID not found. Please log in again.');
+        return;
+      }
+
+      const response = await updateVolunteerPreferences({
+        volunteerId,
+        taskPreferred: selectedTasks,
+        volunteerHrs
+      });
+
+      if (response.success) {
+        navigate('/events');
+      } else {
+        setError(response.message || 'Failed to update preferences');
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while updating preferences');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -105,6 +151,11 @@ export default function TaskList() {
             <p className="mt-2 text-sm text-secondary">
               Select the tasks you would like to volunteer for
             </p>
+            {error && (
+              <p className="mt-2 text-sm text-red-600">
+                {error}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -170,14 +221,14 @@ export default function TaskList() {
               <div className="mt-6">
                 <button
                   onClick={handleConfirmSelection}
-                  disabled={selectedTasks.length === 0}
+                  disabled={selectedTasks.length === 0 || loading}
                   className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-accent ${
-                    selectedTasks.length === 0
+                    selectedTasks.length === 0 || loading
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                   }`}
                 >
-                  Confirm Selection
+                  {loading ? 'Updating Preferences...' : 'Confirm Selection'}
                 </button>
               </div>
             </div>

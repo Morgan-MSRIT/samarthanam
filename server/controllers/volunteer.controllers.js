@@ -207,3 +207,46 @@ exports.getVolunteer = async (req, res) => {
     }
 }
 
+exports.updateVolunteerPreferences = async (req, res) => {
+    try {
+        const { volunteerId, taskPreferred, volunteerHrs } = req.body;
+        const volunteer = await Volunteer.findById(volunteerId);
+
+        if (!volunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Volunteer not found"
+            });
+        }
+
+        // Update only taskPreferred and volunteerHrs
+        const updatedVolunteer = await Volunteer.findByIdAndUpdate(
+            volunteerId,
+            {
+                taskPreferred,
+                volunteerHrs
+            },
+            { new: true }
+        );
+
+        if (!updatedVolunteer) {
+            return res.status(404).json({
+                success: false,
+                message: "Error while updating volunteer preferences"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Volunteer preferences updated successfully",
+            data: updatedVolunteer
+        });
+    } catch (error) {
+        console.log("Error occurred while updating volunteer preferences", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
