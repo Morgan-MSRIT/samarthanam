@@ -240,4 +240,13 @@ export const createVolunteer = async (data) => {
     console.error('Error in createVolunteer:', error.response?.data || error); // Debug log
     throw error.response?.data || error;
   }
+
 };
+export const createFeedback = async (eventId, feedbackData) => {
+  try {
+    const response = await api.post('/feedback/create-feedback', { event: eventId, ...feedbackData });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while submitting feedback' };
+  }
+}

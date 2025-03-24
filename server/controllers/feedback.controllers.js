@@ -1,6 +1,6 @@
 const Feedback = require('../models/feedback.models');
 const Event = require('../models/event.models');
-
+const axios = require("axios");
 
 exports.createFeedback = async (req, res) => {
     try {
@@ -20,30 +20,30 @@ exports.createFeedback = async (req, res) => {
             })
         }
 
-
-
-        const eventExists = await Event.findById(event);
-        if(!eventExists) {
-            return res.status(404).json({
-                success: false,
-                message: "Event not found"
+        
+        
+        const response = await axios.post("http://localhost:5000/sentiment-analysis", { 
+            data: {
+                event, 
+                contactHours, 
+                volunteerOrParticipationExperience, 
+                websiteExperience, 
+                experienceWorkingWithOrg, 
+                additionalInfo 
+            }
+            
+        });
+        if (!response) {
+                return res.status(404).json({
+                        success: false,
+                        message: "python flask error for backend"
             })
         }
-
-        // const type = flask call
-        // const sentiment_score = flask call
-
+        console.log("RESPONSE HERE:", response.data)
         
-        // response = await axios.post("http://localhost:5000/get-sentimal-analysis", { event, contactHours, volunteerOrParticipationExperience, websiteExperience, experienceWorkingWithOrg, additionalInfo });
-        // if (!response) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         message: "python flask error for backend"
-        //     })
-        // }
-        // console.log("RESPONSE HERE:", response)
         
-
+        const type =response.data.type
+        const sentimentScore = response.data.sentiment_score
 
 
         const feedback = await Feedback.create({
@@ -53,8 +53,8 @@ exports.createFeedback = async (req, res) => {
             websiteExperience,
             experienceWorkingWithOrg,
             additionalInfo,
-            // type,
-            // sentiment_score
+            type,
+            sentimentScore
         });
 
         return res.status(200).json({
@@ -77,11 +77,33 @@ exports.createFeedback = async (req, res) => {
 
 exports.getFeedbacks = async (req, res) => {
     try {
-
+        const {event} = req.body;
+        console.log("------------", event)
         const feedbacks = await Feedback.find({event: req.body.event});
+
+        // setFeedbacks(response?.data?.data.feedbacks);
+        // setFeedbackSummary(response?.data?.data?.summary);
+        // setScore(response?.data?.data?.score)
+        const response = await axios.post("http://localhost:5000/feedback-analysis", { 
+            data: feedbacks
+            
+        });
+        if (!response) {
+                return res.status(404).json({
+                        success: false,
+                        message: "python flask error for backend"
+            })
+        }
+        console.log("RESPONSE HERE:", response.data)
+
+
         return res.status(200).json({
             success: true,
-            data: feedbacks
+            data: {
+                feedbacks,
+                summary : response?.data,
+                score: 10
+            }
         })
     }
     catch (error) {
