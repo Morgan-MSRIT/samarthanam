@@ -4,7 +4,7 @@ const { auth, isOrganizer, isAdmin } = require("../middlewares/auth.middlewares"
 
 const router = Router();
 
-router.route('/create-feedback').post(auth,createFeedback);
+router.route('/create-feedback').post(createFeedback);
 router.route('/get-feedbacks').post(auth,isOrganizer,getFeedbacks);
 router.route('/delete-feedback').post(auth,isAdmin,deleteFeedback);
 

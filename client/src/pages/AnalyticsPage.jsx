@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import { useEffect, useState } from "react";
 import { Chart } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
 
 // Register required components
 ChartJS.register(
@@ -157,6 +158,9 @@ const apiAnalytics = axios.create({
     getOrganizerAnalytics();
   }, []);
 
+
+  const navigate = useNavigate()
+
   return (
     <>
       <div className="max-h-full bg-tertiary flex items-center justify-center p-8">
@@ -223,10 +227,10 @@ const apiAnalytics = axios.create({
                   </div>
                   <div className="flex mt-2 my-auto">
                     <button
-                      //   onClick={logout}
+                        onClick={() => (navigate("/feedback/" + event?._id))}
                       className="inline-flex my-auto items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
                     >
-                      Get Feedback
+                      Show All Feedback
                     </button>
                   </div>
                 </div>

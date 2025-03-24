@@ -74,24 +74,23 @@ export default function NavBar() {
               >
                 Events
               </Link>
-              {/* Don't show About us and contact us for admin and organisers */}
-              {isAuthenticated &&
-                (user?.role !== "admin" && user?.role !== "organiser") && (
-                  <>
-                    <Link
-                      to="/about"
-                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    >
-                      About Us
-                    </Link>
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                    >
-                      Contact Us
-                    </Link>
-                  </>
-                )}
+              {/* Show About us and contact us for all users except admin and organisers */}
+              {(!isAuthenticated || (user?.role !== "admin" && user?.role !== "organiser")) && (
+                <>
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Contact Us
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -241,25 +240,25 @@ export default function NavBar() {
           >
             Events
           </Link>
-          {isAuthenticated &&
-            (user?.role !== "admin" && user?.role !== "organiser") && (
-              <>
-                <Link
-                  to="/about"
-                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/contact"
-                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Contact Us
-                </Link>
-              </>
-            )}
+          {/* Show About us and contact us for all users except admin and organisers */}
+          {(!isAuthenticated || (user?.role !== "admin" && user?.role !== "organiser")) && (
+            <>
+              <Link
+                to="/about"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact Us
+              </Link>
+            </>
+          )}
           <button
             onClick={toggleHighContrastMode}
             className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${

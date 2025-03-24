@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import { getEvents } from '../services/apiService';
+import { getEvents, getRecommendedEvents } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Events() {
@@ -10,13 +10,21 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await getEvents();
+        setLoading(true);
+        let response;
+        if (activeTab === 'recommended' && isAuthenticated) {
+          response = await getRecommendedEvents(user?._id);
+        } else {
+          response = await getEvents();
+        }
+        console.log(response);
+
         if (response.success) {
           setEvents(response.data.map(event => ({
             id: event._id,
@@ -31,7 +39,7 @@ export default function Events() {
             currentParticipants: event.registeredParticipants?.length || 0,
             maxVolunteers: event.totalVolunteerReq,
             currentVolunteers: event.volunteers?.length || 0,
-            isRecommended: false
+            isRecommended: event.isRecommended || false
           })));
         } else {
           setError(response.message);
@@ -44,14 +52,13 @@ export default function Events() {
     };
 
     fetchEvents();
-  }, []);
+  }, [activeTab, isAuthenticated, user?.id]);
 
   const filteredEvents = events.filter(event => {
-    const matchesTab = activeTab === 'all' || (activeTab === 'recommended' && event.isRecommended);
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.location.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesTab && matchesSearch;
+    return matchesSearch;
   });
 
   const EventCard = ({ event }) => {
@@ -61,7 +68,14 @@ export default function Events() {
 
     return (
       <div className="bg-accent rounded-lg shadow-md overflow-hidden">
-        <img src={event.image} alt={event.title} className="w-full h-64 object-cover" />
+        <div className="relative">
+          <img src={event.image} alt={event.title} className="w-full h-64 object-cover" />
+          {event.isRecommended && (
+            <div className="absolute top-2 right-2 bg-primary text-accent px-2 py-1 rounded-full text-xs font-medium">
+              Recommended
+            </div>
+          )}
+        </div>
         <div className="p-6">
           <h3 className="text-xl font-semibold text-primary">{event.title}</h3>
           <p className="mt-2 text-secondary">{event.description}</p>
@@ -174,7 +188,13 @@ export default function Events() {
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
-                  onClick={() => setShowSignInModal(true)}
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      setShowSignInModal(true);
+                    } else {
+                      setActiveTab('recommended');
+                    }
+                  }}
                 >
                   Recommended Events
                 </button>
