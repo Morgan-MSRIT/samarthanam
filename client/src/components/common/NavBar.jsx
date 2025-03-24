@@ -32,112 +32,101 @@ export default function NavBar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20 md:h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <img
-                className={`h-16 md:h-12 w-auto ${
-                  highContrastMode ? "filter invert" : ""
-                }`}
-                src="/samarthanam-logo.png"
-                alt="Samarthanam Trust"
-              />
-            </div>
-            <div className="hidden md:ml-6 md:flex md:space-x-8">
+        <div className="flex items-center justify-between h-20 md:h-16">
+          <div className="flex items-center flex-shrink-0">
+            <img
+              className={`h-16 md:h-12 w-auto ${
+                highContrastMode ? "filter invert" : ""
+              }`}
+              src="/samarthanam-logo.png"
+              alt="Samarthanam Trust"
+            />
+            <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
               <Link
                 to="/"
-                className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
               >
                 Home
               </Link>
-              {isAuthenticated && user.role === "admin" ? (
+              {isAuthenticated && user?.role === "organiser" && (
+                <>
+                  <Link
+                    to="/organizer/dashboard"
+                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              )}
+              {isAuthenticated && user?.role === "admin" && (
                 <>
                   <Link
                     to="/admin/dashboard"
-                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
                   >
-                    Admin Dashboard
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/about"
-                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    About Us
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    Contact Us
+                    Dashboard
                   </Link>
                 </>
               )}
               <Link
                 to="/events"
-                className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
               >
                 Events
               </Link>
-              {user.role !== "organiser" && user.role !== "admin" && (
-                <>
-                  <Link
-                    to="/about"
-                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    About Us
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    Contact Us
-                  </Link>
-                </>
-              )}
+              {/* Don't show About us and contact us for admin and organisers */}
+              {isAuthenticated &&
+                (user?.role !== "admin" && user?.role !== "organiser") && (
+                  <>
+                    <Link
+                      to="/about"
+                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                    >
+                      About Us
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                    >
+                      Contact Us
+                    </Link>
+                  </>
+                )}
             </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="inline-flex items-center px-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
+          <div className="hidden md:flex md:items-center md:space-x-2 flex-wrap">
+            <button
+              onClick={toggleHighContrastMode}
+              className={`inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
+                highContrastMode ? "bg-yellow-300 text-black" : ""
+              }`}
+            >
+              {highContrastMode ? "Contrast Off" : "Contrast On"}
+            </button>
+            <div className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer">
               <div
                 id="google_translate_element"
                 className="inline-flex items-center"
               ></div>
-              <span>Translate</span>
-            <button
-              onClick={toggleHighContrastMode}
-              className={`inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${
-                highContrastMode ? "bg-yellow-300 text-black" : ""
-              }`}
-            >
-              {highContrastMode
-                ? "Disable High Contrast"
-                : "Enable High Contrast"}
-            </button>
-            <div className="inline-flex items-center h-[38px] px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
-              <div
-                id="google_translate_element"
-                className="inline-flex items-center h-full"
-              ></div>
-              <span className="ml-2">Translate</span>
+              <span className="ml-1">Translate</span>
             </div>
             {isAuthenticated ? (
               <>
-                <span className="text-primary-700">Welcome, {user.name}</span>
-                {user.role === "organiser" && (
+                <span className="text-primary-700 text-sm px-2 py-1">
+                  Welcome, {user.name}
+                </span>
+                {user?.role === "organiser" && (
                   <>
                     <Link
                       to="/organizer/create-events"
-                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                     >
                       Create Events
                     </Link>
                     <Link
                       to="/organizer/manage-events"
-                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                     >
                       Manage Events
                     </Link>
@@ -145,7 +134,7 @@ export default function NavBar() {
                 )}
                 <button
                   onClick={logout}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Logout
                 </button>
@@ -154,13 +143,13 @@ export default function NavBar() {
               <>
                 <Link
                   to="/volunteer"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
-                  Register as Volunteer
+                  Volunteer
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Sign in
                 </Link>
@@ -171,7 +160,7 @@ export default function NavBar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-600"
+              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-600 cursor-pointer"
               aria-expanded="false"
               aria-controls="mobile-menu"
             >
@@ -227,14 +216,23 @@ export default function NavBar() {
           >
             Home
           </Link>
-          {user.role === "organiser" && (
-            <Link
-              to="/organizer/dashboard"
-              className="block px-3 py-2 rounded-md text-base font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-              onClick={() => setIsOpen(false)}
-            >
-              Dashboard
-            </Link>
+          {isAuthenticated && user?.role === "organiser" && (
+            <>
+              <Link
+                to="/organizer/dashboard"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                onClick={() => setIsOpen(false)}
+              ></Link>
+            </>
+          )}
+          {isAuthenticated && user?.role === "admin" && (
+            <>
+              <Link
+                to="/admin/dashboard"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                onClick={() => setIsOpen(false)}
+              ></Link>
+            </>
           )}
           <Link
             to="/events"
@@ -243,40 +241,29 @@ export default function NavBar() {
           >
             Events
           </Link>
-          {isAuthenticated && user.role === "admin" ? (
-            <>
+          {isAuthenticated &&
+            (user?.role !== "admin" && user?.role !== "organiser") && (
               <>
                 <Link
-                  to="/admin/dashboard"
-                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  to="/about"
+                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
-                  Admin Dashboard
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Contact Us
                 </Link>
               </>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/about"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                onClick={() => setIsOpen(false)}
-              >
-                About Us
-              </Link>
-              <Link
-                to="/contact"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                onClick={() => setIsOpen(false)}
-              >
-                Contact Us
-              </Link>
-            </>
-          )}
+            )}
           <button
             onClick={toggleHighContrastMode}
-            className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${
-              highContrastMode ? "bg-yellow-300 text-black" : ""
+            className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
+              highContrastMode ? "bg-yellow-300 text-black cursor-pointer" : ""
             }`}
           >
             {highContrastMode
@@ -291,18 +278,18 @@ export default function NavBar() {
               <span className="block px-4 py-3 text-lg text-primary-700">
                 Welcome, {user.name}
               </span>
-              {user.role === "organiser" && (
+              {user?.role === "organiser" && (
                 <>
                   <Link
                     to="/organizer/create-events"
-                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                     onClick={() => setIsOpen(false)}
                   >
                     Create Events
                   </Link>
                   <Link
                     to="/organizer/manage-events"
-                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                     onClick={() => setIsOpen(false)}
                   >
                     Manage Events
@@ -314,7 +301,7 @@ export default function NavBar() {
                   logout();
                   setIsOpen(false);
                 }}
-                className="block w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                className="block w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
               >
                 Logout
               </button>
@@ -323,14 +310,14 @@ export default function NavBar() {
             <>
               <Link
                 to="/volunteer"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
                 Register as Volunteer
               </Link>
               <Link
                 to="/login"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
                 Sign in

@@ -148,15 +148,9 @@ export const getAllRegisterVolunteer = async (data) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while fetching volunteers' };
-
-export const createEvent = async (eventData) => {
-  try {
-    const response = await api.post('/event/create-event', eventData);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: 'An error occurred while creating the event' };
+  
   }
-};
+}
 
 export const updateEvent = async (eventId, eventData) => {
   try {

@@ -81,8 +81,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          </Routes>
-          <Route
+            <Route
               path="/admin/dashboard"
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
@@ -122,6 +121,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+          </Routes>
         </div>
       </Router>
     </AuthProvider>
