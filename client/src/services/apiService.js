@@ -199,10 +199,10 @@ export const volunteerRegistration = async (eventId, data) => {
 
     const volunteerData = {
       user: data.user._id,
-      taskPreferred: data.preferredTasks,  // Changed to match backend model
-      taskAllocated: [],  // Changed to match backend model
+      taskPreferred: data.preferredTasks,
+      taskAllocated: [],
       status: "not started",
-      volunteerHrs: parseInt(data.availableHours),  // Changed to match backend model
+      volunteerHrs: parseInt(data.availableHours),
       event: eventId
     };
 
@@ -222,6 +222,16 @@ export const createVolunteer = async (data) => {
     // Validate required fields
     if (!data.user || !data.taskPreferred || typeof data.volunteerHrs !== 'number' || !data.event) {
       throw new Error('Missing required fields for creating volunteer');
+    }
+
+    // Ensure taskPreferred is an array
+    if (!Array.isArray(data.taskPreferred)) {
+      data.taskPreferred = [data.taskPreferred];
+    }
+
+    // Ensure taskAllocated is an array
+    if (!Array.isArray(data.taskAllocated)) {
+      data.taskAllocated = [];
     }
 
     const response = await api.post('/volunteer/create-volunteer', data);
