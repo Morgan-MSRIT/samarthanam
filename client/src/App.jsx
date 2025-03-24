@@ -17,6 +17,11 @@ import ManageEvents from "./pages/ManageEvents";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import CreateTasks from "./pages/CreateTasks";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateOrganizer from "./pages/admin/CreateOrganizer";
+import RemoveOrganizer from "./pages/admin/RemoveOrganizer";
+import Analytics from "./pages/admin/Analytics";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -77,6 +82,46 @@ function App() {
               }
             />
           </Routes>
+          <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/create-organizer"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <CreateOrganizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/remove-organizer"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <RemoveOrganizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
         </div>
       </Router>
     </AuthProvider>
