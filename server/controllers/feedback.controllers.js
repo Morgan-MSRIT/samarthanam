@@ -64,7 +64,9 @@ exports.createFeedback = async (req, res) => {
         })
     }
     catch (error) {
-        console.log("Error occured while creating feedback", error);
+        console.log("Error occurred while creating feedback", error);
+        // Log the error message for debugging
+
         return res.status(500).json({
             success: false,
             message: "Internal server error"
@@ -83,7 +85,9 @@ exports.getFeedbacks = async (req, res) => {
         })
     }
     catch (error) {
-        console.log("Error occured while fetching feedbacks", error);
+        console.log("Error occurred while fetching feedbacks", error);
+        // Log the error message for debugging
+
         return res.status(500).json({
             success: false,
             message: "Internal server error"
@@ -109,11 +113,12 @@ exports.deleteFeedback = async (req, res) => {
         })
     }
     catch (error) {
-        console.log("Error occured while deleting feedback", error);
+        console.log("Error occurred while deleting feedback", error);
+        // Log the error message for debugging
+
         return res.status(500).json({
             success: false,
             message: "Internal server error"
         })
     }
 }
-
