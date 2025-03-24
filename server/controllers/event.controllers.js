@@ -324,9 +324,8 @@ exports.getAllRegisterVolunteer = async (req, res) => {
 exports.getAllRegisterVolunteer = async (req, res) => {
     try {
         const { event_id } = req.body;
-
-        const event = await Event.findById(event_id).populate('volunteers').exec().populate('user').exec();
-
+        // console.log("EVENT ID",event_id);
+        const event = await Event.findById(event_id).populate('volunteers').populate('user').exec();
 
         if(!event) {
             return res.status(400).json({

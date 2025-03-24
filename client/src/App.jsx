@@ -22,6 +22,7 @@ import CreateOrganizer from "./pages/admin/CreateOrganizer";
 import RemoveOrganizer from "./pages/admin/RemoveOrganizer";
 import Analytics from "./pages/admin/Analytics";
 import ChangePassword from "./pages/ChangePassword";
+import EventManagement from "./pages/EventManagement";
 
 function App() {
   return (
@@ -58,10 +59,10 @@ function App() {
               }
             />
             <Route
-              path="/organizer/manage-events"
+              path="/organizer/manage-event/:eventId"
               element={
                 <ProtectedRoute allowedRoles={["organiser"]}>
-                  <ManageEvents />
+                  <EventManagement />
                 </ProtectedRoute>
               }
             />

@@ -97,6 +97,15 @@ export const getEventById = async (eventId) => {
   }
 };
 
+// export const organizerGetEventById = async (eventId) => {
+//   try {
+//     const response = await api.get(`/event/get-events-by-id`, { eventId });
+//     return response.data;
+//   } catch (error) {
+//     throw error.response?.data || { message: 'An error occurred while fetching event details' };
+//   }
+// };
+
 export const getUserEvents = async (userId) => {
   try {
     const response = await api.post('/user/get-user-events', { userId });
@@ -185,5 +194,14 @@ export const participantDeregistration = async (eventId, email) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred during deregistration' };
+  }
+};
+
+export const updateVolunteer = async (volunteerData) => {
+  try {
+    const response = await api.post('/volunteer/update-volunteer', volunteerData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while updating volunteer' };
   }
 };
