@@ -5,6 +5,7 @@ import NavBar from "./components/common/NavBar";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import VolunteerForm from "./pages/VolunteerForm";
+import EventVolunteerForm from "./pages/EventVolunteerForm";
 import ParticipantForm from "./pages/ParticipantForm";
 import EventDetails from "./pages/EventDetails";
 import TaskList from "./pages/TaskList";
@@ -37,7 +38,14 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/about" element={<About />} />
             <Route path="/volunteer" element={<VolunteerForm />} />
-            <Route path="/volunteer/:eventId" element={<VolunteerForm />} />
+            <Route 
+              path="/volunteer/:eventId" 
+              element={
+                <ProtectedRoute allowedRoles={["volunteer"]}>
+                  <EventVolunteerForm />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/participant/:eventId" element={<ParticipantForm />} />
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/tasks/:eventId" element={<TaskList />} />
