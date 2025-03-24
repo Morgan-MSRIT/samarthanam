@@ -11,6 +11,7 @@ import EventDetails from "./pages/EventDetails";
 import TaskList from "./pages/TaskList";
 import Events from "./pages/Events";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import ScrollToTop from "./components/common/ScrollToTop";
 import ScreenReader from "./components/accessibility/ScreenReader";
 import CreateEvents from "./pages/CreateEvents";
@@ -43,6 +44,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/events" element={<Events />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/volunteer" element={<VolunteerForm />} />
             <Route 
               path="/volunteer/:eventId" 

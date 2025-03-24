@@ -352,19 +352,19 @@ export default function Landing() {
                 <h3 className="text-accent text-base sm:text-lg font-semibold">Quick Links</h3>
                 <ul className="mt-4 space-y-2">
                   <li>
-                    <a href="#about" className="text-tertiary hover:text-accent text-sm sm:text-base">
+                    <Link to="/about" className="text-tertiary hover:text-accent text-sm sm:text-base">
                       About Us
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#volunteer" className="text-tertiary hover:text-accent text-sm sm:text-base">
+                    <Link to="/volunteer" className="text-tertiary hover:text-accent text-sm sm:text-base">
                       Volunteer
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#donate" className="text-tertiary hover:text-accent text-sm sm:text-base">
-                      Donate
-                    </a>
+                    <Link to="/contact" className="text-tertiary hover:text-accent text-sm sm:text-base">
+                      Contact Us
+                    </Link>
                   </li>
                 </ul>
               </div>
