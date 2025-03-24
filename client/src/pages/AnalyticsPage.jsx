@@ -19,39 +19,37 @@ ChartJS.register(
   PointElement
 );
 
+
+
+
 export default function AnalyticsPage() {
+  const [eventData, setEventData] = useState([]);
+  
+  const [allEvents, setAllEvents] = useState([]);
+  const [eventName, setEventName] = useState([]);
+  const [numParticipants, setNumParticipants] = useState([]);
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
+  const [totalParticipants, setTotalParticipants] = useState(0);
+  const [totalVolunteers, setTotalVolunteers] = useState(0);
   const data = {
-    labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
+    labels: eventName,
     datasets: [
       {
         type: "bar",
-        label: "Bar Dataset",
-        data: [100, 20, 30, 40, 23, 430, 56, 8, 45, 23, 45, 67],
+        label: "Registered Participants",
+        data: registeredParticipants,
         backgroundColor: "rgba(54, 162, 235, 0.6)",
-      },
+      },  
       {
         type: "bar",
-        label: "Line Dataset",
-        data: [50, 50, 50, 50, 23, 43, 56, 8, 450, 23, 45, 67],
+        label: "Number of Participants",
+        data: numParticipants,
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 2,
         fill: false,
-      },
-    ],
-  };
+      },  
+    ],  
+  };  
 
   const options = {
     responsive: true,
@@ -59,17 +57,16 @@ export default function AnalyticsPage() {
     plugins: {
       legend: {
         display: true,
-      },
-    },
+      },  
+    },  
     scales: {
       x: {
         barPercentage: 1.0,
         categoryPercentage: 0.8,
-      },
-    },
-  };
+      },  
+    },  
+  };  
 
-  const [eventData, setEventData] = useState([]);
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -77,14 +74,18 @@ export default function AnalyticsPage() {
   console.log(loading)
 
   const API_URL = 'http://localhost:4000/api/v1';
-
+  const API_ANALYTICS = 'http://localhost:4003';
 const api = axios.create({
   baseURL: API_URL,
 });
 
+const apiAnalytics = axios.create({
+  baseURL: API_ANALYTICS,
+});
+
     
 
-  const getEvents = async (e,) => {
+  const getEvents = async (e) => {
     e?.preventDefault();
     setLoading(true);
     setError('');
@@ -102,8 +103,45 @@ const api = axios.create({
         });
       
       if (response?.data?.success) {
-        console.log(response?.data);
         setEventData(response?.data?.data);
+      } else {
+        setError(response?.data?.message);
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || 'An error occurred while fetching events');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const getOrganizerAnalytics = async (e) => {
+    e?.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('token');
+    const response = await apiAnalytics.post('/analytics/get-organizer-analytics', 
+        {
+          id: user._id
+      },
+        { 
+            headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+      
+      if (response?.data?.success) {
+        const data = response?.data?.data;
+        setAllEvents(data?.events);
+        setEventName(data?.eventName);
+        setNumParticipants(data?.numParticipants);
+        setRegisteredParticipants(data?.registeredParticipants);
+        setTotalParticipants(data?.totalParticipants);
+        setTotalVolunteers(data?.totalVolunteers);
+        
       } else {
         setError(response?.data?.message);
       }
@@ -116,6 +154,7 @@ const api = axios.create({
 
   useEffect(() => {
     getEvents();
+    getOrganizerAnalytics();
   }, []);
 
   return (
@@ -130,6 +169,26 @@ const api = axios.create({
           </div>
         </div>
       </div>
+
+      {/* totals */}
+      <div className="max-h-full bg-tertiary flex items-center justify-center p-8">
+        <div className="bg-accent p-2 md:p-8 rounded-lg shadow-md w-[98%] md:w-[90%] h-max">
+          <h1 className="text-xl md:text-3xl font-bold text-primary mb-2 md:mb-6 text-center">
+            Totals
+          </h1>
+          <div className="border-2 md:flex mx-auto text-center md:justify-between mb-2 rounded-lg border-gray-300 p-2 md:p-4">
+            <div className="md:ml-10 flex gap-4 mx-auto">
+              <div className="text-xl font-bold">Total Participants: </div>
+              <div className="my-auto text-lg">{totalParticipants}</div>
+            </div>
+            <div className="md:mr-10 flex gap-4">
+              <div className="text-xl font-bold">Total Volunteers: </div>
+              <div className="my-auto text-lg">{totalVolunteers}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-h-full bg-tertiary flex items-center justify-center p-8">
         <div className="bg-accent p-2 md:p-8 rounded-lg shadow-md w-[98%] md:w-[90%] h-max">
           <h1 className="text-xl md:text-3xl font-bold text-primary mb-2 md:mb-6 text-center">
