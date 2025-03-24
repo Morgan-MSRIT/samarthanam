@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const { auth, isOrganizer, isAdmin } = require("../middlewares/auth.middlewares");
-const {createEvent,getEvent, participantRegistration, participantDeregistration, updateEvent, deleteEvent, getAllRegisterVolunteer, getEventById}=require("../controllers/event.controller");
+const {createEvent,getEvent, participantRegistration, participantDeregistration, updateEvent, deleteEvent, getAllRegisterVolunteer, getEventById}=require("../controllers/event.controllers");
 
 const router = Router();
 
