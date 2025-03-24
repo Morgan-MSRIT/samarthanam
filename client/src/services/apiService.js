@@ -1,11 +1,16 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api/v1';
+const RECOMMENDATION_API_URL = 'http://localhost:4002';
 
 // Create two instances of axios - one for authenticated requests and one for public requests
 const api = axios.create({
   baseURL: API_URL,
 });
+
+const recommendationApi = axios.create({
+    baseURL: RECOMMENDATION_API_URL,
+})
 
 
 // Add token to every request via an interceptor
@@ -259,3 +264,16 @@ export const createVolunteer = async (data) => {
     throw error.response?.data || error;
   }
 };
+
+export const getRecommendedEvents = async (userId) => {
+  try {
+    const response = await recommendationApi.post('/recommendation/get-recommendation', {
+        userId: userId, 
+    })
+    response.data.data = response.data.data.filter(data => data.matchedTags >= 1).map(data => data.event);
+    console.log(response.data.data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while fetching recommended events' };
+  }
+}
