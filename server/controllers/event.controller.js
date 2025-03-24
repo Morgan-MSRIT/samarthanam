@@ -1,64 +1,6 @@
 const User = require('../models/user.models');
 const Event = require('../models/event.models');
 
-const getRecommendedEvents = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    
-    // Get user's tags
-    const user = await User.findById(userId).populate('tags');
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    console.log('User tags:', user.tags.map(tag => tag.name));
-
-    // Get all events
-    const events = await Event.find()
-      .populate('tags')
-      .populate('user', 'name')
-      .sort({ startDate: 1 });
-
-    console.log('Total events:', events.length);
-
-    // Filter and sort events based on user's tags
-    const recommendedEvents = events
-      .filter(event => {
-        // Check if event has any matching tags with user
-        const hasMatchingTag = event.tags.some(eventTag => 
-          user.tags.some(userTag => userTag._id.toString() === eventTag._id.toString())
-        );
-        
-        if (hasMatchingTag) {
-          console.log('Matching event:', event.name, 'with tags:', event.tags.map(tag => tag.name));
-        }
-        
-        return hasMatchingTag;
-      })
-      .map(event => ({
-        ...event.toObject(),
-        isRecommended: true
-      }));
-
-    console.log('Recommended events count:', recommendedEvents.length);
-
-    return res.status(200).json({
-      success: true,
-      data: recommendedEvents
-    });
-  } catch (error) {
-    console.error('Error in getRecommendedEvents:', error);
-    return res.status(500).json({
-      success: false,
-      message: "Error fetching recommended events",
-      error: error.message
-    });
-  }
-};
-
 const getEvent = async (req, res) => {
   try {
     const events = await Event.find()
