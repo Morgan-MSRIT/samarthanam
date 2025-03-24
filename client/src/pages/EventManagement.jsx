@@ -151,28 +151,24 @@ export default function EventManagement() {
         if (response.success) {
           const updatedTasks = tasks.filter((t) => t._id !== taskId);
           setTasks(updatedTasks);
-          const updatedEventData = {
-            _id: eventId,
-            name: event.name,
-            description: event.description,
-            location: event.location,
-            startDate: event.startDate,
-            endDate: event.endDate,
-            isRegistrationRequired: event.isRegistrationRequired,
-            totalVolunteerReq: event.totalVolunteerReq,
-            tasks: updatedTasks.map((t) => t._id),
-          };
-          const updateResponse = await updateEvent(updatedEventData);
-          if (updateResponse.success) {
-            setEvent((prev) => ({
-              ...prev,
-              tasks: updatedTasks,
-            }));
-            toast.success("Task deleted successfully!");
-          } else {
-            setError("Failed to update event after deleting task");
-            toast.error("Failed to update event");
-          }
+          // const updatedEventData = {
+          //   _id: eventId,
+          //   name: event.name,
+          //   description: event.description,
+          //   location: event.location,
+          //   startDate: event.startDate,
+          //   endDate: event.endDate,
+          //   isRegistrationRequired: event.isRegistrationRequired,
+          //   totalVolunteerReq: event.totalVolunteerReq,
+          //   tasks: updatedTasks.map((t) => t._id),
+          // };
+          // const updateResponse = await updateEvent(updatedEventData);
+
+          setEvent((prev) => ({
+            ...prev,
+            tasks: updatedTasks,
+          }));
+          toast.success("Task deleted successfully!");
         } else {
           setError("Failed to delete task");
           toast.error("Failed to delete task");
