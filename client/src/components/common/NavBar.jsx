@@ -1,6 +1,6 @@
-import { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { useContext, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,9 +9,9 @@ export default function NavBar() {
 
   useEffect(() => {
     if (highContrastMode) {
-      document.body.classList.add('high-contrast');
+      document.body.classList.add("high-contrast");
     } else {
-      document.body.classList.remove('high-contrast');
+      document.body.classList.remove("high-contrast");
     }
   }, [highContrastMode]);
 
@@ -24,13 +24,21 @@ export default function NavBar() {
   };
 
   return (
-    <nav className={`shadow fixed w-full z-50 ${highContrastMode ? 'bg-black text-yellow-300 border-white border-2' : 'bg-tertiary-300'}`}>
+    <nav
+      className={`shadow fixed w-full z-50 ${
+        highContrastMode
+          ? "bg-black text-yellow-300 border-white border-2"
+          : "bg-tertiary-300"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 md:h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <img
-                className={`h-16 md:h-12 w-auto ${highContrastMode ? 'filter invert' : ''}`}
+                className={`h-16 md:h-12 w-auto ${
+                  highContrastMode ? "filter invert" : ""
+                }`}
                 src="/samarthanam-logo.png"
                 alt="Samarthanam Trust"
               />
@@ -42,23 +50,36 @@ export default function NavBar() {
               >
                 Home
               </Link>
+              {isAuthenticated && user.role === "admin" ? (
+                <>
+                  <Link
+                    to="/admin/dashboard"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Admin Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Contact Us
+                  </Link>
+                </>
+              )}
               <Link
                 to="/events"
                 className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
               >
                 Events
-              </Link>
-              <Link
-                to="/about"
-                className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-              >
-                About Us
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-              >
-                Contact Us
               </Link>
             </div>
           </div>
@@ -66,18 +87,25 @@ export default function NavBar() {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={toggleHighContrastMode}
-              className={`inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${highContrastMode ? 'bg-yellow-300 text-black' : ''}`}
+              className={`inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${
+                highContrastMode ? "bg-yellow-300 text-black" : ""
+              }`}
             >
-              {highContrastMode ? 'Disable High Contrast' : 'Enable High Contrast'}
+              {highContrastMode
+                ? "Disable High Contrast"
+                : "Enable High Contrast"}
             </button>
             <div className="inline-flex items-center h-[38px] px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
-              <div id="google_translate_element" className="inline-flex items-center h-full"></div>
+              <div
+                id="google_translate_element"
+                className="inline-flex items-center h-full"
+              ></div>
               <span className="ml-2">Translate</span>
             </div>
             {isAuthenticated ? (
               <>
                 <span className="text-primary-700">Welcome, {user.name}</span>
-                {user.role === 'organiser' && (
+                {user.role === "organiser" && (
                   <>
                     <Link
                       to="/organizer/create-events"
@@ -127,12 +155,32 @@ export default function NavBar() {
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
-                <svg className="block h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="block h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="block h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="block h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -142,12 +190,12 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       <div
-        className={`md:hidden fixed w-full ${
-          isOpen ? 'block' : 'hidden'
-        } ${
-          highContrastMode ? 'bg-black border-yellow-300 border-2' : 'bg-tertiary-300'
+        className={`md:hidden fixed w-full ${isOpen ? "block" : "hidden"} ${
+          highContrastMode
+            ? "bg-black border-yellow-300 border-2"
+            : "bg-tertiary-300"
         } shadow-lg z-40`}
-        style={{ top: '5rem', left: 0, right: 0 }}
+        style={{ top: "5rem", left: 0, right: 0 }}
       >
         <div className="px-4 py-4 space-y-2">
           <Link
@@ -164,25 +212,45 @@ export default function NavBar() {
           >
             Events
           </Link>
-          <Link
-            to="/about"
-            className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-            onClick={() => setIsOpen(false)}
-          >
-            About Us
-          </Link>
-          <Link
-            to="/contact"
-            className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-            onClick={() => setIsOpen(false)}
-          >
-            Contact Us
-          </Link>
+          {isAuthenticated && user.role === "admin" ? (
+            <>
+              <>
+                <Link
+                  to="/admin/dashboard"
+                  className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Admin Dashboard
+                </Link>
+              </>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/about"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                onClick={() => setIsOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact Us
+              </Link>
+            </>
+          )}
           <button
             onClick={toggleHighContrastMode}
-            className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${highContrastMode ? 'bg-yellow-300 text-black' : ''}`}
+            className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${
+              highContrastMode ? "bg-yellow-300 text-black" : ""
+            }`}
           >
-            {highContrastMode ? 'Disable High Contrast' : 'Enable High Contrast'}
+            {highContrastMode
+              ? "Disable High Contrast"
+              : "Enable High Contrast"}
           </button>
           <div className="px-4 py-3">
             <div id="google_translate_element" className="w-full"></div>
@@ -192,7 +260,7 @@ export default function NavBar() {
               <span className="block px-4 py-3 text-lg text-primary-700">
                 Welcome, {user.name}
               </span>
-              {user.role === 'organiser' && (
+              {user.role === "organiser" && (
                 <>
                   <Link
                     to="/organizer/create-events"
@@ -236,29 +304,6 @@ export default function NavBar() {
               >
                 Sign in
               </Link>
-
-              <Link to="/organizer/create-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Create Events
-</Link>
-<Link to="/organizer/manage-events" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Manage Events
-</Link>
-<Link to="/organizer/analytics" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-secondary">
-  Analytics
-</Link>
-
-
-<Link
-    to="/organizer/create-tasks"
-    className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
->
-    Create Tasks
-</Link> 
-
-<Link to="/admin/dashboard">Admin Dashboard</Link>
-
-
-
             </>
           )}
         </div>

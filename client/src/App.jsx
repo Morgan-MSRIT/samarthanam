@@ -1,29 +1,27 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import NavBar from './components/common/NavBar';
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import VolunteerForm from './pages/VolunteerForm';
-import ParticipantForm from './pages/ParticipantForm';
-import EventDetails from './pages/EventDetails';
-import TaskList from './pages/TaskList';
-import Events from './pages/Events';
-import About from './pages/About';
-import ScrollToTop from './components/common/ScrollToTop';
-import ScreenReader from './components/accessibility/ScreenReader';
-import CreateEvents from './pages/CreateEvents';
-import ManageEvents from './pages/ManageEvents';
-import AnalyticsPage from './pages/AnalyticsPage';
-import CreateTasks from './pages/CreateTasks';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NavBar from "./components/common/NavBar";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import VolunteerForm from "./pages/VolunteerForm";
+import ParticipantForm from "./pages/ParticipantForm";
+import EventDetails from "./pages/EventDetails";
+import TaskList from "./pages/TaskList";
+import Events from "./pages/Events";
+import About from "./pages/About";
+import ScrollToTop from "./components/common/ScrollToTop";
+import ScreenReader from "./components/accessibility/ScreenReader";
+import CreateEvents from "./pages/CreateEvents";
+import ManageEvents from "./pages/ManageEvents";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import CreateTasks from "./pages/CreateTasks";
 
-import AdminDashboard from './pages/admin/AdminDashboard';
-import CreateOrganizer from './pages/admin/CreateOrganizer';
-import RemoveOrganizer from './pages/admin/RemoveOrganizer';
-import Analytics from './pages/admin/Analytics';
-import ChangePassword from './pages/ChangePassword';
-
-
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateOrganizer from "./pages/admin/CreateOrganizer";
+import RemoveOrganizer from "./pages/admin/RemoveOrganizer";
+import Analytics from "./pages/admin/Analytics";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -46,7 +44,7 @@ function App() {
             <Route
               path="/organizer/create-events"
               element={
-                <ProtectedRoute allowedRoles={['organiser']}>
+                <ProtectedRoute allowedRoles={["organiser"]}>
                   <CreateEvents />
                 </ProtectedRoute>
               }
@@ -54,7 +52,7 @@ function App() {
             <Route
               path="/organizer/manage-events"
               element={
-                <ProtectedRoute allowedRoles={['organiser']}>
+                <ProtectedRoute allowedRoles={["organiser"]}>
                   <ManageEvents />
                 </ProtectedRoute>
               }
@@ -62,7 +60,7 @@ function App() {
             <Route
               path="/organizer/analytics"
               element={
-                <ProtectedRoute allowedRoles={['organiser']}>
+                <ProtectedRoute allowedRoles={["organiser"]}>
                   <AnalyticsPage />
                 </ProtectedRoute>
               }
@@ -70,23 +68,52 @@ function App() {
             <Route
               path="/organizer/create-tasks"
               element={
-                <ProtectedRoute allowedRoles={['organiser']}>
+                <ProtectedRoute allowedRoles={["organiser"]}>
                   <CreateTasks />
                 </ProtectedRoute>
               }
             />
           </Routes>
-
-
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-<Route path="/admin/create-organizer" element={<CreateOrganizer />} />
-<Route path="/admin/remove-organizer" element={<RemoveOrganizer />} />
-<Route path="/admin/analytics" element={<Analytics />} />
-
-
-<Route path="/change-password" element={<ChangePassword />} />
-
-
+          <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/create-organizer"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <CreateOrganizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/remove-organizer"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <RemoveOrganizer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
         </div>
       </Router>
     </AuthProvider>
