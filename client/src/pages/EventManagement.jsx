@@ -3,12 +3,13 @@ import { useParams } from "react-router-dom";
 import {
   getEventById,
   createTask,
-  updateTask,
   deleteTask,
   getAllRegisterVolunteer,
   updateVolunteer,
   updateEvent,
 } from "../services/apiService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EventManagement() {
   const { eventId } = useParams();
@@ -22,10 +23,16 @@ export default function EventManagement() {
     maxVolunteerNeeded: 0,
     currentVolunteerCount: 0,
   });
+  const [editingTask, setEditingTask] = useState(null);
+  const [editEvent, setEditEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // For volunteers table search
+  const [currentPage, setCurrentPage] = useState(1); // For pagination
+  const pageSize = 10; // For pagination
+  const [taskSearchTerms, setTaskSearchTerms] = useState({}); // New state for task-specific search terms
 
-  // Fetch event and volunteer data on mount
+  // Fetch event and volunteer data on mount (unchanged)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,13 +43,27 @@ export default function EventManagement() {
         if (eventResponse.success) {
           setEvent(eventResponse.data);
           setTasks(eventResponse.data.tasks);
+          setEditEvent({
+            _id: eventResponse.data._id,
+            name: eventResponse.data.name,
+            description: eventResponse.data.description,
+            location: eventResponse.data.location,
+            startDate: eventResponse.data.startDate.slice(0, 16),
+            endDate: eventResponse.data.endDate.slice(0, 16),
+            isRegistrationRequired: eventResponse.data.isRegistrationRequired,
+            totalVolunteerReq: eventResponse.data.totalVolunteerReq,
+          });
         } else {
           setError("Failed to fetch event details");
         }
-        if (volunteerResponse.success) setVolunteers(volunteerResponse.data);
-        else setError((prev) => prev + " Failed to fetch volunteers");
+        if (volunteerResponse.success) {
+          setVolunteers(volunteerResponse.data);
+        } else {
+          setError((prev) => prev + " Failed to fetch volunteers");
+        }
       } catch (err) {
         setError("Error fetching data");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -50,56 +71,136 @@ export default function EventManagement() {
     fetchData();
   }, [eventId]);
 
-  // Handle input changes for new task form
+  // Reset currentPage when searchTerm changes (unchanged)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Handlers (unchanged except for new helper function)
   const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setNewTask((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Add a new task
+  const handleEventChange = (e) => {
+    const { name, value } = e.target;
+    setEditEvent((prev) => ({
+      ...prev,
+      [name]: name === "isRegistrationRequired" ? value === "true" : value,
+    }));
+  };
+
   const handleAddTask = async (e) => {
     e.preventDefault();
     try {
-      const taskData = { ...newTask, event: eventId };
+      const taskData = {
+        name: newTask.name,
+        startTime: newTask.startTime,
+        endTime: newTask.endTime,
+        maxVolunteerNeeded: newTask.maxVolunteerNeeded,
+        currentVolunteerCount: 0,
+      };
       const response = await createTask(taskData);
       if (response.success) {
-        setTasks((prev) => [...prev, response.data]);
-        await updateEvent({
-          _id: eventId,
-          tasks: [...event.tasks.map((t) => t._id), response.data._id],
-        });
-        setNewTask({
-          name: "",
-          startTime: "",
-          endTime: "",
-          maxVolunteerNeeded: 0,
-          currentVolunteerCount: 0,
-        });
+        const updatedTasks = [...tasks, response.data];
+        setTasks(updatedTasks);
+        const updatedEvent = {
+          _id: event._id,
+          name: event.name,
+          description: event.description,
+          tag: event.tag,
+          location: event.location,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          isRegistrationRequired: event.isRegistrationRequired,
+          registeredParticipants: event.registeredParticipants,
+          tasks: updatedTasks.map((t) => t._id),
+          volunteers: event.volunteers,
+          totalVolunteerReq: event.totalVolunteerReq,
+          image: event.image,
+        };
+        const updateResponse = await updateEvent(event._id, updatedEvent);
+        if (updateResponse.success) {
+          setEvent(updateResponse.data);
+          setNewTask({
+            name: "",
+            startTime: "",
+            endTime: "",
+            maxVolunteerNeeded: 0,
+            currentVolunteerCount: 0,
+          });
+          toast.success("Task created and event updated successfully!");
+        } else {
+          setError("Failed to update event after adding task");
+          toast.error("Failed to update event");
+        }
       } else {
         setError("Failed to create task");
+        toast.error("Failed to create task");
       }
     } catch (err) {
-      setError("Error creating task");
+      setError("Error creating task: " + err.message);
+      toast.error("Error creating task");
     }
   };
 
-  // Delete a task
   const handleDeleteTask = async (taskId) => {
-    try {
-      const response = await deleteTask(taskId);
-      if (response.success) {
-        setTasks((prev) => prev.filter((t) => t._id !== taskId));
-        await updateEvent({
-          _id: eventId,
-          tasks: tasks.filter((t) => t._id !== taskId).map((t) => t._id),
-        });
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        const response = await deleteTask(taskId);
+        if (response.success) {
+          const updatedTasks = tasks.filter((t) => t._id !== taskId);
+          setTasks(updatedTasks);
+          const updatedEventData = {
+            _id: eventId,
+            name: event.name,
+            description: event.description,
+            location: event.location,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            isRegistrationRequired: event.isRegistrationRequired,
+            totalVolunteerReq: event.totalVolunteerReq,
+            tasks: updatedTasks.map((t) => t._id),
+          };
+          const updateResponse = await updateEvent(updatedEventData);
+          if (updateResponse.success) {
+            setEvent((prev) => ({
+              ...prev,
+              tasks: updatedTasks,
+            }));
+            toast.success("Task deleted successfully!");
+          } else {
+            setError("Failed to update event after deleting task");
+            toast.error("Failed to update event");
+          }
+        } else {
+          setError("Failed to delete task");
+          toast.error("Failed to delete task");
+        }
+      } catch (err) {
+        setError("Error deleting task: " + err.message);
+        toast.error("Error deleting task");
       }
-    } catch (err) {
-      setError("Error deleting task");
     }
   };
 
-  // Assign a volunteer to a task
+  const handleUpdateEvent = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateEvent(eventId, editEvent);
+      if (response.success) {
+        setEvent(response.data);
+        toast.success("Event updated successfully!");
+      } else {
+        setError("Failed to update event");
+        toast.error("Failed to update event");
+      }
+    } catch (err) {
+      setError("Error updating event");
+      toast.error("Error updating event");
+    }
+  };
+
   const handleAssignVolunteer = async (taskId, volunteerId) => {
     const task = tasks.find((t) => t._id === taskId);
     const volunteer = volunteers.find((v) => v._id === volunteerId);
@@ -109,7 +210,6 @@ export default function EventManagement() {
       task.currentVolunteerCount >= task.maxVolunteerNeeded
     )
       return;
-
     try {
       const updatedTaskAllocated = [...volunteer.taskAllocated, taskId];
       const volunteerResponse = await updateVolunteer({
@@ -119,45 +219,35 @@ export default function EventManagement() {
         status: volunteer.status,
         volunteerHrs: volunteer.volunteerHrs,
       });
-
       if (volunteerResponse.success) {
-        const updatedTask = {
-          taskId: task._id,
-          name: task.name,
-          startTime: task.startTime,
-          endTime: task.endTime,
-          currentVolunteerCount: task.currentVolunteerCount + 1,
-          maxVolunteerNeeded: task.maxVolunteerNeeded,
-        };
-        const taskResponse = await updateTask(updatedTask);
-
-        if (taskResponse.success) {
-          setTasks((prev) =>
-            prev.map((t) =>
-              t._id === taskId
-                ? { ...t, currentVolunteerCount: t.currentVolunteerCount + 1 }
-                : t
-            )
-          );
-          setVolunteers((prev) =>
-            prev.map((v) =>
-              v._id === volunteerId
-                ? { ...v, taskAllocated: updatedTaskAllocated }
-                : v
-            )
-          );
-        }
+        setTasks((prev) =>
+          prev.map((t) =>
+            t._id === taskId
+              ? { ...t, currentVolunteerCount: t.currentVolunteerCount + 1 }
+              : t
+          )
+        );
+        setVolunteers((prev) =>
+          prev.map((v) =>
+            v._id === volunteerId
+              ? { ...v, taskAllocated: updatedTaskAllocated }
+              : v
+          )
+        );
+        toast.success("Volunteer assigned successfully!");
+      } else {
+        setError("Failed to assign volunteer");
+        toast.error("Failed to assign volunteer");
       }
     } catch (err) {
       setError("Error assigning volunteer to task");
+      toast.error("Error assigning volunteer");
     }
   };
 
-  // Remove a volunteer from a task
   const handleRemoveVolunteerFromTask = async (taskId, volunteerId) => {
     const volunteer = volunteers.find((v) => v._id === volunteerId);
     if (!volunteer || !volunteer.taskAllocated.includes(taskId)) return;
-
     try {
       const updatedTaskAllocated = volunteer.taskAllocated.filter(
         (t) => t !== taskId
@@ -169,42 +259,37 @@ export default function EventManagement() {
         status: volunteer.status,
         volunteerHrs: volunteer.volunteerHrs,
       });
-
       if (volunteerResponse.success) {
-        const task = tasks.find((t) => t._id === taskId);
-        const updatedTask = {
-          taskId: task._id,
-          name: task.name,
-          startTime: task.startTime,
-          endTime: task.endTime,
-          currentVolunteerCount: task.currentVolunteerCount - 1,
-          maxVolunteerNeeded: task.maxVolunteerNeeded,
-        };
-        const taskResponse = await updateTask(updatedTask);
-
-        if (taskResponse.success) {
-          setTasks((prev) =>
-            prev.map((t) =>
-              t._id === taskId
-                ? { ...t, currentVolunteerCount: t.currentVolunteerCount - 1 }
-                : t
-            )
-          );
-          setVolunteers((prev) =>
-            prev.map((v) =>
-              v._id === volunteerId
-                ? { ...v, taskAllocated: updatedTaskAllocated }
-                : v
-            )
-          );
-        }
+        setTasks((prev) =>
+          prev.map((t) =>
+            t._id === taskId
+              ? { ...t, currentVolunteerCount: t.currentVolunteerCount - 1 }
+              : t
+          )
+        );
+        setVolunteers((prev) =>
+          prev.map((v) =>
+            v._id === volunteerId
+              ? { ...v, taskAllocated: updatedTaskAllocated }
+              : v
+          )
+        );
+        toast.success("Volunteer removed successfully!");
+      } else {
+        setError("Failed to remove volunteer");
+        toast.error("Failed to remove volunteer");
       }
     } catch (err) {
       setError("Error removing volunteer from task");
+      toast.error("Error removing volunteer");
     }
   };
 
-  // Loading and error states
+  // Helper function to get available volunteers for a task
+  const getAvailableVolunteers = (taskId) => {
+    return volunteers.filter((v) => !v.taskAllocated.includes(taskId));
+  };
+
   if (loading)
     return (
       <div className="text-center py-12 text-tertiary-500">Loading...</div>
@@ -212,15 +297,134 @@ export default function EventManagement() {
   if (error)
     return <div className="text-center py-12 text-accent-500">{error}</div>;
 
-  // Render UI
+  // Filter and paginate volunteers for the table (unchanged)
+  const filteredVolunteers = volunteers.filter(
+    (v) =>
+      (v.user.name &&
+        v.user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      v.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const totalPages = Math.ceil(filteredVolunteers.length / pageSize);
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const paginatedVolunteers = filteredVolunteers.slice(start, end);
+
   return (
     <div className="min-h-screen bg-tertiary-100 py-12 px-4 sm:px-6 lg:px-8">
+      <ToastContainer />
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-tertiary-800 mb-8">
           Manage Event: {event.name}
         </h1>
 
-        {/* Tasks Section */}
+        {/* Event Details Update Card (unchanged) */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h2 className="text-2xl font-semibold text-tertiary-800 mb-4">
+            Update Event Details
+          </h2>
+          <form onSubmit={handleUpdateEvent} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Event Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={editEvent?.name || ""}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={editEvent?.description || ""}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Location
+              </label>
+              <input
+                type="text"
+                name="location"
+                value={editEvent?.location || ""}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Start Date
+              </label>
+              <input
+                type="datetime-local"
+                name="startDate"
+                value={editEvent?.startDate || ""}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                End Date
+              </label>
+              <input
+                type="datetime-local"
+                name="endDate"
+                value={editEvent?.endDate || ""}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Registration Required
+              </label>
+              <select
+                name="isRegistrationRequired"
+                value={editEvent?.isRegistrationRequired ? "true" : "false"}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-tertiary-700">
+                Total Volunteers Required
+              </label>
+              <input
+                type="number"
+                name="totalVolunteerReq"
+                value={editEvent?.totalVolunteerReq || 0}
+                onChange={handleEventChange}
+                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                min="0"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+            >
+              Update Event
+            </button>
+          </form>
+        </div>
+
+        {/* Tasks Section with Searchable Dropdown */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-semibold text-tertiary-800 mb-4">
             Tasks
@@ -246,32 +450,66 @@ export default function EventManagement() {
                       </p>
                     </div>
                   </div>
-                  <div className="space-x-2">
-                    <select
-                      onChange={(e) =>
-                        handleAssignVolunteer(task._id, e.target.value)
-                      }
-                      className={`px-3 py-2 bg-white border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                        task.currentVolunteerCount >= task.maxVolunteerNeeded
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
-                      }`}
-                      disabled={
-                        task.currentVolunteerCount >= task.maxVolunteerNeeded
-                      }
-                    >
-                      <option value="">Assign Volunteer</option>
-                      {volunteers
-                        .filter((v) => !v.taskAllocated.includes(task._id))
-                        .map((v) => (
-                          <option key={v._id} value={v._id}>
-                            {v.name || v.email}
-                          </option>
-                        ))}
-                    </select>
+                  <div className="space-x-2 flex items-center">
+                    {/* Searchable Dropdown */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search volunteers..."
+                        value={taskSearchTerms[task._id] || ""}
+                        onChange={(e) =>
+                          setTaskSearchTerms((prev) => ({
+                            ...prev,
+                            [task._id]: e.target.value,
+                          }))
+                        }
+                        className={`px-3 py-2 bg-white border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                          task.currentVolunteerCount >= task.maxVolunteerNeeded
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                        disabled={
+                          task.currentVolunteerCount >= task.maxVolunteerNeeded
+                        }
+                      />
+                      {taskSearchTerms[task._id] && (
+                        <ul className="absolute w-full bg-white border border-tertiary-300 rounded-md mt-1 max-h-60 overflow-auto z-10">
+                          {getAvailableVolunteers(task._id)
+                            .filter(
+                              (v) =>
+                                (v.user.name &&
+                                  v.user.name
+                                    .toLowerCase()
+                                    .includes(
+                                      taskSearchTerms[task._id].toLowerCase()
+                                    )) ||
+                                v.user.email
+                                  .toLowerCase()
+                                  .includes(
+                                    taskSearchTerms[task._id].toLowerCase()
+                                  )
+                            )
+                            .map((v) => (
+                              <li
+                                key={v._id}
+                                onClick={() => {
+                                  handleAssignVolunteer(task._id, v._id);
+                                  setTaskSearchTerms((prev) => ({
+                                    ...prev,
+                                    [task._id]: "",
+                                  }));
+                                }}
+                                className="px-4 py-2 hover:bg-tertiary-100 cursor-pointer"
+                              >
+                                {v.user.name || v.user.email}
+                              </li>
+                            ))}
+                        </ul>
+                      )}
+                    </div>
                     <button
                       onClick={() => handleDeleteTask(task._id)}
-                      className="bg-primary-400 text-accent-100 px-4 py-2 rounded-md hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      className="bg-primary-500 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-accent-500 cursor-pointer"
                     >
                       Delete
                     </button>
@@ -281,29 +519,37 @@ export default function EventManagement() {
                   <h4 className="text-sm font-semibold text-tertiary-700">
                     Assigned Volunteers:
                   </h4>
-                  <ul className="list-disc pl-5 text-tertiary-600">
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {volunteers
                       .filter((v) => v.taskAllocated.includes(task._id))
                       .map((v) => (
-                        <li key={v._id}>
-                          {v.name || v.email}
+                        <div
+                          key={v._id}
+                          className="inline-flex items-center bg-blue-100 px-3 py-1 rounded-full"
+                        >
+                          <span className="text-gray-700">
+                            {v.user.name || v.user.email}
+                          </span>
                           <button
                             onClick={() =>
                               handleRemoveVolunteerFromTask(task._id, v._id)
                             }
-                            className="ml-2 text-accent-500 hover:underline focus:outline-none focus:ring-2 focus:ring-accent-500"
+                            className="ml-2 text-accent-500 hover:text-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-500 cursor-pointer"
+                            aria-label={`Remove ${
+                              v.user.name || v.user.email
+                            } from task`}
                           >
-                            Remove
+                            ×
                           </button>
-                        </li>
+                        </div>
                       ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Add New Task Form */}
+          {/* Add New Task Form (unchanged) */}
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-tertiary-800 mb-2">
               Add New Task
@@ -364,7 +610,7 @@ export default function EventManagement() {
               </div>
               <button
                 type="submit"
-                className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
               >
                 Add Task
               </button>
@@ -372,27 +618,76 @@ export default function EventManagement() {
           </div>
         </div>
 
-        {/* Volunteers Section */}
+        {/* Volunteers Section (unchanged) */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-tertiary-800 mb-4">
             Volunteers
           </h2>
-          <ul className="space-y-2 text-tertiary-700">
-            {volunteers.map((volunteer) => (
-              <li key={volunteer._id}>
-                {volunteer.name || volunteer.email || "Volunteer"} - Assigned to
-                tasks:{" "}
-                {volunteer.taskAllocated.length > 0
-                  ? volunteer.taskAllocated
-                      .map((taskId) => {
-                        const task = tasks.find((t) => t._id === taskId);
-                        return task ? task.name : "Unknown";
-                      })
-                      .join(", ")
-                  : "None"}
-              </li>
-            ))}
-          </ul>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or email"
+            className="w-full p-2 mb-4 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <table className="min-w-full divide-y divide-tertiary-200">
+            <thead className="bg-tertiary-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-tertiary-700">
+                  Name
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-tertiary-700">
+                  Email
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-tertiary-700">
+                  Assigned Tasks
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-tertiary-200">
+              {paginatedVolunteers.map((volunteer) => (
+                <tr key={volunteer._id} className="hover:bg-tertiary-50">
+                  <td className="px-4 py-2 text-tertiary-700">
+                    {volunteer.user.name || "N/A"}
+                  </td>
+                  <td className="px-4 py-2 text-tertiary-700">
+                    {volunteer.user.email}
+                  </td>
+                  <td className="px-4 py-2 text-tertiary-700">
+                    {volunteer.taskAllocated.length > 0
+                      ? volunteer.taskAllocated
+                          .map((taskId) => {
+                            const task = tasks.find((t) => t._id === taskId);
+                            return task ? task.name : "Unknown";
+                          })
+                          .join(", ")
+                      : "None"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
+            >
+              Previous
+            </button>
+            <span className="text-tertiary-700">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
