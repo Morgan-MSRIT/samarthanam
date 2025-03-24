@@ -241,12 +241,3 @@ export const createVolunteer = async (data) => {
     throw error.response?.data || error;
   }
 };
-
-export const getRecommendedEvents = async () => {
-  try {
-    const response = await api.get('/event/get-recommended-events');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
