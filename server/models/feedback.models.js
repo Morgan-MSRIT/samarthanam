@@ -21,7 +21,13 @@ const feedbackSchema = new Schema({
   },
   additionalInfo: {
     type: String
-  }
+  },
+  type: {
+    type: String,
+  },
+  "sentiment_score": {
+    type: Number
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Feedback', feedbackSchema);

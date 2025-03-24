@@ -20,6 +20,8 @@ exports.createFeedback = async (req, res) => {
             })
         }
 
+
+
         const eventExists = await Event.findById(event);
         if(!eventExists) {
             return res.status(404).json({
@@ -28,15 +30,19 @@ exports.createFeedback = async (req, res) => {
             })
         }
 
+        // const type = flask call
+        // const sentiment_score = flask call
 
-
-        const eventExistsInFeedback = await Feedback.findOne({event});
-        if(eventExistsInFeedback) {
-            return res.status(400).json({
-                success: false,
-                message: "Feedback for this event already exists"
-            })
-        }
+        
+        // response = await axios.post("http://localhost:5000/get-sentimal-analysis", { event, contactHours, volunteerOrParticipationExperience, websiteExperience, experienceWorkingWithOrg, additionalInfo });
+        // if (!response) {
+        //     return res.status(404).json({
+        //         success: false,
+        //         message: "python flask error for backend"
+        //     })
+        // }
+        // console.log("RESPONSE HERE:", response)
+        
 
 
 
@@ -46,7 +52,9 @@ exports.createFeedback = async (req, res) => {
             volunteerOrParticipationExperience,
             websiteExperience,
             experienceWorkingWithOrg,
-            additionalInfo
+            additionalInfo,
+            // type,
+            // sentiment_score
         });
 
         return res.status(200).json({
