@@ -10,7 +10,7 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,10 +19,11 @@ export default function Events() {
         setLoading(true);
         let response;
         if (activeTab === 'recommended' && isAuthenticated) {
-          response = await getRecommendedEvents();
+          response = await getRecommendedEvents(user?._id);
         } else {
           response = await getEvents();
         }
+        console.log(response);
 
         if (response.success) {
           setEvents(response.data.map(event => ({
@@ -51,14 +52,13 @@ export default function Events() {
     };
 
     fetchEvents();
-  }, [activeTab, isAuthenticated]);
+  }, [activeTab, isAuthenticated, user?.id]);
 
   const filteredEvents = events.filter(event => {
-    const matchesTab = activeTab === 'all' || (activeTab === 'recommended' && event.isRecommended);
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.location.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesTab && matchesSearch;
+    return matchesSearch;
   });
 
   const EventCard = ({ event }) => {
