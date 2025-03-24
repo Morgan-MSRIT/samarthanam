@@ -16,7 +16,7 @@ import CreateEvents from "./pages/CreateEvents";
 import ManageEvents from "./pages/ManageEvents";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import CreateTasks from "./pages/CreateTasks";
-
+import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateOrganizer from "./pages/admin/CreateOrganizer";
 import RemoveOrganizer from "./pages/admin/RemoveOrganizer";
@@ -46,6 +46,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["organiser"]}>
                   <CreateEvents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/organizer/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["organiser"]}>
+                  <OrganizerDashboard />
                 </ProtectedRoute>
               }
             />

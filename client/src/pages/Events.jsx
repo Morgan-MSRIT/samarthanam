@@ -136,7 +136,7 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-tertiary">
-      <div className="container">
+      <div className="container-fluid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-extrabold text-primary">Upcoming Events</h1>

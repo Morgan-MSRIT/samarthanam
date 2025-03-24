@@ -10,7 +10,6 @@ router.route("/:eventId").get(getEvent);
 
 // Protected routes
 router.route("/create-event").post(auth, isOrganizer, createEvent);
-
 router.route("/participant-registration").post(participantRegistration);
 router.route("/participant-deregistration").post(participantDeregistration);
 router.route("/update-event").post(auth, isOrganizer, updateEvent);

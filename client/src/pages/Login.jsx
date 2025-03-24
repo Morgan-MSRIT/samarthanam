@@ -1,9 +1,16 @@
 import { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { login as loginService } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
+  const { isAuthenticated } = useContext(AuthContext); // Get authentication status
+
+  // If the user is already logged in, redirect to the dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -45,7 +52,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-tertiary">
-      <div className="container">
+      <div className="container-fluid">
         <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
             <div>

@@ -66,7 +66,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-tertiary">
   
-      <div className="container">
+      <div className="container-fluid">
         {/* Hero Section */}
         <div className="relative bg-accent">
           <div className="max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">

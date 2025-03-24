@@ -85,7 +85,7 @@ export default function EventDetails() {
 
   return (
     <div className="min-h-screen bg-tertiary">
-      <div className="container">
+      <div className="container-fluid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-accent rounded-lg shadow-lg overflow-hidden">
             <div className="relative h-96">

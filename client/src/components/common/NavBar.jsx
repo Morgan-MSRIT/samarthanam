@@ -81,10 +81,32 @@ export default function NavBar() {
               >
                 Events
               </Link>
+              {user.role !== "organiser" && user.role !== "admin" && (
+                <>
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+                  >
+                    Contact Us
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            <div className="inline-flex items-center px-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95">
+              <div
+                id="google_translate_element"
+                className="inline-flex items-center"
+              ></div>
+              <span>Translate</span>
             <button
               onClick={toggleHighContrastMode}
               className={`inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 ${
@@ -205,6 +227,15 @@ export default function NavBar() {
           >
             Home
           </Link>
+          {user.role === "organiser" && (
+            <Link
+              to="/organizer/dashboard"
+              className="block px-3 py-2 rounded-md text-base font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </Link>
+          )}
           <Link
             to="/events"
             className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
