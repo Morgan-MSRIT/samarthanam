@@ -204,4 +204,58 @@ export const updateVolunteer = async (volunteerData) => {
   } catch (error) {
     throw error.response?.data || { message: 'An error occurred while updating volunteer' };
   }
+}
+
+export const volunteerRegistration = async (eventId, data) => {
+  try {
+    console.log('Data received in volunteerRegistration:', data); // Debug log
+    
+    // Ensure we have all required fields
+    if (!data.user || !data.user._id || !data.preferredTasks || !data.availableHours) {
+      throw new Error('Missing required fields for volunteer registration');
+    }
+
+    const volunteerData = {
+      user: data.user._id,
+      taskPreferred: data.preferredTasks,
+      taskAllocated: [],
+      status: "not started",
+      volunteerHrs: parseInt(data.availableHours),
+      event: eventId
+    };
+
+    console.log('Transformed volunteer data:', volunteerData); // Debug log
+    const response = await createVolunteer(volunteerData);
+    return response;
+  } catch (error) {
+    console.error('Error in volunteerRegistration:', error); // Debug log
+    throw error;
+  }
+};
+
+export const createVolunteer = async (data) => {
+  try {
+    console.log('Data being sent to backend:', data); // Debug log
+    
+    // Validate required fields
+    if (!data.user || !data.taskPreferred || typeof data.volunteerHrs !== 'number' || !data.event) {
+      throw new Error('Missing required fields for creating volunteer');
+    }
+
+    // Ensure taskPreferred is an array
+    if (!Array.isArray(data.taskPreferred)) {
+      data.taskPreferred = [data.taskPreferred];
+    }
+
+    // Ensure taskAllocated is an array
+    if (!Array.isArray(data.taskAllocated)) {
+      data.taskAllocated = [];
+    }
+
+    const response = await api.post('/volunteer/create-volunteer', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in createVolunteer:', error.response?.data || error); // Debug log
+    throw error.response?.data || error;
+  }
 };

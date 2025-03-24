@@ -5,6 +5,7 @@ import NavBar from "./components/common/NavBar";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import VolunteerForm from "./pages/VolunteerForm";
+import EventVolunteerForm from "./pages/EventVolunteerForm";
 import ParticipantForm from "./pages/ParticipantForm";
 import EventDetails from "./pages/EventDetails";
 import TaskList from "./pages/TaskList";
@@ -23,6 +24,9 @@ import RemoveOrganizer from "./pages/admin/RemoveOrganizer";
 import Analytics from "./pages/admin/Analytics";
 import ChangePassword from "./pages/ChangePassword";
 import EventManagement from "./pages/EventManagement";
+import Notifications from './pages/Notifications';
+
+
 
 function App() {
   return (
@@ -38,10 +42,18 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/about" element={<About />} />
             <Route path="/volunteer" element={<VolunteerForm />} />
-            <Route path="/volunteer/:eventId" element={<VolunteerForm />} />
+            <Route 
+              path="/volunteer/:eventId" 
+              element={
+                <ProtectedRoute allowedRoles={["volunteer"]}>
+                  <EventVolunteerForm />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/participant/:eventId" element={<ParticipantForm />} />
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/tasks/:eventId" element={<TaskList />} />
+            <Route path="/notification" element={<Notifications/>} />
             <Route
               path="/organizer/create-events"
               element={

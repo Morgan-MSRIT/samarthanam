@@ -1,73 +1,93 @@
-const User=require("../models/user.models");
-const OTP=require("../models/opt.models");
-const bcrypt=require('bcrypt');
-const jwt=require('jsonwebtoken');
-const mailSender=require('../utils/mailSender');
+const User = require("../models/user.models");
+const OTP = require("../models/opt.models");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const mailSender = require('../utils/mailSender');
 require("dotenv").config();
-const otpGenerator=require("otp-generator");
-// const {passwordUpdated}=require("../mail/templates/passwordUpdate");
-// const welcomeTemplate = require("../mail/templates/newJoining");
+const otpGenerator = require("otp-generator");
+const Event = require("../models/event.models");
+const participantTemplate = require("../mail/templates/participantConfirmationTemplate");
 
+exports.sendotp = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const checkUserPresent = await User.findOne({ email });
 
+        var otp = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+        });
 
-// Sending welcome msg to the user
-// async function sendJoiningEmail(email,name){
-//     try{
-//         const mailResponse=await mailSender(email,"Verification Email from Samatharan", welcomeTemplate(name));
-//     }
-//     catch(error){
-//         console.log("Error occured while sending mails:",error);
-//         throw error;
-//     }
-// }
+        let result = await OTP.findOne({ otp: otp });
 
-
-exports.sendotp=async(req,res)=>{
-    try{
-        const {email}=req.body;
-        const checkUserPresent=await User.findOne({email});
-
-        if(checkUserPresent){
-            return res.status(415).json({
-                success:false,
-                message:"user already registered"
-            })
+        while (result) {
+            otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+            result = await OTP.findOne({ otp: otp });
         }
 
-        var otp=otpGenerator.generate(6,{
-            upperCaseAlphabets:false,
-            lowerCaseAlphabets:false,
-            specialChars:false,
-        })
+        console.log("Generated OTP:", otp); // Log the generated OTP
+        const otpPayload = { email, otp };
 
-        let result=await OTP.findOne({otp:otp});
-        
-        while(result){
-            otp=otpGenerator.generate(6,{
-                upperCaseAlphabets:false,
-                lowerCaseAlphabets:false,
-                specialChars:false,
-            })
-            result=await OTP.findOne({otp:otp});
-        }
-
-        const otpPayload={email,otp};
-        const otpBody=await OTP.create(otpPayload);
+        const otpBody = await OTP.create(otpPayload);
 
         return res.status(200).json({
-            success:true,
-            message:"otp sent successfully"
-        })
-    }
-    catch(error){
-        console.log("Error while sending the otp:",error);
+            success: true,
+            message: "otp sent successfully"
+        });
+    } catch (error) {
+        console.log("Error while sending the otp:", error);
         return res.status(500).json({
-            success:false,
-            message:error.message
-        })
+            success: false,
+            message: error.message
+        });
     }
-}
+};
+// Ensure verifyOtp is properly exported
+exports.verifyOtp = async (req, res) => {
+    try {
+        const { email, otp, eventId } = req.body;
 
+        // Check if the OTP exists for the given email
+        console.log("Verifying OTP for email:", email, "with OTP:", otp); // Log the OTP verification attempt
+        const otpRecord = await OTP.findOne({ email, otp });
+
+        if (!otpRecord) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP or OTP has expired"
+            });
+        }
+
+        // Append the email to the registeredParticipants array
+        await Event.findByIdAndUpdate(eventId, {
+            $addToSet: { registeredParticipants: email }
+        });
+
+        // Delete the OTP after successful verification
+        await OTP.deleteOne({ email, otp });
+
+        // Send confirmation email
+        await mailSender(email, "Participant Registration Confirmed", participantTemplate(eventId));
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP verified successfully, participant registered, and OTP deleted"
+        });
+    } catch (error) {
+        console.error("Error verifying OTP:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Error verifying OTP",
+            error: error.message
+        });
+    }
+};
 
 
 exports.signup=async(req,res)=>{
@@ -443,7 +463,6 @@ exports.organizerSignup=async(req,res)=>{
         console.log("Error in signing up:",error);
         return res.status(500).json({
             success:false,
-            message:"User cannot be registered,please try again"
         })
     }
 }

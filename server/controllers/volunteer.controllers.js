@@ -36,8 +36,13 @@ exports.createVolunteer = async (req, res) => {
         });
 
         //Updating volunteer info in the event
-        const updatedEvent = await Event.findByIdAndUpdate
-        (event, { $inc: { totalVolunteerReq: -1 }, $push : {totalVolunteerReq: volunteer._id} }, { new: true });
+        const updatedEvent = await Event.findByIdAndUpdate(
+            event, 
+            { 
+                $push: { volunteers: volunteer._id }
+            }, 
+            { new: true }
+        );
 
         if (!updatedEvent) {
             return res.status(404).json({
@@ -46,17 +51,14 @@ exports.createVolunteer = async (req, res) => {
             })
         }
 
-
-        //Updating volunteer info in the task
-        taskAllocated.forEach(task => async () => {
-            const updatedTask = await Task.findByIdAndUpdate(
-                task._id, 
-                { $inc : {currentVolunteerCount: 1} }, 
+        //Updating volunteer info in the tasks
+        for (const taskId of taskAllocated) {
+            await Task.findByIdAndUpdate(
+                taskId, 
+                { $inc: { currentVolunteerCount: 1 } }, 
                 { new: true }
             );
-        });
-
-
+        }
     
         return res.status(200).json({
             success: true,
