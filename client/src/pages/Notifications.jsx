@@ -48,6 +48,7 @@ const Notifications = () => {
     }
   };
 
+
   useEffect(() => {
     getNotifications();
   }, []);
