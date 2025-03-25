@@ -83,10 +83,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  --primary: #9A3B3B;    /* A deep reddish-brown */
-  --secondary: #C08261;  /* A warm coral */
-  --tertiary: #E2C799;   /* A light tan */
-  --accent: #F2ECBE;     /* A pale yellow */
 }
 
 body {

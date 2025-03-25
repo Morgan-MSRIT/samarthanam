@@ -71,7 +71,7 @@ export default function CreateEvents() {
             name: task.name,
             startTime: task.startTime,
             endTime: task.endTime,
-            currentVolunteerCount: 1,
+            currentVolunteerCount: 0,
             maxVolunteerNeeded: Number(task.maxVolunteerNeeded),
           });
           if (response.success) {

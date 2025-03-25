@@ -1,11 +1,16 @@
 import { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import Notifications from "../../pages/Notifications"; // Adjust path as needed
+import { FaBell, FaUniversalAccess } from "react-icons/fa";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated, logout } = useContext(AuthContext);
   const [highContrastMode, setHighContrastMode] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
 
   useEffect(() => {
     if (highContrastMode) {
@@ -17,10 +22,56 @@ export default function NavBar() {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    setIsNotificationsOpen(false);
+    setDropdownOpen(false);
+    setIsAccessibilityOpen(false);
   };
 
-  const toggleHighContrastMode = () => {
-    setHighContrastMode(!highContrastMode);
+  const toggleHighContrastMode = () => setHighContrastMode(!highContrastMode);
+
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+    setIsOpen(false);
+    setDropdownOpen(false);
+    setIsAccessibilityOpen(false);
+  };
+
+  const toggleProfileDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+    setIsNotificationsOpen(false);
+    setIsOpen(false);
+    setIsAccessibilityOpen(false);
+  };
+
+  const toggleAccessibility = () => {
+    setIsAccessibilityOpen(!isAccessibilityOpen);
+    setIsOpen(false);
+    setIsNotificationsOpen(false);
+    setDropdownOpen(false);
+  };
+
+  const getDesktopLinkClass = ({ isActive }) => {
+    const baseClass =
+      "inline-flex items-center px-2 py-1 text-sm font-medium transition duration-200 ease-in-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent-300";
+    return highContrastMode
+      ? isActive
+        ? `${baseClass} text-yellow-100 bg-gray-800`
+        : `${baseClass} text-yellow-300 hover:text-yellow-100 hover:bg-gray-800`
+      : isActive
+      ? `${baseClass} text-secondary-500 bg-tertiary-400`
+      : `${baseClass} text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400`;
+  };
+
+  const getMobileLinkClass = ({ isActive }) => {
+    const baseClass =
+      "block px-4 py-3 rounded-md text-lg font-medium transition duration-200 ease-in-out hover:scale-105 active:scale-95";
+    return highContrastMode
+      ? isActive
+        ? `${baseClass} text-yellow-100 bg-gray-800`
+        : `${baseClass} text-yellow-300 hover:text-yellow-100 hover:bg-gray-800`
+      : isActive
+      ? `${baseClass} text-secondary-500 bg-tertiary-400`
+      : `${baseClass} text-primary-700 hover:text-secondary-500 hover:bg-accent-200`;
   };
 
   return (
@@ -33,122 +84,172 @@ export default function NavBar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-16">
+          {/* Logo */}
           <div className="flex items-center flex-shrink-0">
-            <img
-              className={`h-16 md:h-12 w-auto ${
-                highContrastMode ? "filter invert" : ""
-              }`}
-              src="/samarthanam-logo.png"
-              alt="Samarthanam Trust"
-            />
+            <Link to="/">
+              <img
+                className={`h-16 md:h-12 w-auto ${
+                  highContrastMode ? "filter invert" : ""
+                }`}
+                src="/samarthanam-logo.png"
+                alt="Samarthanam Trust"
+              />
+            </Link>
+
+            {/* Desktop Navigation */}
             <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-              <Link
-                to="/"
-                className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-              >
+              <NavLink to="/" className={getDesktopLinkClass}>
                 Home
-              </Link>
+              </NavLink>
               {isAuthenticated && user?.role === "organiser" && (
-                <>
-                  <Link
-                    to="/organizer/dashboard"
-                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    Dashboard
-                  </Link>
-                </>
+                <NavLink
+                  to="/organizer/dashboard"
+                  className={getDesktopLinkClass}
+                >
+                  Dashboard
+                </NavLink>
               )}
               {isAuthenticated && user?.role === "admin" && (
-                <>
-                  <Link
-                    to="/admin/dashboard"
-                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
-                    Dashboard
-                  </Link>
-                </>
+                <NavLink to="/admin/dashboard" className={getDesktopLinkClass}>
+                  Dashboard
+                </NavLink>
               )}
-              <Link
-                to="/events"
-                className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-              >
+              <NavLink to="/events" className={getDesktopLinkClass}>
                 Events
-              </Link>
-              {/* Show About us and contact us for all users except admin and organisers */}
-              {(!isAuthenticated || (user?.role !== "admin" && user?.role !== "organiser")) && (
+              </NavLink>
+              {(!isAuthenticated ||
+                (user?.role !== "admin" && user?.role !== "organiser")) && (
                 <>
-                  <Link
-                    to="/about"
-                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
+                  <NavLink to="/about" className={getDesktopLinkClass}>
                     About Us
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center px-2 py-1 text-sm font-medium text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                  >
+                  </NavLink>
+                  <NavLink to="/contact" className={getDesktopLinkClass}>
                     Contact Us
-                  </Link>
+                  </NavLink>
                 </>
               )}
             </div>
           </div>
 
+          {/* Desktop Right Section */}
           <div className="hidden md:flex md:items-center md:space-x-2 flex-wrap">
-            <button
-              onClick={toggleHighContrastMode}
-              className={`inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
-                highContrastMode ? "bg-yellow-300 text-black" : ""
-              }`}
-            >
-              {highContrastMode ? "Contrast Off" : "Contrast On"}
-            </button>
-            <div className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer">
-              <div
-                id="google_translate_element"
-                className="inline-flex items-center h-inherit w-in"
-              ></div>
-              <span className="ml-1">Translate</span>
+            {/* Accessibility Dropdown */}
+            <div className="relative">
+              <button
+                onClick={toggleAccessibility}
+                className="text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+                aria-label="Accessibility features"
+              >
+                <FaUniversalAccess size={24} />
+              </button>
+              {isAccessibilityOpen && (
+                <div
+                  className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg ${
+                    highContrastMode
+                      ? "bg-black border-yellow-300 border-2"
+                      : "bg-tertiary-300"
+                  } z-50 p-2`}
+                >
+                  <div className="space-y-2">
+                    <button
+                      onClick={toggleHighContrastMode}
+                      className={`w-full text-left px-2 py-1 text-sm font-medium rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
+                        highContrastMode
+                          ? "bg-yellow-300 text-black hover:bg-yellow-100"
+                          : "bg-primary-500 text-accent-100 hover:bg-secondary-500"
+                      }`}
+                    >
+                      {highContrastMode ? "Contrast Off" : "Contrast On"}
+                    </button>
+                    <div
+                      className={`inline-flex items-center w-full px-2 py-1 text-sm font-medium rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
+                        highContrastMode
+                          ? "bg-yellow-300 text-black hover:bg-yellow-100"
+                          : "bg-primary-500 text-accent-100 hover:bg-secondary-500"
+                      }`}
+                    >
+                      <div
+                        id="google_translate_element"
+                        className="inline-flex items-center"
+                      />
+                      <span className="ml-1">Translate</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {isAuthenticated ? (
               <>
-                <span className="text-primary-700 text-sm px-2 py-1">
-                  Welcome, {user.name}
-                </span>
-                {/* {user?.role === "organiser" && (
-                  <>
-                    <Link
-                      to="/organizer/create-events"
-                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                {/* Notifications Button and Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={toggleNotifications}
+                    className="text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+                    aria-label="Toggle notifications"
+                  >
+                    <FaBell size={24} />
+                  </button>
+                  {isNotificationsOpen && (
+                    <div
+                      className={`absolute right-0 mt-2 w-64 rounded-md shadow-lg ${
+                        highContrastMode
+                          ? "bg-black border-yellow-300 border-2"
+                          : "bg-tertiary-300"
+                      } z-50 p-2`}
                     >
-                      Create Events
-                    </Link>
-                    <Link
-                      to="/organizer/manage-events"
-                      className="inline-flex items-center px-2 py-1 text-sm font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                      <Notifications />
+                    </div>
+                  )}
+                </div>
+                {/* Profile Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={toggleProfileDropdown}
+                    className="flex items-center space-x-2 text-sm font-medium text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer hover:scale-101 active:scale-95"
+                  >
+                    <span className="w-8 h-8 rounded-full bg-primary-500 text-accent-100 flex items-center justify-center">
+                      {user.name.charAt(0).toUpperCase()}
+                    </span>
+                    <span>{user.name}</span>
+                  </button>
+                  {dropdownOpen && (
+                    <div
+                      className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg ${
+                        highContrastMode
+                          ? "bg-black border-yellow-300 border-2"
+                          : "bg-tertiary-300"
+                      } z-50`}
                     >
-                      Manage Events
-                    </Link>
-                  </>
-                )} */}
-                <button
-                  onClick={logout}
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
-                >
-                  Logout
-                </button>
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            logout();
+                            setDropdownOpen(false);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm cursor-pointer ${
+                            highContrastMode
+                              ? "text-yellow-300 hover:bg-gray-800"
+                              : "text-primary-700 hover:bg-accent-200"
+                          }`}
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
                 <Link
                   to="/volunteer"
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-300 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Volunteer
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-300 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Sign in
                 </Link>
@@ -156,10 +257,27 @@ export default function NavBar() {
             )}
           </div>
 
-          <div className="md:hidden flex items-center">
+          {/* Mobile Menu Button and Icons */}
+          <div className="md:hidden flex items-center space-x-2">
+            <button
+              onClick={toggleAccessibility}
+              className="text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+              aria-label="Accessibility features"
+            >
+              <FaUniversalAccess size={24} />
+            </button>
+            {isAuthenticated && (
+              <button
+                onClick={toggleNotifications}
+                className="text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+                aria-label="Toggle notifications"
+              >
+                <FaBell size={24} />
+              </button>
+            )}
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-600 cursor-pointer"
+              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-300 cursor-pointer"
               aria-expanded="false"
               aria-controls="mobile-menu"
             >
@@ -198,103 +316,76 @@ export default function NavBar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       <div
-        className={`md:hidden fixed w-full ${isOpen ? "block" : "hidden"} ${
+        className={`md:hidden fixed w-full ${
+          isOpen
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "-translate-y-full opacity-0 pointer-events-none"
+        } ${
           highContrastMode
             ? "bg-black border-yellow-300 border-2"
             : "bg-tertiary-300"
-        } shadow-lg z-40`}
+        } shadow-lg z-40 transition-all duration-300`}
         style={{ top: "5rem", left: 0, right: 0 }}
       >
         <div className="px-4 py-4 space-y-2">
-          <Link
+          <NavLink
             to="/"
-            className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+            className={getMobileLinkClass}
             onClick={() => setIsOpen(false)}
           >
             Home
-          </Link>
+          </NavLink>
           {isAuthenticated && user?.role === "organiser" && (
-            <>
-              <Link
-                to="/organizer/dashboard"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                onClick={() => setIsOpen(false)}
-              ></Link>
-            </>
+            <NavLink
+              to="/organizer/dashboard"
+              className={getMobileLinkClass}
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </NavLink>
           )}
           {isAuthenticated && user?.role === "admin" && (
-            <>
-              <Link
-                to="/admin/dashboard"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
-                onClick={() => setIsOpen(false)}
-              ></Link>
-            </>
+            <NavLink
+              to="/admin/dashboard"
+              className={getMobileLinkClass}
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </NavLink>
           )}
-          <Link
+          <NavLink
             to="/events"
-            className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95"
+            className={getMobileLinkClass}
             onClick={() => setIsOpen(false)}
           >
             Events
-          </Link>
-          {/* Show About us and contact us for all users except admin and organisers */}
-          {(!isAuthenticated || (user?.role !== "admin" && user?.role !== "organiser")) && (
+          </NavLink>
+          {(!isAuthenticated ||
+            (user?.role !== "admin" && user?.role !== "organiser")) && (
             <>
-              <Link
+              <NavLink
                 to="/about"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
+                className={getMobileLinkClass}
                 onClick={() => setIsOpen(false)}
               >
                 About Us
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/contact"
-                className="block px-4 py-3 rounded-md text-lg font-medium text-primary-700 hover:text-secondary-500 hover:bg-accent-200 transition duration-200 ease-in-out hover:scale-105 active:scale-95 cursor-pointer"
+                className={getMobileLinkClass}
                 onClick={() => setIsOpen(false)}
               >
                 Contact Us
-              </Link>
+              </NavLink>
             </>
           )}
-          <button
-            onClick={toggleHighContrastMode}
-            className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
-              highContrastMode ? "bg-yellow-300 text-black cursor-pointer" : ""
-            }`}
-          >
-            {highContrastMode
-              ? "Disable High Contrast"
-              : "Enable High Contrast"}
-          </button>
-          <div className="px-4 py-3">
-            <div id="google_translate_element" className="w-full"></div>
-          </div>
           {isAuthenticated ? (
             <>
               <span className="block px-4 py-3 text-lg text-primary-700">
                 Welcome, {user.name}
               </span>
-              {/* {user?.role === "organiser" && (
-                <>
-                  <Link
-                    to="/organizer/create-events"
-                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Create Events
-                  </Link>
-                  <Link
-                    to="/organizer/manage-events"
-                    className="block px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Manage Events
-                  </Link>
-                </>
-              )} */}
               <button
                 onClick={() => {
                   logout();
@@ -325,6 +416,48 @@ export default function NavBar() {
           )}
         </div>
       </div>
+
+      {/* Mobile Accessibility Dropdown */}
+      {isAccessibilityOpen && (
+        <div
+          className={`md:hidden fixed w-full ${
+            highContrastMode
+              ? "bg-black border-yellow-300 border-2"
+              : "bg-tertiary-300"
+          } shadow-lg z-40 p-4`}
+          style={{ top: "5rem", left: 0, right: 0 }}
+        >
+          <div className="space-y-2">
+            <button
+              onClick={toggleHighContrastMode}
+              className={`w-full text-left px-4 py-3 rounded-md text-lg font-medium text-accent-100 bg-primary-500 hover:bg-secondary-500 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
+                highContrastMode ? "bg-yellow-300 text-black" : ""
+              }`}
+            >
+              {highContrastMode
+                ? "Disable High Contrast"
+                : "Enable High Contrast"}
+            </button>
+            <div className="px-4 py-3">
+              <div id="google_translate_element" className="w-full" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Notifications Dropdown */}
+      {isAuthenticated && isNotificationsOpen && (
+        <div
+          className={`md:hidden fixed w-full ${
+            highContrastMode
+              ? "bg-black border-yellow-300 border-2"
+              : "bg-tertiary-300"
+          } shadow-lg z-40 p-4`}
+          style={{ top: "5rem", left: 0, right: 0 }}
+        >
+          <Notifications />
+        </div>
+      )}
     </nav>
   );
 }
