@@ -47,13 +47,13 @@ exports.sendotp = async (req, res) => {
         });
     }
 };
-// Ensure verifyOtp is properly exported
+
 exports.verifyOtp = async (req, res) => {
     try {
         const { email, otp, eventId } = req.body;
 
         // Check if the OTP exists for the given email
-        console.log("Verifying OTP for email:", email, "with OTP:", otp); // Log the OTP verification attempt
+        console.log("Verifying OTP for email:", email, "with OTP:", otp);
         const otpRecord = await OTP.findOne({ email, otp });
 
         if (!otpRecord) {
@@ -63,16 +63,37 @@ exports.verifyOtp = async (req, res) => {
             });
         }
 
-        // Append the email to the registeredParticipants array
+        // Check if the event exists
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: "Event not found"
+            });
+        }
+
+        // Check if the user is already in the participants list
+        if (event.registeredParticipants.includes(email)) {
+            // Generate a token for the user
+            const token = jwt.sign({ email, eventId }, process.env.JWT_SECRET, {
+                expiresIn: '1h' // Token validity of 1 hour
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: "You are already registered for this event",
+                token: token, // Send the token in the response
+                redirect: '/events' // Frontend can use this information for redirection
+            });
+        }
+
+        // Add the user to the registeredParticipants list
         await Event.findByIdAndUpdate(eventId, {
             $addToSet: { registeredParticipants: email }
         });
 
-        // Delete the OTP after successful verification
-        await OTP.deleteOne({ email, otp });
-
         // Send confirmation email
-        await mailSender(email, "Participant Registration Confirmed", participantTemplate(eventId));
+        await mailSender(email, "Participant Registration Confirmed", participantTemplate(event.name));
 
         return res.status(200).json({
             success: true,
@@ -80,7 +101,6 @@ exports.verifyOtp = async (req, res) => {
         });
     } catch (error) {
         console.error("Error verifying OTP:", error);
-
         return res.status(500).json({
             success: false,
             message: "Error verifying OTP",
@@ -88,7 +108,6 @@ exports.verifyOtp = async (req, res) => {
         });
     }
 };
-
 
 exports.signup=async(req,res)=>{
     try{

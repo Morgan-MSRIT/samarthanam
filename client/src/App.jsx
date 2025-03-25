@@ -26,8 +26,7 @@ import EventManagement from "./pages/EventManagement";
 import Notifications from './pages/Notifications';
 import FeedbackForm from "./pages/CreateFeedback";
 import FeedbackPage from "./pages/FeedbackPage";
-
-
+import SuccessfulRegistration from "./pages/SuccessfulRegistration"; // Import the new component
 
 function App() {
   return (
@@ -56,9 +55,7 @@ function App() {
             <Route
               path="/feedback/:eventId"
               element={
-                // <ProtectedRoute allowedRoles={['organiser']}>
                 <FeedbackPage/>
-                // </ProtectedRoute>
               }
             />
             <Route path="/participant/:eventId" element={<ParticipantForm />} />
@@ -137,6 +134,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/successful-registration" element={<SuccessfulRegistration />} /> {/* New route */}
           </Routes>
         </div>
       </Router>
