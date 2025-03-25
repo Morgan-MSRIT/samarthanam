@@ -196,17 +196,20 @@ export default function Events() {
               <div className="flex space-x-4">
                 <button
                   className={`${
-                    activeTab === 'all'
+                    activeTab === 'all' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
-                  onClick={() => setActiveTab('all')}
+                  onClick={() => {
+                    setActiveTab('all');
+                    setShowPastEvents(false);
+                  }}
                 >
                   All Events
                 </button>
                 <button
                   className={`${
-                    activeTab === 'recommended'
+                    activeTab === 'recommended' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
@@ -215,6 +218,7 @@ export default function Events() {
                       setShowSignInModal(true);
                     } else {
                       setActiveTab('recommended');
+                      setShowPastEvents(false);
                     }
                   }}
                 >
@@ -226,9 +230,14 @@ export default function Events() {
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
-                  onClick={() => setShowPastEvents(!showPastEvents)}
+                  onClick={() => {
+                    setShowPastEvents(!showPastEvents);
+                    if (showPastEvents) {
+                      setActiveTab('all');
+                    }
+                  }}
                 >
-                  {showPastEvents ? 'Upcoming Events' : 'Past Events'}
+                  Past Events
                 </button>
               </div>
             </div>
