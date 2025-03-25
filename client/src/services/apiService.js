@@ -76,9 +76,29 @@ export const getTags = async () => {
 
 export const createEvent = async (eventData) => {
   try {
-    const response = await api.post('/event/create-event', eventData);
+    const formData = new FormData();
+    
+    // Append all event data
+    Object.keys(eventData).forEach(key => {
+      if (key === 'tags' || key === 'tasks') {
+        formData.append(key, JSON.stringify(eventData[key]));
+      } else if (key === 'image' && eventData[key]) {
+        formData.append('image', eventData[key]);
+      } else {
+        formData.append(key, eventData[key]);
+      }
+    });
+
+    console.log('Sending event data:', Object.fromEntries(formData)); // Debug log
+
+    const response = await api.post('/event/create-event', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
+    console.error('Error in createEvent:', error.response?.data || error); // Debug log
     throw error.response?.data || { message: 'An error occurred while creating event' };
   }
 };

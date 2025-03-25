@@ -15,7 +15,9 @@ export default function CreateEvents() {
     endDate: '',
     isRegistrationRequired: false,
     totalVolunteerRequirement: 0,
+    image: null,
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [tasks, setTasks] = useState([
     { name: '', startTime: '', endTime: '', maxVolunteerNeeded: 0 },
   ]);
@@ -61,38 +63,70 @@ export default function CreateEvents() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select an image file');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image size should be less than 5MB');
+        return;
+      }
+
+      setEventData(prev => ({
+        ...prev,
+        image: file
+      }));
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
-      const taskIds = await Promise.all(
-        tasks.map(async (task) => {
-          const response = await createTask({
-            name: task.name,
-            startTime: task.startTime,
-            endTime: task.endTime,
-            currentVolunteerCount: 1,
-            maxVolunteerNeeded: Number(task.maxVolunteerNeeded),
-          });
-          if (response.success) {
-            return response.data._id;
-          }
-          throw new Error('Task creation failed');
-        })
-      );
+      // Create tasks first
+      const taskPromises = tasks.map(task => createTask({
+        name: task.name,
+        startTime: task.startTime,
+        endTime: task.endTime,
+        currentVolunteerCount: 0,
+        maxVolunteerNeeded: Number(task.maxVolunteerNeeded),
+      }));
+      
+      const taskResponses = await Promise.all(taskPromises);
+      const taskIds = taskResponses.map(response => response.data._id);
+
+      // Ensure tags is an array of tag IDs
+      const tagIds = eventData.tags.map(tag => tag._id || tag);
 
       const eventPayload = {
         user: user._id,
         name: eventData.name,
         description: eventData.description,
-        tags: eventData.tags,
+        tags: tagIds,
         location: eventData.location,
         startDate: eventData.startDate,
         endDate: eventData.endDate,
         tasks: taskIds,
         isRegistrationRequired: eventData.isRegistrationRequired,
         totalVolunteerReq: Number(eventData.totalVolunteerRequirement),
+        image: eventData.image,
       };
+
+      console.log('Submitting event payload:', eventPayload); // Debug log
 
       const eventResponse = await createEvent(eventPayload);
       if (eventResponse.success) {
@@ -101,7 +135,8 @@ export default function CreateEvents() {
         setError(eventResponse.message || 'Failed to create event');
       }
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      console.error('Error creating event:', err); // Debug log
+      setError(err.message || 'An error occurred while creating the event');
     }
   };
 
@@ -124,6 +159,34 @@ export default function CreateEvents() {
                 required
               />
             </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="block text-sm font-medium text-primary">Event Image</label>
+              <div className="mt-1 flex items-center space-x-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="block w-full text-sm text-primary
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-medium
+                    file:bg-primary file:text-accent
+                    hover:file:bg-secondary"
+                />
+              </div>
+              {imagePreview && (
+                <div className="mt-2">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="h-48 w-full object-cover rounded-md"
+                  />
+                </div>
+              )}
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-primary">Description</label>
               <textarea

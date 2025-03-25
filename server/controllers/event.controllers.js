@@ -7,7 +7,7 @@ const cloudinary=require('cloudinary').v2;
 const { cloudinaryConnect } = require("../configs/cloudinary");
 const {uploadImageToCloudinary}=require("../utils/imageUploader");
 
-exports.createEvent =  async (req, res) => {
+exports.createEvent = async (req, res) => {
     try {
         const { user, name, description, tags, location, startDate, endDate, tasks, isRegistrationRequired, totalVolunteerReq } = req.body;
 
@@ -15,55 +15,73 @@ exports.createEvent =  async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
-            })
+            });
         }
 
-        const image=req?.files?.image;
+        const image = req.files?.image;
+        let imageUrl = '';
 
-        let imageUrl=''
-        if(image){
-            try{
-            cloudinaryConnect()
-            const result=await uploadImageToCloudinary(image,process.env.FOLDER_NAME,1000,1000);
-            imageUrl=result.secure_url;
+        if(image) {
+            try {
+                cloudinaryConnect();
+                const result = await uploadImageToCloudinary(image, process.env.FOLDER_NAME, 1000, 1000);
+                imageUrl = result.secure_url;
+            } catch(error) {
+                console.error("Error uploading image:", error);
+                return res.status(500).json({
+                    success: false,
+                    message: "Error uploading image to Cloudinary",
+                    error: error.message
+                });
             }
-            catch(error){
-                console.log("FILE COULD NOT BE UPLOADED",error)
-            }
+        }
+
+        let parsedTags, parsedTasks;
+        try {
+            parsedTags = JSON.parse(tags);
+            parsedTasks = JSON.parse(tasks);
+        } catch(error) {
+            console.error("Error parsing JSON:", error);
+            return res.status(400).json({
+                success: false,
+                message: "Invalid format for tags or tasks",
+                error: error.message
+            });
         }
 
         const event = await Event.create({ 
             user, 
             name, 
             description, 
-            tags, 
+            tags: parsedTags, 
             location, 
             startDate, 
             endDate, 
             isRegistrationRequired, 
             totalVolunteerReq,
-            tasks,
-            image:imageUrl
+            tasks: parsedTasks,
+            image: imageUrl
         });
 
-        const fullEvent = await Event.findById(event._id).populate('tasks').populate("tags").exec();
-        
-
+        const fullEvent = await Event.findById(event._id)
+            .populate('tasks')
+            .populate("tags")
+            .exec();
 
         return res.status(200).json({
             success: true,
             message: "Event created successfully",
-            data: "hahaha"
-        })
-    }
-    catch (error) {
-        console.log("Error occured while creating event", error);
+            data: fullEvent
+        });
+    } catch (error) {
+        console.error("Error in createEvent controller:", error);
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
-        })
+            message: "Error creating event",
+            error: error.message
+        });
     }
-}
+};
 
 
 exports.getEvent = async (req, res) => {
