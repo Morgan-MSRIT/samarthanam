@@ -5,7 +5,7 @@ import axios from "axios";
 
 const FeedbackPage = (props) => {
   const [feedbacks, setFeedbacks] = useState([]);
-  const [feedbackSummary, setFeedbackSummary] = useState("");
+  const [feedbackSummary, setFeedbackSummary] = useState("Generating Summary...");
     const[score, setScore] = useState(0);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

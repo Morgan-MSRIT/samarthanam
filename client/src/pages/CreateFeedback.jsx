@@ -28,6 +28,7 @@ const FeedbackForm = () => {
 		e.preventDefault();
 		try {
 			await createFeedback(eventId, formData);
+			navigate("/");
 		} catch (error) {
 			console.error("Error submitting feedback:", error.message);
 			alert(
