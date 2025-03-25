@@ -439,7 +439,6 @@ exports.organizerSignup=async(req,res)=>{
             age,
             email,
             password,
-            confirmPassword,
             phone,
             address,
             nationality,
@@ -463,6 +462,43 @@ exports.organizerSignup=async(req,res)=>{
         console.log("Error in signing up:",error);
         return res.status(500).json({
             success:false,
+        })
+    }
+}
+
+
+exports.getOrganizers=async(req,res)=>{
+    try{
+        const organizers=await User.find({role:"organiser"});
+        return res.status(200).json({
+            success:true,
+            organizers
+        })
+    }
+    catch(error){
+        console.log("Error in getting organizers:",error);
+        return res.status(500).json({
+            success:false,
+            message:"Error in getting organizers"
+        })
+    }
+}
+
+
+exports.removeOrganizer=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const organizer=await User.findByIdAndDelete(id);
+        return res.status(200).json({
+            success:true,
+            message:"Organizer removed successfully"
+        })
+    }
+    catch(error){
+        console.log("Error in removing organizer:",error);
+        return res.status(500).json({
+            success:false,
+            message:"Error in removing organizer"
         })
     }
 }

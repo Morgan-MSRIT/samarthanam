@@ -106,7 +106,7 @@ export default function NavBar() {
             <div className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer">
               <div
                 id="google_translate_element"
-                className="inline-flex items-center"
+                className="inline-flex items-center h-inherit w-in"
               ></div>
               <span className="ml-1">Translate</span>
             </div>
@@ -115,7 +115,7 @@ export default function NavBar() {
                 <span className="text-primary-700 text-sm px-2 py-1">
                   Welcome, {user.name}
                 </span>
-                {user?.role === "organiser" && (
+                {/* {user?.role === "organiser" && (
                   <>
                     <Link
                       to="/organizer/create-events"
@@ -130,7 +130,7 @@ export default function NavBar() {
                       Manage Events
                     </Link>
                   </>
-                )}
+                )} */}
                 <button
                   onClick={logout}
                   className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
@@ -277,7 +277,7 @@ export default function NavBar() {
               <span className="block px-4 py-3 text-lg text-primary-700">
                 Welcome, {user.name}
               </span>
-              {user?.role === "organiser" && (
+              {/* {user?.role === "organiser" && (
                 <>
                   <Link
                     to="/organizer/create-events"
@@ -294,7 +294,7 @@ export default function NavBar() {
                     Manage Events
                   </Link>
                 </>
-              )}
+              )} */}
               <button
                 onClick={() => {
                   logout();

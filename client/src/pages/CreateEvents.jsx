@@ -96,7 +96,7 @@ export default function CreateEvents() {
 
       const eventResponse = await createEvent(eventPayload);
       if (eventResponse.success) {
-        navigate('/organizer/manage-events');
+        navigate('/organizer/dashboard');
       } else {
         setError(eventResponse.message || 'Failed to create event');
       }

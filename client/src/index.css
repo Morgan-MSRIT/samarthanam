@@ -139,6 +139,7 @@ body {
   /* Remove default background */
   background: none;
   background: oklch(0.5939 0.1891 25.02);
+  
   /* Remove default borders */
   border: none;
   /* Remove default font size */
@@ -146,9 +147,13 @@ body {
   /* Keep inline-block for layout */
   display: inline-block;
   /* Remove default padding */
-  padding: 6px;
+  padding: 0px;
   /* Keep cursor for usability */
   cursor: pointer;
+  border-radius: 5px;
+}
+
+.goog-te-gadget-icon {
   border-radius: 5px;
 }
 

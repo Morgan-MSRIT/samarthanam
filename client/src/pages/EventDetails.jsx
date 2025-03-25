@@ -204,7 +204,7 @@ export default function EventDetails() {
                     </Link>
                     {user.role === 'organiser' && (
                       <Link
-                        to="/organizer/manage-events"
+                        to="/organizer/dashboard"
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                       >
                         Back to Manage Events

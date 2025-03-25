@@ -15,9 +15,7 @@ import Contact from "./pages/Contact";
 import ScrollToTop from "./components/common/ScrollToTop";
 import ScreenReader from "./components/accessibility/ScreenReader";
 import CreateEvents from "./pages/CreateEvents";
-import ManageEvents from "./pages/ManageEvents";
 import AnalyticsPage from "./pages/AnalyticsPage";
-import CreateTasks from "./pages/CreateTasks";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateOrganizer from "./pages/admin/CreateOrganizer";
@@ -96,14 +94,6 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["organiser"]}>
                   <AnalyticsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/organizer/create-tasks"
-              element={
-                <ProtectedRoute allowedRoles={["organiser"]}>
-                  <CreateTasks />
                 </ProtectedRoute>
               }
             />
