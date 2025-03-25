@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getEvents } from '../services/apiService';
+import { formatDate } from '../utils/dateFormatter';
 
 export default function Landing() {
   const [activeTab, setActiveTab] = useState('recommended');
@@ -22,7 +23,9 @@ export default function Landing() {
             .map(event => ({
               id: event._id,
               title: event.name,
-              date: new Date(event.startDate).toLocaleDateString(),
+              startDate: new Date(event.startDate),
+              endDate: new Date(event.endDate),
+              date: formatDate(event.startDate),
               time: `${new Date(event.startDate).toLocaleTimeString()} - ${new Date(event.endDate).toLocaleTimeString()}`,
               location: event.location,
               description: event.description,
@@ -276,7 +279,18 @@ export default function Landing() {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        {event.date}
+                        Starts: {formatDate(event.startDate)}
+                      </div>
+                      <div className="flex items-center">
+                        <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Ends: {formatDate(event.endDate)}
                       </div>
                       <div className="flex items-center">
                         <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
