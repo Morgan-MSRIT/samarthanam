@@ -194,10 +194,10 @@ export default function EventDetails() {
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
                 {!isAuthenticated ? (
                   <Link
-                    to="/login"
+                    to={`/participant/${eventId}`}
                     className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                   >
-                    Sign in to Register
+                    Participate
                   </Link>
                 ) : (
                   <>
@@ -206,7 +206,7 @@ export default function EventDetails() {
                         to={`/volunteer/${eventId}`}
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                       >
-                        Register as Volunteer
+                        Volunteer
                       </Link>
                     )}
                     {new Date() < event.endDate ? (
@@ -214,7 +214,7 @@ export default function EventDetails() {
                         to={`/participant/${eventId}`}
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                       >
-                        Register as Participant
+                        Participate
                       </Link>
                     ) : (
                       <Link
