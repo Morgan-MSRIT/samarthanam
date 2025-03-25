@@ -5,7 +5,7 @@ A comprehensive Samarthanam event management platform for organizing events, vol
 
 ## Features
 ### General
-Accessibility: Text-to-Speech, Keyboard & Voice Navigation, Event Registration & Notifications, Multilingual Translation, Optional: Chatbot, Sponsorship, Blogs
+Accessibility: Text-to-Speech, Keyboard Navigation, Event Registration & Notifications, Multilingual Translation.
 
 ### Admin
 Manage Organizers (Create/Remove), Event Analytics (Participants, Volunteers, Feedback)
@@ -23,7 +23,8 @@ View & Register for Events (OTP Verification), Receive Event Updates & Feedback 
 - **Frontend:** React.js
 - **Backend:** Express.js
 - **Database:** MongoDB
-- **Deployment:** Vercel, AWS, MongoDB Atlas
+- **AI:** Python, Flask, Gemini, vaderSentiment, textblob.
+- **Microservices, Websockets, SMTP Server**
 
 ## Installation & Setup
 ### Prerequisites
@@ -34,19 +35,19 @@ Ensure you have:
 ### Clone the Repository
 ```sh
 git clone https://github.com/Morgan-MSRIT/samarthanam.git
-cd event-management-platform
+cd samarthanam
 ```
 
 ### Backend Setup
 ```sh
-cd backend
+cd server
 npm install
 npm start
 ```
 
 ### Frontend Setup
 ```sh
-cd ../frontend
+cd client
 npm install
 npm start
 ```
@@ -54,7 +55,7 @@ npm start
 ### Running the Full Application
 Ensure MongoDB is running locally or configured with MongoDB Atlas.
 ```sh
-cd backend && node index.js & cd ../frontend && npm start
+cd server && node index.js & cd ../client && npm start
 ```
 
 ## Contributors
