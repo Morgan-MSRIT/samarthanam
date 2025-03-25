@@ -8,6 +8,7 @@ import {
   updateEvent,
   updateTask,
 } from '../services/apiService';
+import { formatDate } from '../utils/dateFormatter';
 
 export default function ManageEvents() {
   const [events, setEvents] = useState([]);
@@ -121,7 +122,10 @@ export default function ManageEvents() {
           <div key={event._id} className="mb-6 p-4 bg-secondary rounded-md shadow">
             <h2 className="text-xl font-bold text-primary">{event.name}</h2>
             <p className="text-secondary">
-              Date: {new Date(event.startDate).toLocaleDateString()}
+              Date: {formatDate(event.startDate)}
+            </p>
+            <p className="text-secondary">
+              Participants: {event.registeredParticipants?.length}
             </p>
 
             {/* Tasks */}

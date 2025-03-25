@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { getUserEvents } from "../services/apiService";
 import OrganizerEventDetailsPopup from "../components/organizer/OrganizerEventDetailsPopup";
+import { formatDate } from '../utils/dateFormatter';
 
 export default function OrganizerDashboard() {
   const { user } = useContext(AuthContext);
@@ -68,7 +69,7 @@ export default function OrganizerDashboard() {
                 {event.name}
               </h3>
               <p className="text-tertiary-600">
-                Date: {new Date(event.startDate).toLocaleDateString()}
+                Date: {formatDate(event.startDate)}
               </p>
               <p className="text-tertiary-600">
                 Participants: {event.registeredParticipants?.length}

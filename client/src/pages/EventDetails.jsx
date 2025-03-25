@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { getEventById } from '../services/apiService';
+import { formatDate } from '../utils/dateFormatter';
 
 export default function EventDetails() {
   const { eventId } = useParams();
@@ -21,7 +22,8 @@ export default function EventDetails() {
           setEvent({
             id: eventData._id,
             title: eventData.name,
-            date: new Date(eventData.startDate).toLocaleDateString(),
+            startDate: new Date(eventData.startDate),
+            endDate: new Date(eventData.endDate),
             time: `${new Date(eventData.startDate).toLocaleTimeString()} - ${new Date(eventData.endDate).toLocaleTimeString()}`,
             location: eventData.location,
             description: eventData.description,
@@ -105,7 +107,18 @@ export default function EventDetails() {
                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      {event.date}
+                      Starts: {formatDate(event.startDate)}
+                    </div>
+                    <div className="flex items-center text-secondary">
+                      <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      Ends: {formatDate(event.endDate)}
                     </div>
                     <div className="flex items-center text-secondary">
                       <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +201,7 @@ export default function EventDetails() {
                   </Link>
                 ) : (
                   <>
-                    {user.role === 'volunteer' && (
+                    {user.role === 'volunteer' && new Date() < event.endDate && (
                       <Link
                         to={`/volunteer/${eventId}`}
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
@@ -196,12 +209,21 @@ export default function EventDetails() {
                         Register as Volunteer
                       </Link>
                     )}
-                    <Link
-                      to={`/participant/${eventId}`}
-                      className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                    >
-                      Register as Participant
-                    </Link>
+                    {new Date() < event.endDate ? (
+                      <Link
+                        to={`/participant/${eventId}`}
+                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        Register as Participant
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/make-feedback/${eventId}`}
+                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        Give Feedback
+                      </Link>
+                    )}
                     {user.role === 'organiser' && (
                       <Link
                         to="/organizer/dashboard"

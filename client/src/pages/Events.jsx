@@ -2,14 +2,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { getEvents, getRecommendedEvents } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
+import { formatDate } from '../utils/dateFormatter';
 
 export default function Events() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [events, setEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPastEvents, setShowPastEvents] = useState(false);
   const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -26,10 +29,13 @@ export default function Events() {
         console.log(response);
 
         if (response.success) {
-          setEvents(response.data.map(event => ({
+          const now = new Date();
+          const mappedEvents = response.data.map(event => ({
             id: event._id,
             title: event.name,
-            date: new Date(event.startDate).toLocaleDateString(),
+            startDate: new Date(event.startDate),
+            endDate: new Date(event.endDate),
+            date: formatDate(event.startDate),
             time: `${new Date(event.startDate).toLocaleTimeString()} - ${new Date(event.endDate).toLocaleTimeString()}`,
             location: event.location,
             description: event.description,
@@ -40,7 +46,14 @@ export default function Events() {
             maxVolunteers: event.totalVolunteerReq,
             currentVolunteers: event.volunteers?.length || 0,
             isRecommended: event.isRecommended || false
-          })));
+          }));
+
+          // Separate past and upcoming events
+          const upcoming = mappedEvents.filter(event => event.endDate > now);
+          const past = mappedEvents.filter(event => event.endDate <= now);
+
+          setEvents(upcoming);
+          setPastEvents(past);
         } else {
           setError(response.message);
         }
@@ -54,7 +67,7 @@ export default function Events() {
     fetchEvents();
   }, [activeTab, isAuthenticated, user?.id]);
 
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = (showPastEvents ? pastEvents : events).filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.location.toLowerCase().includes(searchTerm.toLowerCase());
@@ -93,7 +106,23 @@ export default function Events() {
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span>{event.date}</span>
+            <span>Starts: {formatDate(event.startDate)}</span>
+          </div>
+          <div className="mt-1 flex items-center text-sm text-secondary">
+            <svg
+              className="flex-shrink-0 mr-1.5 h-5 w-5 text-secondary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>Ends: {formatDate(event.endDate)}</span>
           </div>
           <div className="mt-2 flex items-center text-sm text-secondary">
             <svg
@@ -152,13 +181,6 @@ export default function Events() {
     <div className="min-h-screen bg-tertiary">
       <div className="container-fluid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-extrabold text-primary">Upcoming Events</h1>
-            <p className="mt-4 text-xl text-secondary">
-              Join us in making a difference. Participate in our upcoming events and activities.
-            </p>
-          </div>
-
           {/* Search and Filter Section */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -174,17 +196,20 @@ export default function Events() {
               <div className="flex space-x-4">
                 <button
                   className={`${
-                    activeTab === 'all'
+                    activeTab === 'all' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
-                  onClick={() => setActiveTab('all')}
+                  onClick={() => {
+                    setActiveTab('all');
+                    setShowPastEvents(false);
+                  }}
                 >
                   All Events
                 </button>
                 <button
                   className={`${
-                    activeTab === 'recommended'
+                    activeTab === 'recommended' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
                   } px-4 py-2 font-medium text-sm rounded-md`}
@@ -193,10 +218,26 @@ export default function Events() {
                       setShowSignInModal(true);
                     } else {
                       setActiveTab('recommended');
+                      setShowPastEvents(false);
                     }
                   }}
                 >
                   Recommended Events
+                </button>
+                <button
+                  className={`${
+                    showPastEvents
+                      ? 'bg-primary text-accent'
+                      : 'text-primary hover:text-secondary'
+                  } px-4 py-2 font-medium text-sm rounded-md`}
+                  onClick={() => {
+                    setShowPastEvents(!showPastEvents);
+                    if (showPastEvents) {
+                      setActiveTab('all');
+                    }
+                  }}
+                >
+                  Past Events
                 </button>
               </div>
             </div>
@@ -233,7 +274,11 @@ export default function Events() {
 
               {filteredEvents.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-xl text-secondary">No events found matching your criteria.</p>
+                  <p className="text-xl text-secondary">
+                    {showPastEvents 
+                      ? "No past events found matching your criteria."
+                      : "No upcoming events found matching your criteria."}
+                  </p>
                 </div>
               )}
             </>
