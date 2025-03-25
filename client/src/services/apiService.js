@@ -286,3 +286,32 @@ export const getRecommendedEvents = async (userId) => {
     throw error.response?.data || { message: 'An error occurred while fetching recommended events' };
   }
 };
+
+
+export const organizerSignup = async (userData) => {
+  try {
+    const response = await publicApi.post('/auth/organizer-signup', userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred during signup' };
+  }
+};
+
+
+export const getOrganizers = async () => {
+  try {
+    const response = await publicApi.get(`/auth/get-organizers`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while fetching event details' };
+  }
+};
+
+export const removeOrganizer = async (userid) => {
+  try {
+    const response = await publicApi.get(`/auth/${userid}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'An error occurred while fetching event details' };
+  }
+};
