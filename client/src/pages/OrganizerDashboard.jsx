@@ -45,6 +45,12 @@ export default function OrganizerDashboard() {
       <p className="text-tertiary-600 mb-4">Welcome, {user.name}!</p>
       <div className="mb-8">
         <Link
+          to="/organizer/analytics"
+          className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 mr-4"
+        >
+          View Analytics
+        </Link>
+        <Link
           to="/organizer/create-events"
           className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700"
         >
