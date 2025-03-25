@@ -22,7 +22,7 @@ export default function ParticipantForm() {
       // Clear the message after a short delay to allow subsequent messages
       setTimeout(() => {
         liveRegionRef.current.textContent = '';
-      }, 500);
+      }, 1000); // Increased delay for better accessibility
     }
   };
 
@@ -36,19 +36,19 @@ export default function ParticipantForm() {
       });
       if (response.ok) {
         const successMessage = "OTP sent successfully!";
-        toast.success(successMessage);
+        toast.success(successMessage, { autoClose: 5000 }); // Toast stays longer
         announceMessage(successMessage); // Announce the success message
         setOtpSent(true);
       } else {
         const data = await response.json();
         const errorMessage = data.message || "Failed to send OTP. Please try again.";
-        toast.error(errorMessage);
+        toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
         announceMessage(errorMessage); // Announce the error message
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
       const errorMessage = "An error occurred while sending OTP.";
-      toast.error(errorMessage);
+      toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
       announceMessage(errorMessage); // Announce the error message
     }
   };
@@ -71,29 +71,29 @@ export default function ParticipantForm() {
         // Check if already registered
         if (data.message.includes('already registered')) {
           const infoMessage = "You have already registered for this event! You will be redirected to explore other events.";
-          toast.info(infoMessage);
+          toast.info(infoMessage, { autoClose: 10000 }); // Toast stays longer
           announceMessage(infoMessage); // Announce the information message
           setTimeout(() => {
             navigate('/events'); // Redirect to the events page after a short delay
           }, 3000);
         } else {
           const successMessage = "OTP verified successfully, you are now registered!";
-          toast.success(successMessage);
+          toast.success(successMessage, { autoClose: 5000 }); // Toast stays longer
           announceMessage(successMessage); // Announce the success message
           setTimeout(() => {
-            navigate('/events');
+            navigate('/successful-registration'); // Redirect to the Successful Registration page
           }, 2000);
         }
       } else {
         const data = await response.json();
         const errorMessage = data.message || "Invalid OTP. Please try again.";
-        toast.error(errorMessage);
+        toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
         announceMessage(errorMessage); // Announce the error message
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
       const errorMessage = "An error occurred while verifying OTP.";
-      toast.error(errorMessage);
+      toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
       announceMessage(errorMessage); // Announce the error message
     }
   };
