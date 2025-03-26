@@ -67,36 +67,35 @@ export default function ParticipantForm() {
       });
       if (response.ok) {
         const data = await response.json();
-
+  
         // Check if already registered
         if (data.message.includes('already registered')) {
           const infoMessage = "You have already registered for this event! You will be redirected to explore other events.";
           toast.info(infoMessage, { autoClose: 10000 }); // Toast stays longer
-          announceMessage(infoMessage); // Announce the information message
+          announceMessage(infoMessage);
           setTimeout(() => {
-            navigate('/events'); // Redirect to the events page after a short delay
-          }, 3000);
+            navigate('/events'); // Redirect to the events page after a 10-second delay
+          }, 10000);
         } else {
           const successMessage = "OTP verified successfully, you are now registered!";
-          toast.success(successMessage, { autoClose: 5000 }); // Toast stays longer
-          announceMessage(successMessage); // Announce the success message
-          setTimeout(() => {
-            navigate('/successful-registration'); // Redirect to the Successful Registration page
-          }, 2000);
+          toast.success(successMessage, { autoClose: 5000 });
+          announceMessage(successMessage);
+          navigate('/successful-registration'); // Redirect immediately
         }
       } else {
         const data = await response.json();
         const errorMessage = data.message || "Invalid OTP. Please try again.";
-        toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
-        announceMessage(errorMessage); // Announce the error message
+        toast.error(errorMessage, { autoClose: 5000 });
+        announceMessage(errorMessage);
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
       const errorMessage = "An error occurred while verifying OTP.";
-      toast.error(errorMessage, { autoClose: 5000 }); // Toast stays longer
-      announceMessage(errorMessage); // Announce the error message
+      toast.error(errorMessage, { autoClose: 5000 });
+      announceMessage(errorMessage);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-tertiary flex items-center justify-center">
