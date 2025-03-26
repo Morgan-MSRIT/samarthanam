@@ -152,7 +152,7 @@ export default function OrganizerEventDetailsPopup({
                   </span>
                 </button>
                 {openSections.tasks && (
-                  <div className="p-4 space-y-3 max-h-48 overflow-y-auto">
+                  <div className="p-4 space-y-3 max-h-52 overflow-y-auto">
                     {event.tasks.length > 0 ? (
                       event.tasks.map((task) => (
                         <div

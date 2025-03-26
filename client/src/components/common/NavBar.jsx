@@ -76,10 +76,10 @@ export default function NavBar() {
 
   return (
     <nav
-      className={`shadow fixed w-full z-50 ${
+      className={`shadow-md fixed w-full z-50 ${
         highContrastMode
           ? "bg-black text-yellow-300 border-white border-2"
-          : "bg-tertiary-300"
+          : "bg-tertiary-100"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

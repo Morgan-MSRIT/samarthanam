@@ -166,7 +166,7 @@ export default function Events() {
             <div className="space-x-2">
               <button
                 onClick={handleViewEvent}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-accent bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary cursor-pointer"
               >
                 View Event
               </button>
@@ -178,7 +178,7 @@ export default function Events() {
   };
 
   return (
-    <div className="min-h-screen bg-tertiary">
+    <div className="min-h-screen bg-tertiary-100">
       <div className="container-fluid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Search and Filter Section */}
@@ -199,7 +199,7 @@ export default function Events() {
                     activeTab === 'all' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
-                  } px-4 py-2 font-medium text-sm rounded-md`}
+                  } px-4 py-2 font-medium text-sm rounded-md cursor-pointer`}
                   onClick={() => {
                     setActiveTab('all');
                     setShowPastEvents(false);
@@ -212,7 +212,7 @@ export default function Events() {
                     activeTab === 'recommended' && !showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
-                  } px-4 py-2 font-medium text-sm rounded-md`}
+                  } px-4 py-2 font-medium text-sm rounded-md cursor-pointer`}
                   onClick={() => {
                     if (!isAuthenticated) {
                       setShowSignInModal(true);
@@ -229,7 +229,7 @@ export default function Events() {
                     showPastEvents
                       ? 'bg-primary text-accent'
                       : 'text-primary hover:text-secondary'
-                  } px-4 py-2 font-medium text-sm rounded-md`}
+                  } px-4 py-2 font-medium text-sm rounded-md cursor-pointer`}
                   onClick={() => {
                     setShowPastEvents(!showPastEvents);
                     if (showPastEvents) {
