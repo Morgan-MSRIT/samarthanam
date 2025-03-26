@@ -18,7 +18,7 @@ const volunteerRoutes=require("./routes/volunteer.routes");
 const taskRoutes=require("./routes/task.routes");
 const tagRoutes=require("./routes/tag.routes");
 const feedbackRoutes=require("./routes/feedback.routes");
-
+const notificationRoutes=require("./routes/notification.route");
 
 //port no
 const PORT=process.env.PORT || 4000;
@@ -65,7 +65,7 @@ app.use('/api/v1/volunteer',volunteerRoutes);
 app.use('/api/v1/task',taskRoutes);
 app.use('/api/v1/tag',tagRoutes);
 app.use('/api/v1/feedback',feedbackRoutes);
-
+app.use('/api/v1/notification',notificationRoutes);
   
 //default route
 app.get("/",(req,res)=>{

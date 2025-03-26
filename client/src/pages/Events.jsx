@@ -39,7 +39,7 @@ export default function Events() {
             time: `${new Date(event.startDate).toLocaleTimeString()} - ${new Date(event.endDate).toLocaleTimeString()}`,
             location: event.location,
             description: event.description,
-            image: '/images/event-placeholder.jpg',
+            image: event.image || '/images/event-placeholder.jpg',
             requiredSkills: event.tags.map(tag => tag.name),
             maxParticipants: event.maxParticipants || 50,
             currentParticipants: event.registeredParticipants?.length || 0,

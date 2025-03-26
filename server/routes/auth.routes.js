@@ -13,8 +13,9 @@ router.route("/organizer-changepassword").post(organizerChangePassword);
 router.route("/sendotp").post(sendotp);
 router.route("/verify-otp").post(verifyOtp);
 
-router.route("/organizer-signup").post(auth, isAdmin, organizerSignup);
-router.route("/get-organizers").get(auth,isAdmin,getOrganizers);
-router.route("/:id").get(auth,isAdmin,removeOrganizer);
+router.route("/organizer-signup").post(organizerSignup);
+router.route("/get-organizers").get(getOrganizers);
+router.route("/:id").get(removeOrganizer);
+
 
 module.exports = router;

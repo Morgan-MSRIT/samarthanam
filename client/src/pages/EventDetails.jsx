@@ -27,7 +27,7 @@ export default function EventDetails() {
             time: `${new Date(eventData.startDate).toLocaleTimeString()} - ${new Date(eventData.endDate).toLocaleTimeString()}`,
             location: eventData.location,
             description: eventData.description,
-            image: '/images/event-placeholder.jpg',
+            image: eventData.image || '/images/event-placeholder.jpg',
             requiredSkills: eventData.tags?.map(tag => tag.name) || [],
             maxParticipants: eventData.maxParticipants || 50,
             currentParticipants: eventData.registeredParticipants?.length || 0,
