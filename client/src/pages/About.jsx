@@ -64,7 +64,7 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-tertiary">
+    <div className="min-h-screen bg-tertiary-100">
   
       <div className="container-fluid">
         {/* Hero Section */}

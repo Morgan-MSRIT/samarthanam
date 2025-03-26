@@ -42,19 +42,24 @@ export default function AnalyticsPage() {
   const api = axios.create({ baseURL: API_URL });
   const apiAnalytics = axios.create({ baseURL: API_ANALYTICS });
 
-  // Fetch events
+  // Fetch events for the organizer
   const getEvents = async () => {
     setLoading(true);
     setError("");
     try {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       const token = localStorage.getItem("token");
-      const response = await api.get("/event/get-events", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.post(
+        "/event/get-events-by-id",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response.data);
       if (response?.data?.success) {
         setEventData(response?.data?.data);
       } else {

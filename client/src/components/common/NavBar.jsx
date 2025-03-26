@@ -52,13 +52,13 @@ export default function NavBar() {
 
   const getDesktopLinkClass = ({ isActive }) => {
     const baseClass =
-      "inline-flex items-center px-2 py-1 text-sm font-medium transition duration-200 ease-in-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent-300";
+      "inline-flex items-center px-2 py-1 text-sm font-medium transition duration-200 ease-in-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-300";
     return highContrastMode
       ? isActive
         ? `${baseClass} text-yellow-100 bg-gray-800`
         : `${baseClass} text-yellow-300 hover:text-yellow-100 hover:bg-gray-800`
       : isActive
-      ? `${baseClass} text-secondary-500 bg-tertiary-400`
+      ? `${baseClass} text-secondary-500 bg-tertiary-300`
       : `${baseClass} text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400`;
   };
 
@@ -238,13 +238,13 @@ export default function NavBar() {
               <>
                 <Link
                   to="/volunteer"
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-300 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-200 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Volunteer
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-300 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
+                  className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-md text-accent-100 bg-primary-500 hover:bg-secondary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-200 transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer"
                 >
                   Sign in
                 </Link>
@@ -277,7 +277,7 @@ export default function NavBar() {
             )}
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-300 cursor-pointer"
+              className="inline-flex items-center justify-center p-2 rounded-md text-primary-700 hover:text-secondary-500 hover:bg-tertiary-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-200 cursor-pointer"
               aria-expanded="false"
               aria-controls="mobile-menu"
             >

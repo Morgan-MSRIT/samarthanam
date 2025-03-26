@@ -10,6 +10,24 @@ import {
 } from "../services/apiService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  FaPencilAlt,
+  FaParagraph,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaCheck,
+  FaUsers,
+  FaTasks,
+  FaClock,
+  FaPlus,
+  FaTrash,
+  FaSearch,
+  FaUser,
+  FaEnvelope,
+  FaSave,
+  FaArrowLeft,
+  FaArrowRight,
+} from "react-icons/fa";
 
 export default function EventManagement() {
   const { eventId } = useParams();
@@ -27,12 +45,12 @@ export default function EventManagement() {
   const [editEvent, setEditEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState(""); // For volunteers table search
-  const [currentPage, setCurrentPage] = useState(1); // For pagination
-  const pageSize = 10; // For pagination
-  const [taskSearchTerms, setTaskSearchTerms] = useState({}); // New state for task-specific search terms
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const [taskSearchTerms, setTaskSearchTerms] = useState({});
 
-  // Fetch event and volunteer data on mount (unchanged)
+  // Fetch event and volunteer data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,12 +89,12 @@ export default function EventManagement() {
     fetchData();
   }, [eventId]);
 
-  // Reset currentPage when searchTerm changes (unchanged)
+  // Reset currentPage when searchTerm changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  // Handlers (unchanged except for new helper function)
+  // Handlers
   const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setNewTask((prev) => ({ ...prev, [name]: value }));
@@ -151,19 +169,6 @@ export default function EventManagement() {
         if (response.success) {
           const updatedTasks = tasks.filter((t) => t._id !== taskId);
           setTasks(updatedTasks);
-          // const updatedEventData = {
-          //   _id: eventId,
-          //   name: event.name,
-          //   description: event.description,
-          //   location: event.location,
-          //   startDate: event.startDate,
-          //   endDate: event.endDate,
-          //   isRegistrationRequired: event.isRegistrationRequired,
-          //   totalVolunteerReq: event.totalVolunteerReq,
-          //   tasks: updatedTasks.map((t) => t._id),
-          // };
-          // const updateResponse = await updateEvent(updatedEventData);
-
           setEvent((prev) => ({
             ...prev,
             tasks: updatedTasks,
@@ -281,7 +286,6 @@ export default function EventManagement() {
     }
   };
 
-  // Helper function to get available volunteers for a task
   const getAvailableVolunteers = (taskId) => {
     return volunteers.filter((v) => !v.taskAllocated.includes(taskId));
   };
@@ -293,7 +297,6 @@ export default function EventManagement() {
   if (error)
     return <div className="text-center py-12 text-accent-500">{error}</div>;
 
-  // Filter and paginate volunteers for the table (unchanged)
   const filteredVolunteers = volunteers.filter(
     (v) =>
       (v.user.name &&
@@ -313,15 +316,15 @@ export default function EventManagement() {
           Manage Event: {event.name}
         </h1>
 
-        {/* Event Details Update Card (unchanged) */}
+        {/* Event Details Update Card */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-semibold text-tertiary-800 mb-4">
             Update Event Details
           </h2>
           <form onSubmit={handleUpdateEvent} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Event Name
+              <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                <FaPencilAlt /> Event Name
               </label>
               <input
                 type="text"
@@ -333,8 +336,8 @@ export default function EventManagement() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Description
+              <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                <FaParagraph /> Description
               </label>
               <textarea
                 name="description"
@@ -345,8 +348,8 @@ export default function EventManagement() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Location
+              <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                <FaMapMarkerAlt /> Location
               </label>
               <input
                 type="text"
@@ -357,65 +360,71 @@ export default function EventManagement() {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Start Date
-              </label>
-              <input
-                type="datetime-local"
-                name="startDate"
-                value={editEvent?.startDate || ""}
-                onChange={handleEventChange}
-                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
+            {/* Start Date and End Date in one row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaCalendarAlt /> Start Date
+                </label>
+                <input
+                  type="datetime-local"
+                  name="startDate"
+                  value={editEvent?.startDate || ""}
+                  onChange={handleEventChange}
+                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaCalendarAlt /> End Date
+                </label>
+                <input
+                  type="datetime-local"
+                  name="endDate"
+                  value={editEvent?.endDate || ""}
+                  onChange={handleEventChange}
+                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                End Date
-              </label>
-              <input
-                type="datetime-local"
-                name="endDate"
-                value={editEvent?.endDate || ""}
-                onChange={handleEventChange}
-                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Registration Required
-              </label>
-              <select
-                name="isRegistrationRequired"
-                value={editEvent?.isRegistrationRequired ? "true" : "false"}
-                onChange={handleEventChange}
-                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-tertiary-700">
-                Total Volunteers Required
-              </label>
-              <input
-                type="number"
-                name="totalVolunteerReq"
-                value={editEvent?.totalVolunteerReq || 0}
-                onChange={handleEventChange}
-                className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                min="0"
-                required
-              />
+            {/* Total Volunteers Required and Registration Required in one row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaUsers /> Total Volunteers Required
+                </label>
+                <input
+                  type="number"
+                  name="totalVolunteerReq"
+                  value={editEvent?.totalVolunteerReq || 0}
+                  onChange={handleEventChange}
+                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  min="0"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaCheck /> Registration Required
+                </label>
+                <select
+                  name="isRegistrationRequired"
+                  value={editEvent?.isRegistrationRequired ? "true" : "false"}
+                  onChange={handleEventChange}
+                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
             </div>
             <button
               type="submit"
-              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+              className="flex items-center gap-2 bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
             >
-              Update Event
+              <FaSave /> Update Event
             </button>
           </form>
         </div>
@@ -430,24 +439,25 @@ export default function EventManagement() {
               <div key={task._id} className="p-4 bg-tertiary-50 rounded-md">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="text-lg font-medium text-tertiary-800">
-                      {task.name}
+                    <h3 className="text-lg font-medium text-tertiary-800 flex items-center gap-2">
+                      <FaTasks /> {task.name}
                     </h3>
                     <div className="space-y-1">
-                      <p className="text-tertiary-600">
-                        Start: {new Date(task.startTime).toLocaleString()}
+                      <p className="text-tertiary-600 flex items-center gap-2">
+                        <FaClock /> Start:{" "}
+                        {new Date(task.startTime).toLocaleString()}
                       </p>
-                      <p className="text-tertiary-600">
-                        End: {new Date(task.endTime).toLocaleString()}
+                      <p className="text-tertiary-600 flex items-center gap-2">
+                        <FaClock /> End:{" "}
+                        {new Date(task.endTime).toLocaleString()}
                       </p>
-                      <p className="text-tertiary-600">
-                        Volunteers: {task.currentVolunteerCount}/
+                      <p className="text-tertiary-600 flex items-center gap-2">
+                        <FaUsers /> Volunteers: {task.currentVolunteerCount}/
                         {task.maxVolunteerNeeded}
                       </p>
                     </div>
                   </div>
                   <div className="space-x-2 flex items-center">
-                    {/* Searchable Dropdown */}
                     <div className="relative">
                       <input
                         type="text"
@@ -505,9 +515,9 @@ export default function EventManagement() {
                     </div>
                     <button
                       onClick={() => handleDeleteTask(task._id)}
-                      className="bg-primary-500 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-accent-500 cursor-pointer"
+                      className="flex items-center gap-2 bg-primary-500 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-accent-500 cursor-pointer"
                     >
-                      Delete
+                      <FaTrash /> Delete
                     </button>
                   </div>
                 </div>
@@ -545,15 +555,15 @@ export default function EventManagement() {
             ))}
           </div>
 
-          {/* Add New Task Form (unchanged) */}
+          {/* Add New Task Form */}
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-tertiary-800 mb-2">
               Add New Task
             </h3>
             <form onSubmit={handleAddTask} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-tertiary-700">
-                  Task Name
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaPencilAlt /> Task Name
                 </label>
                 <input
                   type="text"
@@ -564,35 +574,38 @@ export default function EventManagement() {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-tertiary-700">
-                  Start Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="startTime"
-                  value={newTask.startTime}
-                  onChange={handleTaskChange}
-                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  required
-                />
+              {/* Start Time and End Time in one row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                    <FaClock /> Start Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="startTime"
+                    value={newTask.startTime}
+                    onChange={handleTaskChange}
+                    className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                    <FaClock /> End Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="endTime"
+                    value={newTask.endTime}
+                    onChange={handleTaskChange}
+                    className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                  />
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-tertiary-700">
-                  End Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="endTime"
-                  value={newTask.endTime}
-                  onChange={handleTaskChange}
-                  className="w-full p-2 border border-tertiary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-tertiary-700">
-                  Max Volunteers Needed
+                <label className="mb-1 block text-sm font-medium text-tertiary-700 flex items-center gap-2">
+                  <FaUsers /> Max Volunteers Needed
                 </label>
                 <input
                   type="number"
@@ -606,15 +619,15 @@ export default function EventManagement() {
               </div>
               <button
                 type="submit"
-                className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                className="flex items-center gap-2 bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
               >
-                Add Task
+                <FaPlus /> Add Task
               </button>
             </form>
           </div>
         </div>
 
-        {/* Volunteers Section (unchanged) */}
+        {/* Volunteers Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold text-tertiary-800 mb-4">
             Volunteers
@@ -667,9 +680,9 @@ export default function EventManagement() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
+              className="flex items-center gap-2 bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
             >
-              Previous
+              <FaArrowLeft /> Previous
             </button>
             <span className="text-tertiary-700">
               Page {currentPage} of {totalPages}
@@ -679,9 +692,9 @@ export default function EventManagement() {
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
               disabled={currentPage === totalPages}
-              className="bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
+              className="flex items-center gap-2 bg-primary-600 text-accent-100 px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 enabled:cursor-pointer"
             >
-              Next
+              Next <FaArrowRight />
             </button>
           </div>
         </div>

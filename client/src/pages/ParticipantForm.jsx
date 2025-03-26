@@ -79,9 +79,9 @@ export default function ParticipantForm() {
   };
 
   return (
-    <div className="min-h-screen bg-tertiary flex items-center justify-center">
+    <div className="min-h-screen bg-tertiary-100 flex items-center justify-center">
       <ToastContainer />
-      <div className="max-w-md w-full bg-accent p-6 rounded-lg shadow">
+      <div className="max-w-md w-full bg-accent p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-primary text-center mb-4">Participant Registration</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
