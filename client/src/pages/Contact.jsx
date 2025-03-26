@@ -15,7 +15,7 @@ const location = {
 
 const Contact = () => {
   return (
-    <div className="bg-accent pb-5 mb-5 relative">
+    <div className="bg-tertiary-100 pb-5 mb-5 relative min-h-screen">
       <div className="relative h-96 w-full">
         <img
           src="https://samarthanam.org/wp-content/uploads/2020/01/map.jpg"

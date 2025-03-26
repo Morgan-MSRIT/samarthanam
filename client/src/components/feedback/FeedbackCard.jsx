@@ -1,4 +1,13 @@
 import React from "react";
+import {
+  FaSmile,
+  FaMeh,
+  FaFrown,
+  FaClock,
+  FaStar,
+  FaChartBar,
+  FaCommentDots,
+} from "react-icons/fa";
 
 function FeedbackCard({
   index,
@@ -11,45 +20,62 @@ function FeedbackCard({
   additionalInfo,
 }) {
   const renderType = (type) => {
-    // Check type value
-    console.log("Type: ", type);
-
-    if (type === 'Positive') {
-      return (
-        <span style={{ color: 'green' }}>
-          <b>Type:</b> 😊 Positive
-        </span>
-      );
-    } else if (type === 'Neutral') {
-      return (
-        <span style={{ color: 'grey' }}>
-          <b>Type:</b> 😐 Neutral
-        </span>
-      );
-    } else if (type === 'Negative') {
-      return (
-        <span style={{ color: 'red' }}>
-          <b>Type:</b> 😞 Negative
-        </span>
-      );
-    } else {
-      return (
-        <span style={{ color: 'black' }}>
-          <b>Type:</b> Unknown
-        </span>
-      );
+    switch (type) {
+      case "Positive":
+        return (
+          <span className="text-green-500 font-bold flex items-center gap-2">
+            <FaSmile /> Positive
+          </span>
+        );
+      case "Neutral":
+        return (
+          <span className="text-gray-500 font-bold flex items-center gap-2">
+            <FaMeh /> Neutral
+          </span>
+        );
+      case "Negative":
+        return (
+          <span className="text-red-500 font-bold flex items-center gap-2">
+            <FaFrown /> Negative
+          </span>
+        );
+      default:
+        return (
+          <span className="text-black font-bold flex items-center gap-2">
+            <FaMeh /> Unknown
+          </span>
+        );
     }
   };
 
   return (
-    <div className="p-4 rounded-md bg-white flex flex-col">
-      {renderType(type)}
-      <span><b>Contact Hours:</b> {contactHours}</span>
-      <span><b>Volunteer Or Participation Experience:</b> {volunteerOrParticipationExperience}</span>
-      <span><b>Website Experience:</b> {websiteExperience}</span>
-      <span><b>Experience Working with Org:</b> {experienceWorkingWithOrg}</span>
-      <span><b>Sentiment Score:</b> {sentimentScore}</span>
-      <span><b>Additional Info:</b> {additionalInfo}</span>
+    <div className="p-4 rounded-md bg-white shadow-md border border-gray-200 flex flex-col space-y-2">
+      <div>{renderType(type)}</div>
+      <span className="flex items-center gap-2">
+        <FaClock className="text-primary" /> <b>Contact Hours:</b>{" "}
+        {contactHours}
+      </span>
+      <span className="flex items-center gap-2">
+        <FaStar className="text-primary" />{" "}
+        <b>Volunteer/Participation Experience:</b>{" "}
+        {volunteerOrParticipationExperience}
+      </span>
+      <span className="flex items-center gap-2">
+        <FaStar className="text-primary" /> <b>Website Experience:</b>{" "}
+        {websiteExperience}
+      </span>
+      <span className="flex items-center gap-2">
+        <FaStar className="text-primary" /> <b>Experience Working with Org:</b>{" "}
+        {experienceWorkingWithOrg}
+      </span>
+      <span className="flex items-center gap-2">
+        <FaChartBar className="text-primary" /> <b>Sentiment Score:</b>{" "}
+        {sentimentScore}
+      </span>
+      <span className="flex items-center gap-2">
+        <FaCommentDots className="text-primary" /> <b>Additional Info:</b>{" "}
+        {additionalInfo || "N/A"}
+      </span>
     </div>
   );
 }

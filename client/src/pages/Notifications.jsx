@@ -54,7 +54,7 @@ const Notifications = () => {
   }, []);
 
   return (
-    <div className="bg-accent p-2 flex flex-col w-[250px] rounded-lg">
+    <div className="bg-accent-200 p-2 flex flex-col w-full rounded-lg">
       <div className="flex text-center mx-auto text-primary font-bold text-xl">
         Notifications
       </div>
