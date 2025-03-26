@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
     ],
   };
 
-  const options = {
+  const options1 = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -87,7 +87,36 @@ export default function AnalyticsPage() {
       x: {
         title: {
           display: true,
-          text: "Categories",
+          text: "Events",
+        },
+        ticks: {
+          display: true,
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Count",
+        },
+        beginAtZero: true,
+      },
+    },
+  };
+
+  const options2 = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Tags",
         },
         ticks: {
           display: true,
@@ -172,16 +201,16 @@ export default function AnalyticsPage() {
 
       if (response?.data?.success) {
         const data = response?.data?.data;
-        console.log("Analytics Data:", data); // Add this to debug
-        setAllEvents(data?.events);
         setEventName(data?.eventName || []);
-        setNumParticipants(data?.numParticipants || []);
-        setRegisteredParticipants(data?.registeredParticipants || []);
-        setTotalParticipants(data?.totalParticipants);
-        setTotalVolunteers(data?.totalVolunteers);
-        setTags(data?.tags || []);
-        setTotalVolunteersWithTag(data?.totalVolunteersWithTag || []);
         setRegisteredVolunteersWithTag(data?.registeredVolunteersWithTag || []);
+        setTags(data?.tags || []);
+        setTotalVolunteers(data?.totalVolunteers || 0);
+        setTotalParticipants(data?.totalParticipants || 0);
+        setTotalVolunteersWithTag(data?.totalVolunteersWithTag || []);
+
+
+        setNumParticipants(data?.volunteersRegistered || []);
+        setRegisteredParticipants(data?.volunteersRequired || []);
       } else {
         setError(response?.data?.message);
       }
@@ -207,22 +236,22 @@ export default function AnalyticsPage() {
       <div className="max-h-full bg-tertiary flex items-center justify-center p-8">
         <div className="bg-accent p-2 md:p-8 rounded-lg shadow-md w-[98%] md:w-[90%] h-[500px]">
           <h1 className="text-xl md:text-3xl font-bold text-primary mb-2 md:mb-6 text-center">
-            Event Participants Analytics
+            Volunteer Participation Analytics
           </h1>
           <div class="flex space-x-4 mt-4">
             <div class="flex items-center">
               <div class="w-4 h-4 bg-blue-400"></div>
-              <span class="ml-2 text-gray-700">Registered Participants</span>
+              <span class="ml-2 text-gray-700">Max Volunteers Required</span>
             </div>
             <div class="flex items-center">
               <div class="w-4 h-4 border-2 border-pink-400 bg-gray-200"></div>
               <span class="ml-2 text-gray-700">
-              Number of Participants
+              Number of Volunteers Registered
               </span>
             </div>
           </div>
           <div className="bg-white p-2 md:p-4 rounded-md h-[85%]">
-            <Chart type="bar" data={data1} options={options} />
+            <Chart type="bar" data={data1} options={options1} />
           </div>
         </div>
       </div>
@@ -230,23 +259,23 @@ export default function AnalyticsPage() {
       <div className="max-h-full bg-tertiary flex items-center justify-center p-8">
         <div className="bg-accent p-2 md:p-8 rounded-lg shadow-md w-[98%] md:w-[90%] h-[500px]">
           <h1 className="text-xl md:text-3xl font-bold text-primary mb-2 md:mb-6 text-center">
-            Volunteers Tag Analytics
+            Recommendation Performance
           </h1>
           <div class="flex space-x-4 mt-4">
             <div class="flex items-center">
               <div class="w-4 h-4 bg-blue-400"></div>
-              <span class="ml-2 text-gray-700">Total Volunteers with Tag</span>
+              <span class="ml-2 text-gray-700">Volunteers with Tag</span>
             </div>
             <div class="flex items-center">
               <div class="w-4 h-4 border-2 border-pink-400 bg-gray-200"></div>
               <span class="ml-2 text-gray-700">
-                Registered Volunteers with Tag
+                Recommended Volunteers Registered
               </span>
             </div>
           </div>
 
           <div className="bg-white p-2 md:p-4 rounded-md h-[85%]">
-            <Chart type="bar" data={data2} options={options} />
+            <Chart type="bar" data={data2} options={options2} />
           </div>
         </div>
       </div>

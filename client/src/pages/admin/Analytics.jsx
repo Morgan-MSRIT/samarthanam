@@ -78,7 +78,7 @@ export default function AnalyticsPage() {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       const token = localStorage.getItem("token");
       const response = await apiAnalytics.post(
-        "/analytics/get-organizer-analytics",
+        "/analytics/get-all-analytics",
         { id: user._id },
         {
           headers: {
@@ -89,15 +89,16 @@ export default function AnalyticsPage() {
       );
       if (response?.data?.success) {
         const data = response?.data?.data;
-        setAllEvents(data?.events || []);
         setEventName(data?.eventName || []);
-        setNumParticipants(data?.numParticipants || []);
-        setRegisteredParticipants(data?.registeredParticipants || []);
-        setTotalParticipants(data?.totalParticipants || 0);
-        setTotalVolunteers(data?.totalVolunteers || 0);
-        setTags(data?.tags || []);
-        setTotalVolunteersWithTag(data?.totalVolunteersWithTag || []);
         setRegisteredVolunteersWithTag(data?.registeredVolunteersWithTag || []);
+        setTags(data?.tags || []);
+        setTotalVolunteers(data?.totalVolunteers || 0);
+        setTotalParticipants(data?.totalParticipants || 0);
+        setTotalVolunteersWithTag(data?.totalVolunteersWithTag || []);
+
+
+        setNumParticipants(data?.volunteersRegistered || []);
+        setRegisteredParticipants(data?.volunteersRequired || []);
       } else {
         setError(response?.data?.message);
       }
@@ -158,7 +159,7 @@ export default function AnalyticsPage() {
   };
 
   // Chart options
-  const options = {
+  const options1 = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -166,7 +167,22 @@ export default function AnalyticsPage() {
     },
     scales: {
       x: {
-        title: { display: true, text: "Categories" },
+        title: { display: true, text: "Events" },
+        ticks: { display: true },
+      },
+      y: { title: { display: true, text: "Count" }, beginAtZero: true },
+    },
+  };
+
+  const options2 = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: "top" },
+    },
+    scales: {
+      x: {
+        title: { display: true, text: "Tags" },
         ticks: { display: true },
       },
       y: { title: { display: true, text: "Count" }, beginAtZero: true },
@@ -215,24 +231,23 @@ export default function AnalyticsPage() {
         className="mb-8"
       >
         <h1 className="text-3xl font-bold text-tertiary-800 mb-6 text-center flex items-center justify-center gap-2">
-          <FaChartBar className="text-primary-600" /> Event Participants
-          Analytics
+          <FaChartBar className="text-primary-600" /> Volunteer Participation Analytics
         </h1>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex space-x-4 mb-4">
             <div className="flex items-center">
               <div className="w-4 h-4 bg-blue-400"></div>
               <span className="ml-2 text-gray-700">
-                Registered Participants
+              Max Volunteers Required
               </span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 bg-pink-400"></div>
-              <span className="ml-2 text-gray-700">Number of Participants</span>
+              <span className="ml-2 text-gray-700">Number of Volunteers Registered</span>
             </div>
           </div>
           <div className="h-64">
-            <Chart type="bar" data={data1} options={options} />
+            <Chart type="bar" data={data1} options={options1} />
           </div>
         </div>
       </motion.div>
@@ -245,25 +260,25 @@ export default function AnalyticsPage() {
         className="mb-8"
       >
         <h1 className="text-3xl font-bold text-tertiary-800 mb-6 text-center flex items-center justify-center gap-2">
-          <FaChartBar className="text-primary-600" /> Volunteers Tag Analytics
+          <FaChartBar className="text-primary-600" /> Recommendation Performance
         </h1>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex space-x-4 mb-4">
             <div className="flex items-center">
               <div className="w-4 h-4 bg-blue-400"></div>
               <span className="ml-2 text-gray-700">
-                Total Volunteers with Tag
+                Volunteers with Tag
               </span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 bg-pink-400"></div>
               <span className="ml-2 text-gray-700">
-                Registered Volunteers with Tag
+              Recommended Volunteers Registered
               </span>
             </div>
           </div>
           <div className="h-64">
-            <Chart type="bar" data={data2} options={options} />
+            <Chart type="bar" data={data2} options={options2} />
           </div>
         </div>
       </motion.div>
