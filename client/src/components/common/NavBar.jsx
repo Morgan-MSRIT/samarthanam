@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import Notifications from "../../pages/Notifications"; // Adjust path as needed
-import { FaBell, FaUniversalAccess } from "react-icons/fa";
+import { FaBell, FaUniversalAccess, FaGlobe } from "react-icons/fa"; // Added FaGlobe
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,6 +133,14 @@ export default function NavBar() {
 
           {/* Desktop Right Section */}
           <div className="hidden md:flex md:items-center md:space-x-2 flex-wrap">
+            {/* Google Translate Icon */}
+
+            <div
+              id="google_translate_element"
+              className="text-accent-200 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+              aria-label="Translate"
+            ></div>
+
             {/* Accessibility Dropdown */}
             <div className="relative">
               <button
@@ -161,19 +169,6 @@ export default function NavBar() {
                     >
                       {highContrastMode ? "Contrast Off" : "Contrast On"}
                     </button>
-                    <div
-                      className={`inline-flex items-center w-full px-2 py-1 text-sm font-medium rounded-md transition duration-200 ease-in-out hover:-translate-y-1 hover:shadow-md active:scale-95 cursor-pointer ${
-                        highContrastMode
-                          ? "bg-yellow-300 text-black hover:bg-yellow-100"
-                          : "bg-primary-500 text-accent-100 hover:bg-secondary-500"
-                      }`}
-                    >
-                      <div
-                        id="google_translate_element"
-                        className="inline-flex items-center"
-                      />
-                      <span className="ml-1">Translate</span>
-                    </div>
                   </div>
                 </div>
               )}
@@ -259,6 +254,11 @@ export default function NavBar() {
 
           {/* Mobile Menu Button and Icons */}
           <div className="md:hidden flex items-center space-x-2">
+            <div
+              id="google_translate_element"
+              className="text-accent-200 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
+              aria-label="Translate"
+            ></div>
             <button
               onClick={toggleAccessibility}
               className="text-primary-700 hover:text-secondary-500 focus:outline-none cursor-pointer p-1"
@@ -438,9 +438,6 @@ export default function NavBar() {
                 ? "Disable High Contrast"
                 : "Enable High Contrast"}
             </button>
-            <div className="px-4 py-3">
-              <div id="google_translate_element" className="w-full" />
-            </div>
           </div>
         </div>
       )}
